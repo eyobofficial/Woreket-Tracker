@@ -27,6 +27,8 @@ redis = "*"
 django-celery-beat = "*"
 coverage = "*"
 django-celery-results = "*"
+python-docx = "*"
+pendulum = "*"
 
 [requires]
 python_version = "3.6"

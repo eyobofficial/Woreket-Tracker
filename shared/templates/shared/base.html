@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Meta -->
+    <meta name="description" content="">
+    <meta name="author" content="Eyob Tariku">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'shared/assets/img/favicon.png' %}">
+
+    <title>{% block title %}Payment Tracker{% endblock %}</title>
+
+    <!-- vendor css -->
+    <link href="{% static 'shared/lib/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'shared/lib/ionicons/css/ionicons.min.css" rel="stylesheet' %}">
+    <link href="{% static 'shared/lib/jqvmap/jqvmap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'shared/lib/datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+    <link href="{% static 'shared/lib/datatables.net-dt/css/responsive.dataTables.min.css' %}" rel="stylesheet">
+    <link href="{% static 'shared/lib/select2/css/select2.min.css' %}" rel="stylesheet">
+
+    <!-- DashForge CSS -->
+    <link rel="stylesheet" href="{% static 'shared/css/dashforge.css' %}">
+    <link rel="stylesheet" href="{% static 'shared/css/dashforge.dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'shared/css/skin.list.css' %}">
+    <link rel="stylesheet" href="{% static 'shared/css/base.css' %}">
+
+    <!-- Extra CSS -->
+    {% block extra-css %}{% endblock %}
+  </head>
+  <body class="page-profile">
+    <!-- Header -->
+    <header class="navbar navbar-header navbar-header-fixed">
+      <a href="" id="mainMenuOpen" class="burger-menu"><i data-feather="menu"></i></a>
+      <div class="navbar-brand">
+        <a href="#" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+      </div><!-- navbar-brand -->
+      <div id="navbarMenu" class="navbar-menu-wrapper">
+        <div class="navbar-menu-header">
+          <a href="#" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+          <a id="mainMenuClose" href=""><i data-feather="x"></i></a>
+        </div><!-- navbar-menu-header -->
+
+        <ul class="nav navbar-menu">
+          {% if user.is_authenticated %}
+          <li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">Main Navigation</li>
+          <li class="nav-item active">
+            <a href="{% url 'allocations:distribution-list' %}" class="nav-link"><i data-feather="box"></i>Distribution Orders</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"><i data-feather="box"></i>Settings</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div><!-- navbar-menu-wrapper -->
+      <div class="navbar-right">
+        <a href="{% url 'accounts:logout' %}"><i data-feather="log-out"></i> &nbsp;Sign Out</a>
+        </div><!-- dropdown -->
+      </div><!-- navbar-right -->
+      <div class="navbar-search">
+        <div class="navbar-search-header">
+          <input type="search" class="form-control" placeholder="Type and hit enter to search...">
+          <button class="btn"><i data-feather="search"></i></button>
+          <a id="navbarSearchClose" href="" class="link-03 mg-l-5 mg-lg-l-10"><i data-feather="x"></i></a>
+        </div><!-- navbar-search-header -->
+      </div><!-- navbar-search -->
+    </header><!-- navbar -->
+
+    <div class="content content-fixed">
+      <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+        {% block content %}{% endblock %}
+      </div><!-- container -->
+    </div><!-- content -->
+
+    {% block modal %}{% endblock %}
+
+    <script src="{% static 'shared/lib/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'shared/lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'shared/lib/feather-icons/feather.min.js' %}"></script>
+    <script src="{% static 'shared/lib/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'shared/lib/jquery.flot/jquery.flot.js' %}"></script>
+    <script src="{% static 'shared/lib/jquery.flot/jquery.flot.stack.js' %}"></script>
+    <script src="{% static 'shared/lib/jquery.flot/jquery.flot.resize.js' %}"></script>
+    <script src="{% static 'shared/lib/chart.js/Chart.bundle.min.js' %}"></script>
+    <script src="{% static 'shared/lib/jqvmap/jquery.vmap.min.js' %}"></script>
+    <script src="{% static 'shared/lib/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
+    <script src="{% static 'shared/lib/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'shared/lib/datatables.net-dt/js/dataTables.dataTables.min.js' %}"></script>
+    <script src="{% static 'shared/lib/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'shared/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js' %}"></script>
+    <script src="{% static 'shared/lib/select2/js/select2.min.js' %}"></script>
+
+    <script src="{% static 'shared/js/dashforge.js' %}"></script>
+    <script src="{% static 'shared/js/dashforge.sampledata.js' %}"></script>
+    <script src="{% static 'shared/js/dashboard-one.js' %}"></script>
+
+    <!-- Extra Js -->
+    {% block extra-js %}{% endblock %}
+  </body>
+</html>

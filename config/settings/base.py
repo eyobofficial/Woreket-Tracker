@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 ]
 
 
@@ -50,7 +51,7 @@ INSTALLED_APPS += [
 
 INSTALLED_APPS += [
     'accounts.apps.AccountsConfig',
-    'shared.apps.SharedConfig'
+    'shared.apps.SharedConfig',
 ]
 
 MIDDLEWARE = [
@@ -100,30 +101,6 @@ DATABASES = {
         'PORT': config('DB_PORT')
     }
 }
-
-
-# SQLITE
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': 'mydatabase',
-#     }
-# }
-
-
-#  POSTRESQL
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': config('DB_NAME'),
-#         'USER': config('DB_USER'),
-#         'PASSWORD': config('DB_PASSWORD'),
-#         'HOST': config('DB_HOST'),
-#         'PORT': '',
-#     }
-# }
 
 
 # Password validation
@@ -181,6 +158,11 @@ AUTHENTICATION_BACKENDS = [
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
+# Login/logout
+LOGIN_REDIRECT_URL = 'allocations:allocation-list'
+LOGOUT_REDIRECT_URL = 'accounts:login'
+
+
 # Cors Headers
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -191,7 +173,7 @@ DEFAULT_ADMIN_PASSWORD = config('ADMIN_PASSWORD')
 
 
 # Project Name
-PROJECT_NAME = 'Django_Starter'
+PROJECT_NAME = 'Payment_Tracker'
 
 
 # Celery
