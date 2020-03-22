@@ -1,0 +1,67 @@
+<div class="modal-dialog wd-sm-650" role="document">
+  <div class="modal-content">
+    <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
+      <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </a>
+      <div class="media align-items-center">
+        <div class="media-body">
+          <h4 class="tx-18 tx-sm-20 mg-b-2">New Allocation</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Create a new allocation.</p>
+        </div>
+      </div><!-- media -->
+    </div><!-- modal-header -->
+    <form action="{% url 'allocations:allocation-create' object.pk %}" method="POST">
+      {% csrf_token %}
+      <div class="modal-body pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
+        <!-- Regions -->
+        <div class="form-group">
+          <label for="region" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Region</label>
+          <select name="region" id="region" class="form-control" required>
+            <option selected disabled></option>
+            {% for region in regions %}
+            <option value="{{ region.pk }}">{{ region.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Locations -->
+        <div class="form-group">
+          <label for="location" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Location</label>
+          <select name="location" id="location" class="form-control">
+            <option selected disabled placeholder='ss'></option>
+            {% for location in locations %}
+            <option value="{{ location.pk }}">{{ location.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Union -->
+        <div class="form-group">
+          <label for="union" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Union</label>
+          <select name="union" id="union" class="form-control">
+            <option selected disabled>---</option>
+            {% for union in unions %}
+            <option value="{{ union.pk }}">{{ union.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="quantity" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Quantity</label>
+          <input
+            id="quantity"
+            name="quantity" type="number"
+            step="0.01" min="0" class="form-control"
+            placeholder="Enter quantity in meteric ton"
+            required
+          />
+        </div>
+      </div><!-- modal-body -->
+      <div class="modal-footer pd-x-20 pd-y-15">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
+    </form>
+  </div><!-- modal-content -->
+</div><!-- modal-dialog -->

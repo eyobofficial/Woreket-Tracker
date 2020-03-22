@@ -1,0 +1,200 @@
+{% extends 'allocations/base.html' %}
+{% load humanize %}
+
+{% block title %}Distribution Order Detail | Payment Tracker{% endblock %}
+
+{% block content %}
+  <div class="d-sm-flex align-items-center justify-content-between mg-b-60 mg-lg-b-25 mg-xl-b-30">
+    <div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-style1 mg-b-10">
+          <li class="breadcrumb-item"><a href="{% url 'allocations:distribution-list' %}">Distribution Orders</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Detail</li>
+        </ol>
+      </nav>
+      <h4 class="mg-b-0 tx-spacing--1">{{ object.vessel }} Distribution Detail</h4>
+    </div>
+    <div class="d-none d-md-block">
+      <button
+        class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
+        data-url="{% url 'allocations:allocation-create' object.pk %}">
+        <i data-feather="plus" class="wd-10 mg-r-5"></i>Add Allocation
+      </button>
+    </div>
+  </div>
+
+  <!-- Widgets -->
+  <div class="row row-xs mg-b-20">
+    <div class="col-sm-6 col-lg-3">
+      <div class="card card-body">
+        <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">OPEN DATE</h6>
+        <div class="d-flex d-lg-block d-xl-flex align-items-end">
+          <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">{{ object.created_at|date:'d/m/Y' }}</h3>
+        </div>
+      </div>
+    </div><!-- col -->
+
+    <div class="col-sm-6 col-lg-3">
+      <div class="card card-body">
+        <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">VESSEL</h6>
+        <div class="d-flex d-lg-block d-xl-flex align-items-end">
+          <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">{{ object.vessel }}</h3>
+        </div>
+      </div>
+    </div><!-- col -->
+
+    <div class="col-sm-6 col-lg-3">
+      <div class="card card-body">
+        <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">QUANTITY (MT)</h6>
+        <div class="d-flex d-lg-block d-xl-flex align-items-end">
+          <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">{{ object.quantity|default:'-' }}</h3>
+        </div>
+      </div>
+    </div><!-- col -->
+
+
+    <div class="col-sm-6 col-lg-3 mg-t-10 mg-sm-t-0">
+      <div class="card card-body">
+        <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">Unique Purchases</h6>
+        <div class="d-flex d-lg-block d-xl-flex align-items-end">
+          <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">3,137</h3>
+          <p class="tx-11 tx-color-03 mg-b-0"><span class="tx-medium tx-danger">0.7% <i
+                class="icon ion-md-arrow-down"></i></span> than last week</p>
+        </div>
+      </div>
+    </div><!-- col -->
+  </div><!-- row -->
+
+  <!-- Tabs -->
+  <div data-label="Example" class="df-example">
+    <ul class="nav nav-tabs nav-justified" id="myTab3" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active tx-medium" id="home-tab3" data-toggle="tab" href="#home3" role="tab" aria-controls="home"
+          aria-selected="true">Tigray</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link tx-medium" id="profile-tab3" data-toggle="tab" href="#profile3" role="tab" aria-controls="profile"
+          aria-selected="false">Amhara</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link tx-medium" id="contact-tab3" data-toggle="tab" href="#contact3" role="tab" aria-controls="contact"
+          aria-selected="false">Oromia</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link tx-medium" id="profile-tab3" data-toggle="tab" href="#profile3" role="tab" aria-controls="profile"
+          aria-selected="false">Benishangul-Gumuz</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link tx-medium" id="contact-tab3" data-toggle="tab" href="#contact3" role="tab" aria-controls="contact"
+          aria-selected="false">S.N.N.P</a>
+      </li>
+    </ul>
+    <div class="tab-content bd bd-gray-300 bd-t-0 pd-20" id="myTabContent3">
+      <div class="tab-pane fade show active" id="home3" role="tabpanel" aria-labelledby="home-tab3">
+        <!-- Regions -->
+        <div class="row row-xs">
+          <div class="col-sm-4 mg-t-10">
+            <div class="card">
+              <div class="card-header d-flex justify-content-between">
+                <h6 class="lh-5 mg-b-0">PRICE SUMMARY</h6>
+              </div><!-- card-header -->
+              <div class="card-body pd-x-20 pd-b-10 mg-t-10">
+                <p class="tx-uppercase tx-11 tx-spacing-1 tx-color-03 tx-medium mg-b-5">TOTAL PRICE</p>
+                <h3 class="tx-26 tx-normal tx-rubik tx-spacing--2 mg-b-5">261,045,008.65 <small
+                    class="text-muted tx-light">ETB</small></h3>
+
+                <div class="d-flex mg-b-25">
+                  <button class="btn btn-xs btn-uppercase btn-white flex-fill tx-spacing-1">Letter</button>
+                  <button class="btn btn-xs btn-uppercase btn-primary flex-fill tx-spacing-1 mg-l-10">Attachment</button>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between mg-b-10 mg-t-40">
+                  <p class="tx-uppercase tx-11 tx-spacing-1 tx-color-03 tx-medium mg-b-0">Calculation Summary</p>
+                </div>
+                <ul class="list-group list-group-flush mg-b-0 tx-13">
+                  <li class="list-group-item pd-x-0 d-flex justify-content-between">
+                    <span class="tx-medium">Purchase Price</span>
+                    <span class="tx-rubik">26,990,567.99 ETB</span>
+                  </li>
+                  <li class="list-group-item pd-x-0 d-flex justify-content-between">
+                    <span class="tx-medium">Bag Price</span>
+                    <span class="tx-rubik">790,567.00 ETB</span>
+                  </li>
+                  <li class="list-group-item pd-x-0 d-flex justify-content-between">
+                    <span class="tx-medium">Operation Cost</span>
+                    <span class="tx-rubik">569,999.45 ETB</span>
+                  </li>
+                </ul>
+              </div><!-- card-body -->
+            </div><!-- card -->
+          </div><!-- col -->
+          <div class="col-sm-8 mg-t-10">
+            <div class="card mg-b-10">
+              <div class="card-header pd-t-20 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-0">
+                <div>
+                  <h6 class="mg-b-5">ALLOCATIONS</h6>
+                  <p class="tx-13 tx-color-03 mg-b-0">Allocations to the Tigray Region Unions</p>
+                </div>
+                <div class="d-flex mg-t-20 mg-sm-t-0">
+                  <div class="btn-group flex-fill">
+                    <button class="btn btn-white btn-xs"><i data-feather="plus" class="wd-10 mg-r-5"></i> Add</button>
+                  </div>
+                </div>
+              </div><!-- card-header -->
+              <div class="card-body pd-y-30">
+                <div class="d-sm-flex">
+                  <div class="media">
+                    <div
+                      class="wd-40 wd-md-50 ht-40 ht-md-50 bg-teal tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-6">
+                      <i data-feather="truck"></i>
+                    </div>
+                    <div class="media-body">
+                      <h6 class="tx-sans tx-uppercase tx-10 tx-spacing-1 tx-color-03 tx-semibold tx-nowrap mg-b-5 mg-md-b-8">
+                        Total Quantity</h6>
+                      <h4 class="tx-20 tx-sm-18 tx-md-24 tx-normal tx-rubik mg-b-0">589,104 MT</h4>
+                    </div>
+                  </div>
+                </div>
+              </div><!-- card-body -->
+              <div class="table-responsive">
+                <table class="table table-dashboard mg-b-0" id="tigray-allocations">
+                  <thead>
+                    <tr>
+                      <th class="tx-medium">Location</th>
+                      <th class="tx-medium">Union</th>
+                      <th class="text-right tx-medium">Quantity (MT)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="tx-medium">Borena</td>
+                      <td class="tx-medium">Test Unions 1</td>
+                      <td class="tx-medium text-right">1,050</td>
+                    </tr>
+                    <tr>
+                      <td class="tx-medium">Welega</td>
+                      <td class="tx-medium">Fake Unions 1</td>
+                      <td class="tx-medium text-right">85,050</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div><!-- table-responsive -->
+            </div><!-- card -->
+          </div><!-- col -->
+        </div>
+      </div>
+      <div class="tab-pane fade" id="profile3" role="tabpanel" aria-labelledby="profile-tab3">
+        <h6>Profile</h6>
+        <p class="mg-b-0">Fugiat veniam incididunt anim aliqua enim pariatur veniam sunt est aute sit dolor anim. Velit
+          non irure adipisicing aliqua ullamco irure incididunt irure non esse consectetur nostrud minim non minim
+          occaecat.</p>
+      </div>
+      <div class="tab-pane fade" id="contact3" role="tabpanel" aria-labelledby="contact-tab3">
+        <h6>Contact</h6>
+        <p class="mg-b-0">Amet duis do nisi duis veniam non est eiusmod tempor incididunt tempor dolor ipsum in qui sit.
+          Exercitation mollit sit culpa nisi culpa non adipisicing reprehenderit do dolore. Duis reprehenderit occaecat
+          anim ullamco ad duis occaecat ex.</p>
+      </div>
+    </div>
+  </div><!-- df-example -->
+{% endblock %}

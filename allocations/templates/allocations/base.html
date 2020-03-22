@@ -1,0 +1,29 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+
+{% block extra-css %}
+<link rel="stylesheet" type="text/css" href="{% static 'allocations/css/style.css' %}">
+{% endblock %}
+
+<!-- Modal -->
+{% block modal %}
+<div class="modal" id="allocation-modal" tabindex="-1" role="dialog"></div>
+{% endblock %}
+
+{% block extra-js %}
+<script src="{% static 'shared/lib/prismjs/prism.js' %}"></script>
+<script>
+  $(function() {
+    var $modal = $('#allocation-modal');
+    var $btn = $('.btn-modal');
+
+    $btn.on('click', function() {
+      var url = $(this).data('url');
+      $.get(url, function(data) {
+        $modal.html(data);
+        $modal.modal('show');
+      });
+    });
+  });
+</script>
+{% endblock %}

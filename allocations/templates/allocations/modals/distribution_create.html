@@ -1,0 +1,38 @@
+<div class="modal-dialog wd-sm-650" role="document">
+  <div class="modal-content">
+    <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
+      <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </a>
+      <div class="media align-items-center">
+        <div class="media-body">
+          <h4 class="tx-18 tx-sm-20 mg-b-2">New Distribution Order</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Create a new fertilizer distribution order.</p>
+        </div>
+      </div><!-- media -->
+    </div><!-- modal-header -->
+    <form action="{% url 'allocations:distribution-create' %}" method="POST">
+      {% csrf_token %}
+      <div class="modal-body pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
+        <div class="form-group">
+          <label for="lc" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Letter of Credit (L/C)</label>
+          <select name="lc" id="lc" class="form-control">
+            <option selected disabled>---</option>
+            {% for item in lc_list %}
+            <option value="{{ item.pk }}">{{ item.document_number }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="vessel" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Vessel Name</label>
+          <input id="vessel" name="vessel" type="text" class="form-control" placeholder="Enter vessel name">
+        </div>
+      </div><!-- modal-body -->
+      <div class="modal-footer pd-x-20 pd-y-15">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
+    </form>
+  </div><!-- modal-content -->
+</div><!-- modal-dialog -->
