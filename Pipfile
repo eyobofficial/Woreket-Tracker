@@ -29,6 +29,8 @@ django-celery-results = "*"
 python-docx = "*"
 pendulum = "*"
 celery = "==4.4.2"
+pyyaml = "*"
+django-countries = "*"
 
 [requires]
 python_version = "3.6"
