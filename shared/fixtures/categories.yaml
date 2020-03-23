@@ -1,0 +1,11 @@
+- model: shared.productcategory
+  fields:
+    name: Fertilizer
+
+- model: shared.productcategory
+  fields:
+    name: Packaging
+
+- model: shared.productcategory
+  fields:
+    name: Chemicals
