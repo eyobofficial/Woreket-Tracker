@@ -5,17 +5,18 @@ from django.db import models
 from django_countries.fields import CountryField
 
 
-class Region(models.Model):
+class Customer(models.Model):
     """
-    Product buyer regions.
+    Customer that is paying for the product.
     """
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    name = models.CharField(max_length=120)
-    code = models.CharField(max_length=4, unique=True)
+    name = models.CharField(
+        max_length=120,
+        help_text='Customer company or office name.'
+    )
+    region = models.CharField(max_length=120, blank=True)
 
     class Meta:
-        verbose_name = 'Regional State'
-        verbose_name_plural = 'Regional States'
         ordering = ('name', )
 
     def __str__(self):
@@ -24,18 +25,18 @@ class Region(models.Model):
 
 class Location(models.Model):
     """
-    City, town or special location within the region.
+    City, town or special location within the cutomer's region
     """
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    region = models.ForeignKey(
-        Region,
+    customer = models.ForeignKey(
+        Customer,
         on_delete=models.CASCADE,
         related_name='locations'
     )
     name = models.CharField(max_length=120)
 
     class Meta:
-        order_with_respect_to = 'region'
+        order_with_respect_to = 'customer'
 
     def __str__(self):
         return self.name
@@ -43,18 +44,32 @@ class Location(models.Model):
 
 class Union(models.Model):
     """
-    Peasant unions.
+    Regional unions.
     """
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    region = models.ForeignKey(
-        Region,
+    customer = models.ForeignKey(
+        Customer,
         on_delete=models.CASCADE,
         related_name='unions'
     )
     name = models.CharField(max_length=120)
 
     class Meta:
-        order_with_respect_to = 'region'
+        order_with_respect_to = 'customer'
+
+    def __str__(self):
+        return self.name
+
+
+
+class Supplier(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    name = models.CharField('company name', max_length=60)
+    city = models.CharField(max_length=60)
+    country = CountryField()
+
+    class Meta:
+        ordering = ('name', )
 
     def __str__(self):
         return self.name
@@ -91,16 +106,3 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class Supplier(models.Model):
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    company_name = models.CharField(max_length=60)
-    city = models.CharField(max_length=60)
-    country = CountryField()
-
-    class Meta:
-        ordering = ('company_name', )
-
-    def __str__(self):
-        return self.company_name

@@ -1,0 +1,30 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+
+<!-- CSS -->
+{% block extra-css %}
+<link rel="stylesheet" type="text/css" href="{% static 'orders/css/style.css' %}">
+{% endblock %}
+
+<!-- Modal -->
+{% block modal %}
+<div class="modal" id="delivery-order-modal" tabindex="-1" role="dialog"></div>
+{% endblock %}
+
+<!-- Javascript -->
+{% block extra-js %}
+<script>
+  $(function () {
+    var $modal = $('#delivery-order-modal');
+    var $btn = $('.btn-modal');
+
+    $btn.on('click', function () {
+      var url = $(this).data('url');
+      $.get(url, function (data) {
+        $modal.html(data);
+        $modal.modal('show');
+      });
+    });
+  });
+</script>
+{% endblock %}

@@ -43,7 +43,8 @@ INSTALLED_APPS += [
     'rest_framework',
     'corsheaders',
     'django_celery_beat',
-    'django_celery_results'
+    'django_celery_results',
+    'django_countries',
 ]
 
 
@@ -52,6 +53,8 @@ INSTALLED_APPS += [
 INSTALLED_APPS += [
     'accounts.apps.AccountsConfig',
     'shared.apps.SharedConfig',
+    # 'retentions.apps.RetentionsConfig',
+    'orders.apps.OrdersConfig',
 ]
 
 MIDDLEWARE = [
@@ -159,7 +162,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
 # Login/logout
-LOGIN_REDIRECT_URL = 'allocations:allocation-list'
+LOGIN_REDIRECT_URL = 'retentions:lc-overview'
 LOGOUT_REDIRECT_URL = 'accounts:login'
 
 

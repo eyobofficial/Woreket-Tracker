@@ -1,0 +1,23 @@
+- model: shared.customer
+  fields:
+    name: Amhara Region Agricultural Bureau
+    region: Amhara
+
+- model: shared.customer
+  fields:
+    name: Oromia Cooperative Promotion Agency
+    region: Oromia
+
+- model: shared.customer
+  fields:
+    name: SNNP Region Agricultural & Natural Resource Bureau
+    region: SNNP
+
+- model: shared.customer
+  fields:
+    name: Ethiopian Agricultural Businesses Corporation
+
+- model: shared.customer
+  fields:
+    name: Benishangul Gumuz Agricultural Bureau
+    region: Benishangul-Gumuz

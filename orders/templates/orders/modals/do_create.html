@@ -1,0 +1,80 @@
+<div class="modal-dialog modal-lg wd-sm-650" role="document">
+  <div class="modal-content">
+    <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
+      <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </a>
+      <div class="media align-items-center">
+        <div class="media-body">
+          <h4 class="tx-18 tx-sm-20 mg-b-2">New Delivery Order</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Create a new delivery order record.</p>
+        </div>
+      </div><!-- media -->
+    </div><!-- modal-header -->
+
+    <!-- LC Form -->
+    <form action="{% url 'orders:delivery-order-create' %}" method="POST" id="lc-create-form">
+      {% csrf_token %}
+      <div class="modal-body pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
+        <div class="row">
+          <div class="col-sm-9">
+            <!-- LC Document Number -->
+            <div class="form-group">
+              <label for="lc-number" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">L/C Document
+                Number</label>
+              <input id="lc-number" name="lc_number" type="text" class="form-control" placeholder="Enter the L/C document number"
+                required />
+            </div>
+
+            <!-- Vessel Name -->
+            <div class="form-group">
+              <label for="vessel" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Vessel Name</label>
+              <input id="vessel" name="vessel" type="text" class="form-control" placeholder="Enter the vessel name" required />
+            </div>
+
+            <!-- Supplier  -->
+            <div class="form-group">
+              <label for="supplier" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Supplier</label>
+              <select name="supplier" id="supplier" class="form-control custom-select" required>
+                <option selected disabled>Choose Supplier</option>
+                {% for supplier in supplier_list %}
+                <option value="{{ supplier.pk }}">{{ supplier.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Product -->
+            <div class="form-group">
+              <label for="product" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Product</label>
+              <select name="product" id="product" class="form-control custom-select" required>
+                <option selected disabled>Choose product</option>
+                {% for product in product_list %}
+                <option value="{{ product.pk }}">{{ product.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Rate -->
+            <div class="form-group">
+              <label for="rate" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Rate</label>
+              <input id="rate" name="rate" class="form-control" placeholder="Enter price in USD" required />
+            </div>
+            </div><!-- modal-body -->
+        </div><!-- /.row -->
+      </div><!-- /.modal-body -->
+      <div class="modal-footer pd-x-20 pd-y-15">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
+    </form>
+  </div><!-- modal-content -->
+</div><!-- modal-dialog -->
+
+<script>
+  $(function() {
+    var cleave = new Cleave('#rate', {
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand'
+    });
+  });
+</script>

@@ -18,7 +18,8 @@
 
     <!-- vendor css -->
     <link href="{% static 'shared/lib/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
-    <link href="{% static 'shared/lib/ionicons/css/ionicons.min.css" rel="stylesheet' %}">
+    <link href="{% static 'shared/lib/ionicons/css/ionicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'shared/lib/typicons.font/typicons.css' %}" rel="stylesheet">
     <link href="{% static 'shared/lib/jqvmap/jqvmap.min.css' %}" rel="stylesheet">
     <link href="{% static 'shared/lib/datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
     <link href="{% static 'shared/lib/datatables.net-dt/css/responsive.dataTables.min.css' %}" rel="stylesheet">
@@ -49,8 +50,11 @@
         <ul class="nav navbar-menu">
           {% if user.is_authenticated %}
           <li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">Main Navigation</li>
-          <li class="nav-item active">
-            <a href="{% url 'allocations:distribution-list' %}" class="nav-link"><i data-feather="box"></i>Distribution Orders</a>
+          <li class="nav-item {% if page_name == 'distribution-orders' %}active{% endif %}">
+            <a href="#" class="nav-link"><i data-feather="box"></i>Distribution Orders</a>
+          </li>
+          <li class="nav-item {% if page_name == 'delivery-orders' %}active{% endif %}">
+            <a href="{% url 'orders:overview' %}" class="nav-link"><i data-feather="box"></i>Delivery Orders</a>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link"><i data-feather="box"></i>Settings</a>
@@ -93,10 +97,11 @@
     <script src="{% static 'shared/lib/datatables.net-dt/js/dataTables.dataTables.min.js' %}"></script>
     <script src="{% static 'shared/lib/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'shared/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js' %}"></script>
+    <script src="{% static 'shared/lib/prismjs/prism.js' %}"></script>
+    <script src="{% static 'shared/lib/cleave.js/cleave.min.js' %}"></script>
     <script src="{% static 'shared/lib/select2/js/select2.min.js' %}"></script>
 
     <script src="{% static 'shared/js/dashforge.js' %}"></script>
-    <script src="{% static 'shared/js/dashforge.sampledata.js' %}"></script>
     <script src="{% static 'shared/js/dashboard-one.js' %}"></script>
 
     <!-- Extra Js -->
