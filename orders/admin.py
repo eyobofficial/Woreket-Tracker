@@ -18,6 +18,6 @@ class DeliveryOrderAdmin(admin.ModelAdmin):
         'lc_number', 'supplier', 'vessel',
         'product', 'rate', 'created_at'
     )
-    list_filter = ('supplier', 'product', 'created_at')
+    list_filter = ('supplier', 'product', 'created_at', 'status')
     search_fields = ('lc_number', 'vessel')
     inlines = (OrderAllocationInline, InspectionReportInline)

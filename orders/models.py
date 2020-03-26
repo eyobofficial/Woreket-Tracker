@@ -7,9 +7,16 @@ from shared.models import Product, Customer, Supplier
 
 
 class DeliveryOrder(models.Model):
-    """
-    Product delivery orders
-    """
+    """Product delivery orders."""
+
+    OPEN = 'OPEN'
+    CLOSED = 'CLOSED'
+
+    STATUS_CHOICES = (
+        (OPEN, 'open'),
+        (CLOSED, 'closed')
+    )
+
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     lc_number = models.CharField(
         'letter of credit number',
@@ -23,6 +30,11 @@ class DeliveryOrder(models.Model):
         help_text='Price is in USD.'
     )
     vessel = models.CharField(max_length=120, help_text='Shipment vessel name.')
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default=OPEN
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -1,4 +1,4 @@
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
 
 from shared.models import Product, Supplier
@@ -8,15 +8,22 @@ from .mixins import BaseOrderView
 from .models import DeliveryOrder
 
 
-class DeliveryOrderOverview(BaseOrderView, TemplateView):
-    template_name = 'orders/overview.html'
+class OpenOrderListView(BaseOrderView, ListView):
+    """Lists all delivery orders with open status."""
+    template_name = 'orders/open_orders_list.html'
+    model = DeliveryOrder
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(status=DeliveryOrder.OPEN)
 
 
-class DeliveryOrderCreateView(BaseOrderView, CreateView):
-    template_name = 'orders/modals/do_create.html'
+class OrderCreateView(BaseOrderView, CreateView):
+    """Creates new delivery order instances."""
+    template_name = 'orders/modals/order_create.html'
     form_class = DeliveryOrderForm
     model = DeliveryOrder
-    success_url = reverse_lazy('orders:overview')
+    success_url = reverse_lazy('orders:open-orders-list')
 
     def get_context_data(self, **kwargs):
         kwargs.update({
