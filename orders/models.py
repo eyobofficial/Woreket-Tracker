@@ -1,9 +1,20 @@
 import uuid
+from decimal import Decimal
 
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
+from shared.constants import RETENTION
 from shared.models import Product, Customer, Supplier
+
+
+# Django User
+User = get_user_model()
+
+# Rounding decimal
+TWO_PLACES = Decimal('0.01')
 
 
 class DeliveryOrder(models.Model):
@@ -35,6 +46,18 @@ class DeliveryOrder(models.Model):
         choices=STATUS_CHOICES,
         default=OPEN
     )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name='created_orders',
+        null=True
+    )
+    updated_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name='updated_orders',
+        null=True, blank=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -48,7 +71,66 @@ class DeliveryOrder(models.Model):
         return self.lc_number
 
     def get_absolute_url(self):
-        return reverse('orders:delivery-order-detail', args=[self.pk])
+        return reverse('orders:open-order-detail', args=[self.pk])
+
+    def touch(self, **kwargs):
+        """
+        Modifies `updated_at` field to to the current timestamp.
+        """
+        user = kwargs.get('updated_by')
+        if user is not None:
+            self.updated_by = user
+        self.updated_at = timezone.now()
+        self.save()
+
+    def is_fully_allocated(self):
+        """Checks if all regions are allocated.
+
+        Returns:
+            True (bool): If all regions are allocated
+            False (bool): If all regions are not fully allocated yet
+        """
+        customers = Customer.objects.all()
+        allocated_buyers = self.order_allocations.values_list('buyer',
+                                                              flat=True)
+
+        for customer in customers:
+            if customer.pk not in allocated_buyers:
+                return False
+        return True
+
+    def get_total_quantity(self):
+        """Returns the total quantity in Meteric Ton (MT).
+
+        Returns:
+            quantity (Decimal): the total allocated quantity in MT
+        """
+        quantity = Decimal('0')
+        for allocation in self.order_allocations.all():
+            quantity += allocation.quantity
+        return quantity
+
+    def get_total_amount(self):
+        """Returns the total amount in USD.
+
+        Returns:
+            amount (Decimal): the total allocated amount in USD
+        """
+        amount = Decimal('0')
+        for allocation in self.order_allocations.all():
+            amount += allocation.get_amount()
+        return amount
+
+    def get_total_retention(self):
+        """Returns the total retention amount in USD.
+
+        Returns:
+            amount (Decimal): the total allocated retention amount in USD
+        """
+        retention = Decimal('0')
+        for allocation in self.order_allocations.all():
+            retention += allocation.get_retention()
+        return retention
 
 
 class OrderAllocation(models.Model):
@@ -69,14 +151,32 @@ class OrderAllocation(models.Model):
     )
 
     class Meta:
-        default_related_name = 'order_allcations'
-        ordering = ('buyer__name', )
+        default_related_name = 'order_allocations'
+        ordering = ('delivery_order', '-quantity', 'buyer__name', )
         unique_together = ('delivery_order', 'buyer')
         verbose_name = 'Delivery Order Allocation'
         verbose_name_plural = 'Delivery Order Allocations'
 
     def __str__(self):
         return f'{self.buyer.name} - {self.quantity}'
+
+    def get_amount(self):
+        """Returns the total amount for this allocation.
+
+        Returns:
+            amount (Decimal): Allocation amount in USD
+        """
+        amount = self.quantity * self.delivery_order.rate
+        return amount.quantize(TWO_PLACES)
+
+    def get_retention(self):
+        """Returns the 10% retention amount for this allocation.
+
+        Returns:
+            retention (Decimal): 10% retention amount in USD
+        """
+        amount = self.quantity * self.delivery_order.rate * RETENTION
+        return amount.quantize(TWO_PLACES)
 
 
 class InspectionReport(models.Model):
