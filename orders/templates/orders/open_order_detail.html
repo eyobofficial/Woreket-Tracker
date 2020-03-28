@@ -92,6 +92,22 @@
             <span class="tx-normal">Product</span>
             <span class="tx-medium">{{ object.product.name }}</span>
           </li>
+
+          {% if object.order_allocations.count > 0 %}
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Quantity</span>
+            <span class="tx-medium">{{ object.get_total_quantity|intcomma }} MT</span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Total Amount</span>
+            <span class="tx-medium">$ {{ object.get_total_amount|intcomma }}</span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">10% Amount</span>
+            <span class="tx-medium">$ {{ object.get_total_retention|intcomma }}</span>
+          </li>
+          {% endif %}
+
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-normal">Created by</span>
             <span class="tx-medium">{{ object.created_by.get_full_name }}</span>
@@ -115,9 +131,10 @@
         <div class="d-flex mg-t-20 mg-sm-t-0">
           <div class="btn-group flex-fill">
             {% if not object.is_fully_allocated %}
-            <button class="btn btn-white btn-xs btn-modal" data-url="{% url 'orders:order-allocation-create' object.pk %}">
+            <!-- <button class="btn btn-white btn-xs btn-modal" data-url="{% url 'orders:order-allocation-create' object.pk %}">
               <i data-feather="plus" class="wd-10 mg-r-5"></i> Add Allocation
-            </button>
+            </button> -->
+            <a class="tx-12 link-03 btn-modal" data-url="{% url 'orders:order-allocation-create' object.pk %}"><i data-feather="plus" class="wd-15 ht-15"></i> Add Allocation</a>
             {% endif %}
           </div>
         </div>
