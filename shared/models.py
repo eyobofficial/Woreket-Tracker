@@ -14,7 +14,7 @@ class Customer(models.Model):
         max_length=120,
         help_text='Customer company or office name.'
     )
-    region = models.CharField(max_length=120, blank=True)
+    region = models.CharField(max_length=120, unique=True)
 
     class Meta:
         ordering = ('name', )
