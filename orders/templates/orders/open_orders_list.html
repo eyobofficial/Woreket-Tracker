@@ -16,7 +16,7 @@
     </div>
     <div class="d-none d-md-block">
       <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
-        data-url="{% url 'orders:order-create' %}">
+        data-url="{% url 'orders:open-order-create' %}">
         <i data-feather="plus" class="wd-10 mg-r-5"></i>Add Delivery Order
       </button>
     </div>
@@ -88,8 +88,8 @@
             <thead>
               <tr>
                 <th>Date</th>
-                <th>Letter of Credit</th>
                 <th>Vessel</th>
+                <th>Letter of Credit</th>
                 <th>Supplier</th>
                 <th>Product</th>
                 <th class="text-right">Total 10% Amount (ETB)</th>
@@ -102,9 +102,9 @@
               <tr>
                 <td class="tx-color-03 tx-normal">{{ order.created_at|date:'d/m/Y' }}</td>
                 <td class="tz-color-03 tx-medium">
-                  <a href="#">{{ order.lc_number }}</a>
+                  <a href="{% url 'orders:open-order-detail' order.pk %}">{{ order.vessel }}</a>
                 </td>
-                <td class="tz-color-03 tx-normal">{{ order.vessel }}</td>
+                <td class="tz-color-03 tx-normal">{{ order.lc_number }}</td>
                 <td class="tz-color-03 tx-normal">{{ order.supplier.name }}</td>
                 <td class="tz-color-03 tx-normal">{{ order.product.name }}</td>
                 <td class="text-right tx-teal">50,975,256,580.00</td>

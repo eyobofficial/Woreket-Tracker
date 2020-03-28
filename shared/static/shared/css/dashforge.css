@@ -3428,7 +3428,7 @@ input[type="button"].btn-block {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center; }
-  
+
   .btn-group-vertical > .btn,
   .ui-datepicker-buttonpane .btn-group-vertical > button,
   .sp-container .btn-group-vertical > button,
@@ -5267,7 +5267,7 @@ a.close.disabled {
 @media (min-width: 576px) {
   .modal-dialog {
     max-width: 500px;
-    margin: 1.75rem auto; }
+    margin: 4rem auto; }
   .modal-dialog-scrollable {
     max-height: calc(100% - 3.5rem); }
     .modal-dialog-scrollable .modal-content {

@@ -16,6 +16,7 @@
 - model: shared.customer
   fields:
     name: Ethiopian Agricultural Businesses Corporation
+    region: EABC
 
 - model: shared.customer
   fields:
