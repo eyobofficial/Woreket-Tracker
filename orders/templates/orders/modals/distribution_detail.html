@@ -23,27 +23,27 @@
         <li class="list-group-item pd-x-0 d-flex justify-content-between">
           <span class="tx-normal">Received Quantity</span>
           <span class="tx-medium">{{ object.quantity|intcomma }} <span
-              class="text-muted tx-light">{{ object.unit.code|upper }}</span></span>
+              class="text-muted tx-light">{{ object.delivery_order.unit.code|upper }}</span></span>
         </li>
         <li class="list-group-item pd-x-0 d-flex justify-content-between">
           <span class="tx-normal">Dispatch Shortage</span>
           <span class="tx-medium">
             {{ object.shortage|intcomma }}
-            <span class="text-muted tx-light">{{ object.unit.code|upper }}</span>
+            <span class="text-muted tx-light">{{ object.delivery_order.unit.code|upper }}</span>
           </span>
         </li>
         <li class="list-group-item pd-x-0 d-flex justify-content-between">
           <span class="tx-normal">Over Supplied</span>
           <span class="tx-medium">
             {{ object.over|intcomma }}
-            <span class="text-muted tx-light">{{ object.unit.code|upper }}</span>
+            <span class="text-muted tx-light">{{ object.delivery_order.unit.code|upper }}</span>
           </span>
         </li>
         <li class="list-group-item pd-x-0 d-flex justify-content-between">
           <span class="tx-medium tx-sm-14 tx-primary">Total Quantity</span>
           <span class="tx-medium tx-sm-14 tx-primary">
             {{ object.get_total_quantity|intcomma }}
-            <span class="text-muted tx-light">{{ object.unit.code|upper }}</span>
+            <span class="text-muted tx-light">{{ object.delivery_order.unit.code|upper }}</span>
           </span>
         </li>
       </ul>
