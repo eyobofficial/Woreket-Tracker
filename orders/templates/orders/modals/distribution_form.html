@@ -5,18 +5,18 @@
         <span aria-hidden="true">&times;</span>
       </a>
       <div class="media align-items-center">
-      <div class="media-body">
-        <h4 class="tx-18 tx-sm-20 mg-b-2">Delivery Order Allocation</h4>
-        {% if object %}
-        <p class="tx-13 tx-color-03 mg-b-0">Update delivery order allocation to regions.</p>
-        {% else %}
-        <p class="tx-13 tx-color-03 mg-b-0">Create delivery order allocation to regions.</p>
-        {% endif %}
-      </div>
+        <div class="media-body">
+          <h4 class="tx-18 tx-sm-20 mg-b-2">Delivery Order Distribution</h4>
+          {% if object %}
+          <p class="tx-13 tx-color-03 mg-b-0">Update delivery order distribution to regions.</p>
+          {% else %}
+          <p class="tx-13 tx-color-03 mg-b-0">Create delivery order distribution to regions.</p>
+          {% endif %}
+        </div>
       </div><!-- media -->
     </div><!-- modal-header -->
 
-    <!-- LC Form -->
+    <!-- Distribution Form -->
     <form action="{{ request.path }}" method="POST">
       {% csrf_token %}
 
@@ -27,32 +27,56 @@
         <div class="row">
           <div class="col-sm-10">
             <!-- Buyers  -->
-            <div class="form-group">
+            <div class="form-group mg-b-10">
               <label for="buyer" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Customer</label>
               <select name="buyer" id="buyer" class="form-control custom-select" required>
                 {% if not form.instance.buyer %}
                 <option selected disabled value="">Choose Region</option>
                 {% endif %}
+
                 {% for choice in buyer_choices %}
                 <option value="{{ choice.pk }}" {% if form.instance.buyer == choice %}selected{% endif %}>{{ choice.region }}</option>
                 {% endfor %}
               </select>
             </div>
 
-            <!-- Quantity -->
-            <label for="quantity" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Quantity</label>
+            <!-- Recieved Quantity -->
+            <label for="quantity" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Received Quantity</label>
             <div class="input-group mg-b-10">
               <input
                 id="quantity" class="form-control"
                 name="quantity" value="{{ form.instance.quantity|default_if_none:'' }}"
                 placeholder="Enter quantity in {{ order.unit.name }}"
-                aria-label="Allocation quantity" aria-describedby="basic-addon2"
+                aria-label="Received quantity" aria-describedby="basic-addon2"
                 required
               />
               <div class="input-group-append">
                 <span class="input-group-text tx-medium" id="basic-addon2">{{ order.unit.code|upper }}</span>
               </div>
             </div>
+
+            <!-- Dispatch Shortage -->
+            <label for="shortage" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Dispatch Shortage</label>
+            <div class="input-group mg-b-10">
+              <input id="shortage" class="form-control" name="shortage" value="{{ form.instance.shortage|default:'0.0' }}"
+                placeholder="Enter dispatch shortage quantity in {{ order.unit.name }}" aria-label="Dispatch shortage"
+                aria-describedby="basic-addon2" />
+              <div class="input-group-append">
+                <span class="input-group-text tx-medium" id="basic-addon2">{{ order.unit.code|upper }}</span>
+              </div>
+            </div>
+
+            <!-- Over Supply -->
+            <label for="over" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Over Supply</label>
+            <div class="input-group mg-b-10">
+              <input id="over" class="form-control" name="over" value="{{ form.instance.over|default:'0.0' }}"
+                placeholder="Enter over supplied quantity in {{ order.unit.name }}" aria-label="Over supply"
+                aria-describedby="basic-addon2" />
+              <div class="input-group-append">
+                <span class="input-group-text tx-medium" id="basic-addon2">{{ order.unit.code|upper }}</span>
+              </div>
+            </div>
+
           </div><!-- /.col-sm-10 -->
         </div><!-- /.row -->
       </div><!-- /.modal-body -->
@@ -66,7 +90,17 @@
 
 <script>
   $(function () {
-    var cleave = new Cleave('#quantity', {
+    var quantity = new Cleave('#quantity', {
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand'
+    });
+
+    var shortage = new Cleave('#shortage', {
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand'
+    });
+
+    var over = new Cleave('#over', {
       numeral: true,
       numeralThousandsGroupStyle: 'thousand'
     });

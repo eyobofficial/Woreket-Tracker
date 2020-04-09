@@ -19,6 +19,10 @@
     <!-- LC Form -->
     <form action="{{ request.path }}" method="POST" id="delivery-order-form">
       {% csrf_token %}
+
+      <!-- Hidden Fields -->
+      <input type="hidden" id="altArrivalDate" name="arrival_date" value="{{ form.instance.arrival_date|default_if_none:'' }}">
+
       <div class="modal-body pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
         <div class="row">
           <div class="col-sm-9">
@@ -33,57 +37,72 @@
                 required />
             </div>
 
+            <!-- Batch -->
+            <div class="form-group">
+              <label for="batch" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Batch</label>
+              <select name="batch" id="batch" class="form-control custom-select" required>
+                {% if form.instance.batch is None %}
+                <option selected disabled value="">Choose batch</option>
+                {% endif %}
+                {% for batch in batch_list %}
+                <option value="{{ batch.pk }}" {% if form.instance.batch == batch %}selected{% endif %}>{{ batch }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Bill of loading -->
+            <div class="form-group">
+              <label for="bill-of-loading" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Bill of
+                Loading</label>
+              <input id="bill-of-loading" class="form-control" name="bill_of_loading"
+                value="{{ form.instance.bill_of_loading|default_if_none:'' }}" placeholder="Enter the B/L number" required />
+            </div>
+
+            <!-- Port -->
+            <div class="form-group">
+              <label for="port" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Port</label>
+              <select name="port" id="port" class="form-control custom-select" required>
+                {% if form.instance.port is None %}
+                {% for port in port_list %}
+                <option value="{{ port.pk }}" {% if port.is_default %}selected{% endif %}>
+                  {{ port.name }} ({{ port.country.name }})
+                </option>
+                {% endfor %}
+                {% else %}
+                {% for port in port_list %}
+                <option value="{{ port.pk }}" {% if form.instance.port == port %}selected{% endif %}>
+                  {{ port.name }} ({{ port.country.name }})
+                </option>
+                {% endfor %}
+                {% endif %}
+              </select>
+            </div>
+
             <!-- Vessel Name -->
             <div class="form-group">
               <label for="vessel" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Vessel Name</label>
+              <input id="vessel" class="form-control" name="vessel" value="{{ form.instance.vessel|default_if_none:'' }}"
+                placeholder="Enter the vessel name" required />
+            </div>
+
+            <!-- Arrival Date -->
+            <label for="arrival-date" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Vessel Arrival Date</label>
+            <div class="input-group mg-b-10">
+              <div class="input-group-prepend">
+                <span class="input-group-text tx-medium" id="basic-addon2">
+                  <i class="far fa-calendar-plus"></i>
+                </span>
+              </div>
               <input
-                id="vessel" class="form-control"
-                name="vessel" value="{{ form.instance.vessel|default_if_none:'' }}"
-                placeholder="Enter the vessel name"
-                required
+                type="text"
+                id="arrivalDate"
+                class="form-control"
+                autocomplete="off"
+                value="{{ form.instance.arrival_date|date:'d/m/Y'|default_if_none:'' }}"
+                placeholder="Select vessel arrival date"
               />
             </div>
-
-            <!-- Supplier  -->
-            <div class="form-group">
-              <label for="supplier" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Supplier</label>
-              <select name="supplier" id="supplier" class="form-control custom-select" required>
-                {% if form.instance.supplier is None %}
-                <option selected disabled>Choose Supplier</option>
-                {% endif %}
-                {% for supplier in supplier_list %}
-                <option value="{{ supplier.pk }}" {% if form.instance.supplier == supplier %}selected{% endif %}>{{ supplier.name }}</option>
-                {% endfor %}
-              </select>
-            </div>
-
-            <!-- Product -->
-            <div class="form-group">
-              <label for="product" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Product</label>
-              <select name="product" id="product" class="form-control custom-select" required>
-                {% if form.instance.product is None %}
-                <option selected disabled>Choose product</option>
-                {% endif %}
-                {% for product in product_list %}
-                <option value="{{ product.pk }}" {% if form.instance.product == product %}selected{% endif %}>{{ product.name }}</option>
-                {% endfor %}
-              </select>
-            </div>
-
-            <!-- Rate -->
-            <label for="rate" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Rate</label>
-            <div class="input-group mg-b-10">
-              <input
-                id="rate" class="form-control"
-                name="rate" value="{{ form.instance.rate|default_if_none:'' }}"
-                placeholder="Enter price in USD"
-                aria-label="Product rate" aria-describedby="basic-addon2" />
-              <div class="input-group-append">
-                <span class="input-group-text tx-medium" id="basic-addon2">USD</span>
-              </div>
-            </div>
-
-            </div><!-- modal-body -->
+          </div><!-- modal-body -->
         </div><!-- /.row -->
       </div><!-- /.modal-body -->
       <div class="modal-footer pd-x-20 pd-y-15">
@@ -95,10 +114,10 @@
 </div><!-- modal-dialog -->
 
 <script>
-  $(function() {
-    var cleave = new Cleave('#rate', {
-      numeral: true,
-      numeralThousandsGroupStyle: 'thousand'
+  $(function () {
+    $('#arrivalDate').datepicker({
+      altField: '#altArrivalDate',
+      altFormat: 'yy-mm-dd'
     });
   });
 </script>

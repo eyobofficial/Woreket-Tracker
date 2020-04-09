@@ -19,21 +19,43 @@
     <!-- vendor css -->
     <link href="{% static 'shared/lib/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
     <link href="{% static 'shared/lib/ionicons/css/ionicons.min.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="{% static 'shared/lib/cryptofont/css/cryptofont.min.css' %}" rel="stylesheet">
     <link href="{% static 'shared/lib/typicons.font/typicons.css' %}" rel="stylesheet">
     <link href="{% static 'shared/lib/jqvmap/jqvmap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'shared/lib/datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
-    <link href="{% static 'shared/lib/datatables.net-dt/css/responsive.dataTables.min.css' %}" rel="stylesheet">
     <link href="{% static 'shared/lib/select2/css/select2.min.css' %}" rel="stylesheet">
 
     <!-- DashForge CSS -->
-    <link rel="stylesheet" href="{% static 'shared/css/dashforge.css' %}">
     <link rel="stylesheet" href="{% static 'shared/css/dashforge.dashboard.css' %}">
-    <link rel="stylesheet" href="{% static 'shared/css/skin.list.css' %}">
+    <link rel="stylesheet" href="{% static 'shared/css/dashforge.css' %}">
     <link rel="stylesheet" href="{% static 'shared/css/base.css' %}">
 
     <!-- Extra CSS -->
     {% block extra-css %}{% endblock %}
+
+    <!-- JavaScript -->
+    <script src="{% static 'shared/lib/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'shared/lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'shared/lib/feather-icons/feather.min.js' %}"></script>
+
+    <script src="{% static 'shared/lib/chart.js/Chart.bundle.min.js' %}"></script>
+    <script src="{% static 'shared/lib/jquery.flot/jquery.flot.js' %}"></script>
+    <script src="{% static 'shared/lib/jquery.flot/jquery.flot.stack.js' %}"></script>
+    <script src="{% static 'shared/lib/jquery.flot/jquery.flot.resize.js' %}"></script>
+    <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+
+    <script src="{% static 'shared/lib/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'shared/lib/jqvmap/jquery.vmap.min.js' %}"></script>
+    <script src="{% static 'shared/lib/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
+    <script src="{% static 'shared/lib/prismjs/prism.js' %}"></script>
+    <script src="{% static 'shared/lib/cleave.js/cleave.min.js' %}"></script>
+    <script src="{% static 'shared/lib/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'shared/lib/jqueryui/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'shared/js/dashforge.js' %}"></script>
+
+    <!-- Extra Js -->
+    {% block extra-js %}{% endblock %}
+
   </head>
   <body class="page-profile">
     <!-- Header -->
@@ -67,13 +89,6 @@
         <a href="{% url 'accounts:logout' %}"><i data-feather="log-out"></i> &nbsp;Sign Out</a>
         </div><!-- dropdown -->
       </div><!-- navbar-right -->
-      <div class="navbar-search">
-        <div class="navbar-search-header">
-          <input type="search" class="form-control" placeholder="Type and hit enter to search...">
-          <button class="btn"><i data-feather="search"></i></button>
-          <a id="navbarSearchClose" href="" class="link-03 mg-l-5 mg-lg-l-10"><i data-feather="x"></i></a>
-        </div><!-- navbar-search-header -->
-      </div><!-- navbar-search -->
     </header><!-- navbar -->
 
     <div class="content content-fixed">
@@ -82,30 +97,21 @@
       </div><!-- container -->
     </div><!-- content -->
 
-    {% block modal %}{% endblock %}
-
-    <script src="{% static 'shared/lib/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'shared/lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'shared/lib/feather-icons/feather.min.js' %}"></script>
-    <script src="{% static 'shared/lib/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
-    <script src="{% static 'shared/lib/jquery.flot/jquery.flot.js' %}"></script>
-    <script src="{% static 'shared/lib/jquery.flot/jquery.flot.stack.js' %}"></script>
-    <script src="{% static 'shared/lib/jquery.flot/jquery.flot.resize.js' %}"></script>
-    <script src="{% static 'shared/lib/chart.js/Chart.bundle.min.js' %}"></script>
-    <script src="{% static 'shared/lib/jqvmap/jquery.vmap.min.js' %}"></script>
-    <script src="{% static 'shared/lib/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
-    <script src="{% static 'shared/lib/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'shared/lib/datatables.net-dt/js/dataTables.dataTables.min.js' %}"></script>
-    <script src="{% static 'shared/lib/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
-    <script src="{% static 'shared/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js' %}"></script>
-    <script src="{% static 'shared/lib/prismjs/prism.js' %}"></script>
-    <script src="{% static 'shared/lib/cleave.js/cleave.min.js' %}"></script>
-    <script src="{% static 'shared/lib/select2/js/select2.min.js' %}"></script>
-
-    <script src="{% static 'shared/js/dashforge.js' %}"></script>
-    <script src="{% static 'shared/js/dashboard-one.js' %}"></script>
-
-    <!-- Extra Js -->
-    {% block extra-js %}{% endblock %}
+    <!-- Modal -->
+    <div class="modal" id="modal-widget" tabindex="-1" role="dialog"></div>
   </body>
+  <script>
+    $(function () {
+      var $modal = $('#modal-widget');
+      var $btn = $('.btn-modal');
+
+      $btn.on('click', function () {
+        var url = $(this).data('url');
+        $.get(url, function (data) {
+          $modal.html(data);
+          $modal.modal('show');
+        });
+      });
+    });
+  </script>
 </html>

@@ -53,7 +53,6 @@ INSTALLED_APPS += [
 INSTALLED_APPS += [
     'accounts.apps.AccountsConfig',
     'shared.apps.SharedConfig',
-    # 'retentions.apps.RetentionsConfig',
     'orders.apps.OrdersConfig',
 ]
 
@@ -173,6 +172,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 DEFAULT_ADMIN_USERNAME = config('ADMIN_USERNAME')
 DEFAULT_ADMIN_EMAIL = config('ADMIN_EMAIL')
 DEFAULT_ADMIN_PASSWORD = config('ADMIN_PASSWORD')
+DEFAULT_ADMIN_FIRST_NAME = config('ADMIN_FIRST_NAME', '')
+DEFAULT_ADMIN_LAST_NAME = config('ADMIN_LAST_NAME', '')
 
 
 # Project Name

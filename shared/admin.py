@@ -1,12 +1,17 @@
 from django.contrib import admin
 
-from .models import Customer, Location, Union, ProductCategory, Product, \
-    Supplier
+from .models import Unit, Customer, Location, Union, ProductCategory, Product, \
+    Supplier, Batch
+
+
+@admin.register(Unit)
+class UnitAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code', 'type')
 
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'region')
+    list_display = ('name', 'region', 'code')
     search_fields = ('name', )
 
 
@@ -37,6 +42,13 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category')
+    list_display = ('name', 'category', 'unit')
     list_filter = ('category', )
+    search_fields = ('name', )
+
+
+@admin.register(Batch)
+class BatchAdmin(admin.ModelAdmin):
+    list_display = ('name', 'supplier', 'year', 'batch_round')
+    list_filter = ('product', 'year')
     search_fields = ('name', )

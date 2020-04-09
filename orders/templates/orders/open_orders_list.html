@@ -105,8 +105,8 @@
                   <a href="{% url 'orders:open-order-detail' order.pk %}">{{ order.vessel }}</a>
                 </td>
                 <td class="tz-color-03 tx-normal">{{ order.lc_number }}</td>
-                <td class="tz-color-03 tx-normal">{{ order.supplier.name }}</td>
-                <td class="tz-color-03 tx-normal">{{ order.product.name }}</td>
+                <td class="tz-color-03 tx-normal">{{ order.batch.supplier.name }}</td>
+                <td class="tz-color-03 tx-normal">{{ order.batch.product.name }}</td>
                 <td class="text-right tx-teal">50,975,256,580.00</td>
                 <td class="tz-color-03 tx-normal text-right">+ 2,898,670.90
                   <span class="mg-l-5 tx-11 tx-normal tx-danger">6%</span>

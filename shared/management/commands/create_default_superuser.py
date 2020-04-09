@@ -17,13 +17,18 @@ class Command(BaseCommand):
         username = settings.DEFAULT_ADMIN_USERNAME
         email = settings.DEFAULT_ADMIN_EMAIL
         password = settings.DEFAULT_ADMIN_PASSWORD
+        first_name = settings.DEFAULT_ADMIN_FIRST_NAME
+        last_name = settings.DEFAULT_ADMIN_LAST_NAME
 
         try:
             if not User.objects.filter(username=username).exists():
-                User.objects.create_superuser(
+                user = User.objects.create_superuser(
                     username=username,
                     email=email,
-                    password=password
+                    password=password,
                 )
+                user.first_name = first_name
+                user.last_name = last_name
+                user.save()
         except IntegrityError as error:
             logger.warning("DB Error Thrown %s" % error)

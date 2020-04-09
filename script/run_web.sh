@@ -13,6 +13,9 @@ echo 'Run migrations...'
 python manage.py makemigrations   # TODO: Remove in production code
 python manage.py migrate --no-input
 
+# Run initial fixtures
+python manage.py loaddata customers categories ports units
+
 # Create a default superuser account
 echo 'Create a default superuser account...'
 python manage.py create_default_superuser

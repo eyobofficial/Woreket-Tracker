@@ -20,8 +20,9 @@
     <button class="btn btn-sm pd-x-15 btn-white btn-uppercase btn-modal" data-url="{% url 'orders:order-close' object.pk %}">
       <i data-feather="flag" class="wd-10 mg-r-5"></i> Close
     </button>
-    <button class="btn btn-sm pd-x-15 btn-white btn-uppercase mg-l-5"><i data-feather="file-text" class="wd-10 mg-r-5"></i>
-      Letter</button>
+    <button class="btn btn-sm pd-x-15 btn-white btn-uppercase mg-l-5 btn-modal" data-url="{% url 'orders:order-letter-form' object.pk %}">
+      <i data-feather="file-text" class="wd-10 mg-r-5"></i> Letter
+    </button>
     <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
       data-url="{% url 'orders:open-order-update' object.pk %}">
       <i data-feather="edit" class="wd-10 mg-r-5"></i> Edit
@@ -29,193 +30,311 @@
   </div>
 </div>
 
-<div class="row row-xs">
-  <div class="col-sm-6 col-lg-3">
-    <div class="card card-body">
-      <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">Opened Date</h6>
-      <div class="d-flex d-lg-block d-xl-flex align-items-end">
-        <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">{{ object.created_at|date:'d/m/Y' }}</h3>
-      </div>
-    </div>
-  </div><!-- col -->
-  <div class="col-sm-6 col-lg-3 mg-t-10 mg-sm-t-0">
-    <div class="card card-body">
-      <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">Status</h6>
-      <div class="d-flex d-lg-block d-xl-flex align-items-end">
-        <h3 class="tx-normal tx-rubik text-success mg-b-0 mg-r-5 lh-1">{{ object.get_status_display|upper }}</h3>
-      </div>
-    </div>
-  </div><!-- col -->
-  <div class="col-sm-6 col-lg-3 mg-t-10 mg-lg-t-0">
-    <div class="card card-body">
-      <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">Order Rate</h6>
-      <div class="d-flex d-lg-block d-xl-flex align-items-end">
-        <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">${{ object.rate|intcomma }}</h3>
-      </div>
-    </div>
-  </div><!-- col -->
-  <div class="col-sm-6 col-lg-3 mg-t-10 mg-lg-t-0">
-    <div class="card card-body">
-      <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">Order Quantity</h6>
-      <div class="d-flex d-lg-block d-xl-flex align-items-end">
-        {% if not object.get_total_quantity %}
-        <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">-</h3>
-        {% else %}
-        <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">{{ object.get_total_quantity|intcomma}} MT</h3>
-        {% endif %}
-      </div>
-    </div>
-  </div><!-- col -->
-</div>
+<div class="row row-xs row-flex mg-b-30">
+  <div class="col-sm-8">
+    <div class="card ht-100p">
+      <div
+        class="card-header bd-b-0 pd-t-20 pd-lg-t-25 pd-l-20 pd-lg-l-25 d-flex flex-column flex-sm-row align-items-sm-start justify-content-sm-between">
+        <div>
+          <h6 class="mg-b-5">Delivery Order Metrics</h6>
+          <p class="tx-12 tx-color-03 mg-b-0">Allocated vs actual distributed quantity to regions.</p>
+        </div>
+        <div class="btn-group mg-t-20 mg-sm-t-0">
+          <ul class="list-inline tx-uppercase tx-10 tx-medium tx-spacing-1 tx-color-03 mg-b-0 text-right">
+            <li class="list-inline-item mg-l-10">
+              <span class="d-inline-block wd-7 ht-7 bg-teal rounded-circle mg-r-5"></span>
+              Allocated Quantity ({{ object.unit.code|upper }})
+              </span>
+            </li>
+            <li class="list-inline-item mg-l-10">
+              <span class="d-inline-block wd-7 ht-7 bg-primary rounded-circle mg-r-5"></span>
+              Delivered Quantity ({{ object.unit.code|upper }})
+            </li>
+          </ul>
+        </div><!-- btn-group -->
+      </div><!-- card-header -->
+      <div class="card-body pd-lg-25">
+        <div class="row align-items-sm-end">
+          <div class="col-lg-12 col-xl-12">
+            <div class="chart-six"><canvas id="chartBar1"></canvas></div>
+          </div>
+        </div>
+      </div><!-- card-body -->
+    </div><!-- card -->
+  </div>
 
-<div class="row row-xs row-flex">
-  <div class="col-sm-3 col-lg-3 mg-t-20">
+  <div class="col-sm-4">
     <div class="card ht-100p">
       <div class="card-header d-flex justify-content-between">
         <h6 class="lh-5 mg-b-0">Delivery Order Summary</h6>
       </div><!-- card-header -->
       <div class="card-body pd-x-20">
-        <ul class="list-group list-group-flush mg-b-0 tx-13">
+        <ul class="list-group list-group-flush mg-b-0 tx-13 summary-list-group">
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">L/C Number</span>
+            <span class="tx-normal">L/C Document No.</span>
             <span class="tx-medium">{{ object.lc_number }}</span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Batch</span>
+            <span class="tx-medium">{{ object.batch.name }}</span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Product</span>
+            <span class="tx-medium">{{ object.batch.product.name }}</span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Supplier</span>
+            <span class="tx-medium">{{ object.batch.supplier.name }}</span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Rate</span>
+            <span class="tx-medium">$ {{ object.batch.rate|intcomma }}</span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">B/L Document No.</span>
+            <span class="tx-medium">{{ object.bill_of_loading }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-normal">Vessel</span>
             <span class="tx-medium">{{ object.vessel }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Supplier</span>
-            <span class="tx-medium">{{ object.supplier.name }}</span>
+            <span class="tx-normal">Destination Port</span>
+            <span class="tx-medium">{{ object.port.name }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Product</span>
-            <span class="tx-medium">{{ object.product.name }}</span>
-          </li>
-
-          {% if object.order_allocations.count > 0 %}
-          <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Quantity</span>
-            <span class="tx-medium">{{ object.get_total_quantity|intcomma }} MT</span>
-          </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Total Amount</span>
-            <span class="tx-medium">$ {{ object.get_total_amount|intcomma }}</span>
-          </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">10% Amount</span>
-            <span class="tx-medium">$ {{ object.get_total_retention|intcomma }}</span>
-          </li>
-          {% endif %}
-
-          <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Created by</span>
-            <span class="tx-medium">{{ object.created_by.get_full_name }}</span>
-          </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Last Updated</span>
-            <span class="tx-medium">{{ object.updated_at|date:'d/m/Y' }}</span>
+            <span class="tx-normal">Vessel Arrival Date</span>
+            <span class="tx-medium">{{ object.arrival_date|date:'d/m/Y' }}</span>
           </li>
         </ul>
       </div><!-- card-body -->
     </div><!-- card -->
   </div><!-- col -->
+</div>
 
-  <div class="col-sm-9 mg-t-20">
-    <div class="card mg-b-10 ht-100p">
-      <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-0">
-        <div>
-          <h6 class="mg-b-3">Delivery Allocations</h6>
-          <p class="tx-13 tx-color-03 mg-b-10">Region allocations as per the agreement</p>
-        </div>
-        <div class="d-flex mg-t-20 mg-sm-t-0">
-          <div class="btn-group flex-fill">
-            {% if not object.is_fully_allocated %}
-            <!-- <button class="btn btn-white btn-xs btn-modal" data-url="{% url 'orders:order-allocation-create' object.pk %}">
-              <i data-feather="plus" class="wd-10 mg-r-5"></i> Add Allocation
-            </button> -->
-            <a class="tx-12 link-03 btn-modal" data-url="{% url 'orders:order-allocation-create' object.pk %}"><i data-feather="plus" class="wd-15 ht-15"></i> Add Allocation</a>
-            {% endif %}
-          </div>
+
+<!-- Allocation Summary -->
+{% include 'orders/partials/allocation_summary.html' with object=object %}
+
+
+<!-- Distribution Summary -->
+{% include 'orders/partials/distribution_summary.html' with object=object %}
+
+<!-- Region Quantity Calculation -->
+<div class="d-sm-flex align-items-center justify-content-between mg-b-0 mg-t-50">
+  <div>
+    <h4 class="mg-b-0 tx-spacing--1" id="region-distribution-section">Distribution Quantity to Regions</h4>
+  </div>
+</div>
+
+<div class="row row-xs row-flex">
+  {% for distribution in object.distributions.all %}
+  <div class="col-sm-3 col-lg-3 mg-t-20">
+    <div class="card ht-100p" id="distribution-card-{{ distribution.pk }}">
+      <div class="card-header d-flex justify-content-between">
+        <h6 class="lh-5 mg-b-0">{{ distribution.buyer.region }}</h6>
+        <div class="d-flex tx-18">
+          <a data-url="{% url 'orders:order-distribution-update' distribution.pk %}" class="link-03 lh-0 btn-modal">
+            <i data-feather="edit" class="wd-15 mg-r-10"></i>
+          </a>
+          <a data-url="{% url 'orders:distribution-delete' distribution.pk %}" class="link-03 lh-0 btn-modal">
+            <i data-feather="trash" class="wd-15"></i>
+          </a>
         </div>
       </div><!-- card-header -->
-
-      <div class="card-body pd-x-0">
-        {% if object.get_total_quantity %}
-        <div class="d-sm-flex justify-content-between pd-b-30 pd-x-20">
-          <div class="media">
-            <div
-              class="wd-40 wd-md-50 ht-40 ht-md-50 bg-primary tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-6">
-              <i data-feather="bar-chart-2"></i>
-            </div>
-            <div class="media-body">
-              <h6 class="tx-sans tx-uppercase tx-10 tx-spacing-1 tx-color-03 tx-semibold tx-nowrap mg-b-5 mg-md-b-8">Total Quantity</h6>
-              <h4 class="tx-20 tx-sm-18 tx-md-24 tx-normal tx-rubik mg-b-0">{{ object.get_total_quantity|intcomma }} MT</h4>
-            </div>
-          </div>
-          <div class="media mg-t-20 mg-sm-t-0 mg-sm-l-15 mg-md-l-40">
-            <div
-              class="wd-40 wd-md-50 ht-40 ht-md-50 bg-teal tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-5">
-              <i data-feather="dollar-sign"></i>
-            </div>
-            <div class="media-body">
-              <h6 class="tx-sans tx-uppercase tx-10 tx-spacing-1 tx-color-03 tx-semibold mg-b-5 mg-md-b-8">Total Amount</h6>
-              <h4 class="tx-20 tx-sm-18 tx-md-24 tx-normal tx-rubik mg-b-0">${{ object.get_total_amount|whole_part|intcomma }}<small>.{{ object.get_total_amount|decimal_part }}</small></h4>
-            </div>
-          </div>
-          <div class="media mg-t-20 mg-sm-t-0 mg-sm-l-15 mg-md-l-40">
-            <div
-              class="wd-40 wd-md-50 ht-40 ht-md-50 bg-pink tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-4">
-              <i data-feather="percent"></i>
-            </div>
-            <div class="media-body">
-              <h6 class="tx-sans tx-uppercase tx-10 tx-spacing-1 tx-color-03 tx-semibold mg-b-5 mg-md-b-8">Total 10% Amount</h6>
-              <h4 class="tx-20 tx-sm-18 tx-md-24 tx-normal tx-rubik mg-b-0">${{ object.get_total_retention|whole_part|intcomma }}<small>.{{ object.get_total_retention|decimal_part }}</small></h4>
-            </div>
-          </div>
-        </div>
-        {% endif %}
-        <div class="table-responsive">
-          <table class="table table-dashboard table-card mg-b-0">
-            <thead>
-              <tr>
-                <th>Region</th>
-                <th class="text-right">Quantity (MT)</th>
-                <th class="text-right">Rate (USD)</th>
-                <th class="text-right">Total Amount (USD)</th>
-                <th class="text-right">10% of Total (USD)</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for allocation in object.order_allocations.all %}
-              <tr>
-                <td class="tz-color-03 tx-normal">{{ allocation.buyer.region }}</td>
-                <td class="tz-color-03 tx-normal text-right">{{ allocation.quantity|intcomma }}</td>
-                <td class="tz-color-03 tx-normal text-right">{{ object.rate|intcomma }}</td>
-                <td class="text-right tx-normal text-right">{{ allocation.get_amount|intcomma }}</td>
-                <td class="tx-teal tx-medium text-right">{{ allocation.get_retention|intcomma }}</td>
-                <td class="text-right">
-                  <div class="mg-l-auto d-flex justify-content-end">
-                    <nav class="nav nav-icon-only">
-                      <a data-url="{% url 'orders:open-allocation-update' allocation.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Edit"><i data-feather="edit-3"></i></a>
-                      <a data-url="{% url 'orders:allocation-delete' allocation.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Delete">
-                        <i data-feather="trash"></i>
-                      </a>
-                    </nav>
-                  </div>
-                </td>
-              </tr>
-              {% empty %}
-              <tr class="empty-row">
-                <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">No Allocation</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div><!-- table-responsive -->
-      </div>
+      <div class="card-body pd-x-20">
+        <ul class="list-group list-group-flush mg-b-20 mg-t-10 tx-13">
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Allocated Quantity</span>
+            {% if distribution.get_allocation %}
+            <span class="tx-medium">{{ distribution.get_allocation|intcomma }} <span class="text-muted tx-light">{{ object.unit.code|upper }}</span></span>
+            {% else %}
+            <span class="tx-medium">-</span>
+            {% endif %}
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Received Quantity</span>
+            <span class="tx-medium">{{ distribution.quantity|intcomma }} <span
+                class="text-muted tx-light">{{ object.unit.code|upper }}</span></span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Dispatch Shortage</span>
+            <span class="tx-medium">
+              {{ distribution.shortage|intcomma }}
+              <span class="text-muted tx-light">{{ object.unit.code|upper }}</span>
+            </span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Over Supplied</span>
+            <span class="tx-medium">
+              {{ distribution.over|intcomma }}
+              <span class="text-muted tx-light">{{ object.unit.code|upper }}</span>
+            </span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-medium tx-sm-14 tx-primary">Total</span>
+            <span class="tx-medium tx-sm-14 tx-primary">
+              {{ distribution.get_total_quantity|intcomma }}
+              <span class="text-muted tx-light">{{ object.unit.code|upper }}</span>
+            </span>
+          </li>
+        </ul>
+      </div><!-- card-body -->
     </div><!-- card -->
   </div><!-- col -->
+  {% endfor %}
+
+  {% if not object.is_fully_distributed %}
+  <div class="col-sm-3 col-lg-3 mg-t-20">
+    <div class="card ht-100p" id="distribution-card-{{ distribution.pk }}">
+      <div class="card-header pd-t-20 pd-b-0 bd-b-0">
+        <h6 class="lh-5 mg-b-5">Add Distribution Data</h6>
+        <p class="tx-12 tx-color-03 mg-b-0">Add actual distribution data for a region.</p>
+      </div>
+
+      <div class="card-body pd-x-20">
+        <form action="{% url 'orders:order-distribution-create' object.pk %}" method="POST">
+          {% csrf_token %}
+
+          <!-- Hidden fields -->
+          <input type="hidden" name="delivery_order" value="{{ object.pk }}">
+
+          <!-- Buyers  -->
+          <div class="form-group mg-b-20">
+            <select name="buyer" id="buyer" class="form-control custom-select" required>
+              <option selected disabled value="">Choose Region</option>
+
+              {% for choice in buyer_choices %}
+              <option value="{{ choice.pk }}">{{ choice.region }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Recieved Quantity -->
+          <div class="input-group mg-b-20">
+            <input id="quantity-inline" class="form-control" name="quantity" placeholder="Received Quantity" autocomplete="off" required/>
+            <div class="input-group-append">
+              <span class="input-group-text tx-medium" id="basic-addon2">{{ object.unit.code|upper }}</span>
+            </div>
+          </div>
+
+          <!-- Dispatch Shortage -->
+          <div class="input-group mg-b-20">
+            <input id="shortage-inline" class="form-control" name="shortage" placeholder="Dispatch Shortage" autocomplete="off" required/>
+            <div class="input-group-append">
+              <span class="input-group-text tx-medium" id="basic-addon2">{{ object.unit.code|upper }}</span>
+            </div>
+          </div>
+
+          <!-- Over Supply -->
+          <div class="input-group mg-b-20">
+            <input id="over-inline" class="form-control" name="over" placeholder="Over Supply" autocomplete="off" required/>
+            <div class="input-group-append">
+              <span class="input-group-text tx-medium" id="basic-addon2">{{ object.unit.code|upper }}</span>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row-reverse mg-t-10 text-right">
+            <button type="submit" class="btn btn-sm btn-uppercase btn-primary tx-spacing-1 mg-l-10">Save</button>
+            <button type="reset" class="btn btn-sm btn-uppercase btn-white tx-spacing-1">Reset</button>
+          </div>
+        </form>
+
+      </div><!-- card-body -->
+    </div><!-- card -->
+  </div><!-- col -->
+  {% endif %}
 </div><!-- row -->
+
+<script>
+  $(function () {
+    var quantity = new Cleave('#quantity-inline', {
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand'
+    });
+
+    var shortage = new Cleave('#shortage-inline', {
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand'
+    });
+
+    var over = new Cleave('#over-inline', {
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand'
+    });
+
+    // Dynamically highlight columns
+    $('.list-group-item[data-target]').hover(
+      function () {$('.' + $(this).data('target')).addClass('bg-highlight');},
+      function () {$('.' + $(this).data('target')).removeClass('bg-highlight');}
+    );
+
+    // Chart
+    var ctx1 = document.getElementById('chartBar1').getContext('2d');
+    var ctxChart1 = new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: [
+          '{{ graph.regions.0 }}',
+          '{{ graph.regions.1 }}',
+          '{{ graph.regions.2 }}',
+          '{{ graph.regions.3 }}',
+          '{{ graph.regions.4 }}'
+        ],
+        datasets: [{
+          label: 'Allocated ({{ object.unit.code|upper }})',
+          data: [
+            '{{ graph.allocations.0 }}',
+            '{{ graph.allocations.1 }}',
+            '{{ graph.allocations.2 }}',
+            '{{ graph.allocations.3 }}',
+            '{{ graph.allocations.4 }}',
+          ],
+          backgroundColor: '#65e0e0'
+        }, {
+          label: 'Delivered ({{ object.unit.code|upper }})',
+          data: [
+            '{{ graph.distributions.0 }}',
+            '{{ graph.distributions.1 }}',
+            '{{ graph.distributions.2 }}',
+            '{{ graph.distributions.3 }}',
+            '{{ graph.distributions.4 }}',
+          ],
+          backgroundColor: '#66a4fb'
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        legend: {
+          display: false,
+          labels: {
+            display: true
+          }
+        },
+        scales: {
+          xAxes: [{
+            display: true,
+            barPercentage: 0.7
+          }],
+          yAxes: [{
+            display: true,
+            gridLines: {
+              color: '#ebeef3'
+            },
+            ticks: {
+              fontColor: '#8392a5',
+              fontSize: 10,
+              fontColor: '#182b49',
+              // min: 0,
+              // max: 1000,
+              callback: function(value, index, values) {
+                return value + ' {{ object.unit.code|upper }}';
+              }
+            }
+          }]
+        }
+      }
+    });
+  });
+</script>
 {% endblock %}

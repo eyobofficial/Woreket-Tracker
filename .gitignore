@@ -246,4 +246,4 @@ deploy_key
 /logs
 celerybeat.pid
 *.db
-
+letters/

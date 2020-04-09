@@ -20,10 +20,26 @@ a.nav-link:hover {
     flex-wrap: wrap;
 }
 
-/* .table-card tr:last-of-type td {
-    border-bottom: 1px solid rgba(72, 94, 144, 0.16);
-} */
-
 .table-card tr.empty-row td {
     border-bottom: None;
+}
+
+
+.custom-control-label {
+    cursor: pointer;
+}
+
+.btn[disabled],
+input[type=radio][disabled],
+label.disabled {
+    cursor: not-allowed;
+}
+
+.feather {
+    z-index: 99999;
+}
+
+.bg-highlight {
+    background-color: #FFFF99;
+    transition: 0.4s;
 }
