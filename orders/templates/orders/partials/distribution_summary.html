@@ -21,14 +21,14 @@
             {% endif %}
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal text-danger">Shortage</span>
+            <span class="tx-normal">Shortage</span>
             {% if object.get_total_shortage %}
-            <span class="tx-medium text-danger">{{ object.get_total_shortage|intcomma }} {{ object.unit.code|upper }}</span>
+            <span class="tx-medium">{{ object.get_total_shortage|intcomma }} {{ object.unit.code|upper }}</span>
             {% else %}
-            <span class="tx-medium text-danger">-</span>
+            <span class="tx-medium">-</span>
             {% endif %}
           </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+          <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="distribution-amount-col">
             <span class="tx-normal">Total Amount</span>
             {% if object.get_delivered_amount %}
             <span class="tx-medium">$ {{ object.get_delivered_amount|intcomma }}</span>
@@ -36,7 +36,7 @@
             <span class="tx-medium">-</span>
             {% endif %}
           </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+          <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="distribution-retention-col">
             <span class="tx-normal">Total 10% Amount</span>
             {% if object.get_delivered_retention %}
             <span class="tx-medium">$ {{ object.get_delivered_retention|intcomma }}</span>
@@ -44,12 +44,12 @@
             <span class="tx-medium ">-</span>
             {% endif %}
           </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-medium tx-teal">Payment Due</span>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="distribution-distributed-col">
+            <span class="tx-normal tx-primary">Payment Due</span>
             {% if object.get_actual_retention %}
-            <span class="tx-medium tx-teal">$ {{ object.get_actual_retention|intcomma }}</span>
+            <span class="tx-medium tx-primary">$ {{ object.get_actual_retention|intcomma }}</span>
             {% else %}
-            <span class="tx-medium tx-teal">-</span>
+            <span class="tx-medium tx-primary">-</span>
             {% endif %}
           </li>
         </ul>
@@ -76,15 +76,15 @@
 
       <div class="card-body pd-x-0">
         <div class="table-responsive">
-          <table class="table table-dashboard table-card mg-b-0" id="distribution-table">
+          <table class="table table-dashboard table-hover table-card mg-b-0" id="distribution-table">
             <thead>
               <tr>
                 <th>Region</th>
                 <th class="text-right">Quantity ({{ object.unit.code }})</th>
                 <th class="text-right">Rate (USD)</th>
-                <th class="text-right" data-target="distribution-amount-col">Amount (USD)</th>
-                <th class="text-right" data-target="distribution-retention-col">10% Amount (USD)</th>
-                <th class="text-right" data-target="distribution-distributed-col">Distributed Amount</th>
+                <th class="text-right distribution-amount-col">Amount (USD)</th>
+                <th class="text-right distribution-retention-col">10% Amount (USD)</th>
+                <th class="text-right distribution-distributed-col">Distributed Amount</th>
                 <th></th>
               </tr>
             </thead>

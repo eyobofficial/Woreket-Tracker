@@ -18,4 +18,3 @@ class BaseLoggedInView(LoginRequiredMixin, BaseView):
     Base logged view for all views.
     """
     pass
-

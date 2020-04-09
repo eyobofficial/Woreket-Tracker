@@ -13,7 +13,7 @@
     </div><!-- modal-header -->
 
     <!-- LC Form -->
-    <form action="{{ request.path }}" method="POST">
+    <form action="{{ request.path }}?section={% if section %}{{ section }}{% else %}allocation-section{% endif %}" method="POST">
       {% csrf_token %}
 
       <div class="modal-body pd-sm-t-50 pd-sm-b-80 pd-sm-x-30">

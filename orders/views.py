@@ -149,7 +149,11 @@ class AllocationCreateView(BaseOrderView, CreateView):
 
     def get_success_url(self):
         order_pk = self.kwargs.get('pk')
-        return reverse('orders:open-order-detail', args=[order_pk])
+        page_section = self.request.GET.get('section')
+        url = reverse('orders:open-order-detail', args=[order_pk])
+        if page_section is not None:
+            url = f'{url}#{page_section}'
+        return url
 
     def form_valid(self, form):
         redirect_url = super().form_valid(form)
@@ -180,10 +184,14 @@ class AllocationUpdateView(BaseOrderView, UpdateView):
         return super().get_context_data(**kwargs)
 
     def get_success_url(self):
-        return reverse(
+        page_section = self.request.GET.get('section')
+        url = reverse(
             'orders:open-order-detail',
             args=[self.object.delivery_order.pk]
         )
+        if page_section:
+            url = f'{url}#{page_section}'
+        return url
 
     def form_valid(self, form):
         redirect_url = super().form_valid(form)
@@ -197,10 +205,14 @@ class AllocationDeleteView(BaseOrderView, DeleteView):
     model = Allocation
 
     def get_success_url(self):
-        return reverse(
+        page_section = self.request.GET.get('section')
+        url = reverse(
             'orders:open-order-detail',
             args=[self.object.delivery_order.pk]
         )
+        if page_section is not None:
+            url = f'{url}#{page_section}'
+        return url
 
     def delete(self, request, *args, **kwargs):
         delivery_order = self.get_object().delivery_order
@@ -263,8 +275,11 @@ class DistributionCreateView(BaseOrderView, CreateView):
 
     def get_success_url(self):
         order_pk = self.kwargs.get('pk')
+        page_section = self.request.GET.get('section')
         url = reverse('orders:open-order-detail', args=[order_pk])
-        return f'{url}#distribution-card-{self.object.pk}'
+        if page_section is not None:
+            url = f'{url}#{page_section}'
+        return url
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
@@ -289,19 +304,23 @@ class DistributionUpdateView(BaseOrderView, UpdateView):
         for c in customers:
             if c.pk not in distributed_buyers or c == self.object.buyer:
                 buyer_choices.append(c)
-
+        page_section = self.request.GET.get('section')
         kwargs.update({
             'buyer_choices': buyer_choices,
-            'order': order
+            'order': order,
+            'section': page_section
         })
         return super().get_context_data(**kwargs)
 
     def get_success_url(self):
+        page_section = self.request.GET.get('section')
         url = reverse(
             'orders:open-order-detail',
             args=[self.object.delivery_order.pk]
         )
-        return f'{url}#distribution-card-{self.object.pk}'
+        if page_section is not None:
+            url = f'{url}#{page_section}'
+        return url
 
     def form_valid(self, form):
         self.object = form.save(commit=True)
@@ -316,12 +335,20 @@ class DistributionDeleteView(BaseOrderView, DeleteView):
     template_name = 'orders/modals/distribution_delete_form.html'
     model = Distribution
 
+    def get_context_data(self, **kwargs):
+        page_section = self.request.GET.get('section')
+        kwargs.update(section=page_section)
+        return super().get_context_data(**kwargs)
+
     def get_success_url(self):
+        page_section = self.request.GET.get('section')
         url = reverse(
             'orders:open-order-detail',
             args=[self.object.delivery_order.pk]
         )
-        return f'{url}#region-distribution-section'
+        if page_section is not None:
+            url = f'{url}#{page_section}'
+        return url
 
     def delete(self, request, *args, **kwargs):
         delivery_order = self.get_object().delivery_order

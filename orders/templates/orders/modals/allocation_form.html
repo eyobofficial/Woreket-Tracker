@@ -17,7 +17,7 @@
     </div><!-- modal-header -->
 
     <!-- LC Form -->
-    <form action="{{ request.path }}" method="POST">
+    <form action="{{ request.path }}?section=delivery-order-section" method="POST">
       {% csrf_token %}
 
       <!-- Hidden fields -->

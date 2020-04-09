@@ -1,7 +1,7 @@
 {% load humanize %}
 
 <!-- Delivery Order Allocation -->
-<div class="row row-xs row-flex mg-b-30">
+<div class="row row-xs row-flex mg-b-30" id="allocation-section">
   <div class="col-sm-3 col-lg-3">
     <div class="card ht-100p">
       <div class="card-header d-flex justify-content-between">
@@ -30,11 +30,11 @@
             {% endif %}
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="allocation-retention-col">
-            <span class="tx-medium tx-teal">Total 10% Amount</span>
+            <span class="tx-normal tx-primary">Total 10% Amount</span>
             {% if object.get_allocated_retention %}
-            <span class="tx-medium tx-teal">$ {{ object.get_allocated_retention|intcomma }}</span>
+            <span class="tx-medium tx-primary">$ {{ object.get_allocated_retention|intcomma }}</span>
             {% else %}
-            <span class="tx-medium tx-teal">-</span>
+            <span class="tx-medium tx-primary">-</span>
             {% endif %}
           </li>
         </ul>
@@ -52,8 +52,10 @@
         <div class="d-flex mg-t-20 mg-sm-t-0">
           <div class="btn-group flex-fill">
             {% if not object.is_fully_allocated %}
-            <a class="tx-12 link-03 btn-modal" data-url="{% url 'orders:order-allocation-create' object.pk %}"><i
-                data-feather="plus" class="wd-15 ht-15"></i> Add allocation</a>
+              <a class="tx-12 link-03 btn-modal"
+                data-url="{% url 'orders:order-allocation-create' object.pk %}">
+                  <i data-feather="plus" class="wd-15 ht-15"></i> Add allocation
+              </a>
             {% endif %}
           </div>
         </div>
@@ -61,7 +63,7 @@
 
       <div class="card-body pd-x-0">
         <div class="table-responsive">
-          <table class="table table-dashboard table-card mg-b-0">
+          <table class="table table-dashboard table-hover table-card mg-b-0" id="allocation-table">
             <thead>
               <tr>
                 <th>Region</th>

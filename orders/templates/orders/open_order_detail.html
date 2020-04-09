@@ -32,7 +32,7 @@
 
 <div class="row row-xs row-flex mg-b-30">
   <div class="col-sm-8">
-    <div class="card ht-100p">
+    <div class="card ht-100p" id="delivery-order-section">
       <div
         class="card-header bd-b-0 pd-t-20 pd-lg-t-25 pd-l-20 pd-lg-l-25 d-flex flex-column flex-sm-row align-items-sm-start justify-content-sm-between">
         <div>
@@ -134,10 +134,10 @@
       <div class="card-header d-flex justify-content-between">
         <h6 class="lh-5 mg-b-0">{{ distribution.buyer.region }}</h6>
         <div class="d-flex tx-18">
-          <a data-url="{% url 'orders:order-distribution-update' distribution.pk %}" class="link-03 lh-0 btn-modal">
+          <a data-url="{% url 'orders:order-distribution-update' distribution.pk %}?section=distribution-card-{{ distribution.pk }}" class="link-03 lh-0 btn-modal">
             <i data-feather="edit" class="wd-15 mg-r-10"></i>
           </a>
-          <a data-url="{% url 'orders:distribution-delete' distribution.pk %}" class="link-03 lh-0 btn-modal">
+          <a data-url="{% url 'orders:distribution-delete' distribution.pk %}?section=region-distribution-section" class="link-03 lh-0 btn-modal">
             <i data-feather="trash" class="wd-15"></i>
           </a>
         </div>
@@ -183,67 +183,6 @@
     </div><!-- card -->
   </div><!-- col -->
   {% endfor %}
-
-  {% if not object.is_fully_distributed %}
-  <div class="col-sm-3 col-lg-3 mg-t-20">
-    <div class="card ht-100p" id="distribution-card-{{ distribution.pk }}">
-      <div class="card-header pd-t-20 pd-b-0 bd-b-0">
-        <h6 class="lh-5 mg-b-5">Add Distribution Data</h6>
-        <p class="tx-12 tx-color-03 mg-b-0">Add actual distribution data for a region.</p>
-      </div>
-
-      <div class="card-body pd-x-20">
-        <form action="{% url 'orders:order-distribution-create' object.pk %}" method="POST">
-          {% csrf_token %}
-
-          <!-- Hidden fields -->
-          <input type="hidden" name="delivery_order" value="{{ object.pk }}">
-
-          <!-- Buyers  -->
-          <div class="form-group mg-b-20">
-            <select name="buyer" id="buyer" class="form-control custom-select" required>
-              <option selected disabled value="">Choose Region</option>
-
-              {% for choice in buyer_choices %}
-              <option value="{{ choice.pk }}">{{ choice.region }}</option>
-              {% endfor %}
-            </select>
-          </div>
-
-          <!-- Recieved Quantity -->
-          <div class="input-group mg-b-20">
-            <input id="quantity-inline" class="form-control" name="quantity" placeholder="Received Quantity" autocomplete="off" required/>
-            <div class="input-group-append">
-              <span class="input-group-text tx-medium" id="basic-addon2">{{ object.unit.code|upper }}</span>
-            </div>
-          </div>
-
-          <!-- Dispatch Shortage -->
-          <div class="input-group mg-b-20">
-            <input id="shortage-inline" class="form-control" name="shortage" placeholder="Dispatch Shortage" autocomplete="off" required/>
-            <div class="input-group-append">
-              <span class="input-group-text tx-medium" id="basic-addon2">{{ object.unit.code|upper }}</span>
-            </div>
-          </div>
-
-          <!-- Over Supply -->
-          <div class="input-group mg-b-20">
-            <input id="over-inline" class="form-control" name="over" placeholder="Over Supply" autocomplete="off" required/>
-            <div class="input-group-append">
-              <span class="input-group-text tx-medium" id="basic-addon2">{{ object.unit.code|upper }}</span>
-            </div>
-          </div>
-
-          <div class="d-flex flex-row-reverse mg-t-10 text-right">
-            <button type="submit" class="btn btn-sm btn-uppercase btn-primary tx-spacing-1 mg-l-10">Save</button>
-            <button type="reset" class="btn btn-sm btn-uppercase btn-white tx-spacing-1">Reset</button>
-          </div>
-        </form>
-
-      </div><!-- card-body -->
-    </div><!-- card -->
-  </div><!-- col -->
-  {% endif %}
 </div><!-- row -->
 
 <script>
