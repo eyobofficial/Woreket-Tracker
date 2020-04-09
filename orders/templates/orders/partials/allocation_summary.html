@@ -11,7 +11,7 @@
         <ul class="list-group list-group-flush mg-b-0 tx-13 summary-list-group">
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-normal">Rate</span>
-            <span class="tx-medium">$ {{ object.batch.rate|intcomma }}</span>
+            <span class="tx-medium">${{ object.batch.rate|intcomma }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="allocation-quantity-col">
             <span class="tx-normal">Total Quantity</span>
@@ -24,7 +24,15 @@
           <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="allocation-amount-col">
             <span class="tx-normal">Total Amount</span>
             {% if object.get_allocated_amount %}
-            <span class="tx-medium">$ {{ object.get_allocated_amount|intcomma }}</span>
+            <span class="tx-medium">${{ object.get_allocated_amount|intcomma }}</span>
+            {% else %}
+            <span class="tx-medium">-</span>
+            {% endif %}
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Advance (90%)</span>
+            {% if object.get_advance_amount %}
+            <span class="tx-medium">${{ object.get_advance_amount|intcomma }}</span>
             {% else %}
             <span class="tx-medium">-</span>
             {% endif %}
@@ -32,7 +40,7 @@
           <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="allocation-retention-col">
             <span class="tx-normal tx-primary">Total 10% Amount</span>
             {% if object.get_allocated_retention %}
-            <span class="tx-medium tx-primary">$ {{ object.get_allocated_retention|intcomma }}</span>
+            <span class="tx-medium tx-primary">${{ object.get_allocated_retention|intcomma }}</span>
             {% else %}
             <span class="tx-medium tx-primary">-</span>
             {% endif %}
@@ -44,7 +52,7 @@
 
   <div class="col-sm-9">
     <div class="card mg-b-10 ht-100p">
-      <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-0">
+      <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-10">
         <div>
           <h6 class="mg-b-3">Delivery Order Allocations</h6>
           <p class="tx-13 tx-color-03 mg-b-10">Region allocations as per the agreement</p>
@@ -61,9 +69,9 @@
         </div>
       </div><!-- card-header -->
 
-      <div class="card-body pd-x-0">
+      <div class="card-body pd-x-0 pd-t-0">
         <div class="table-responsive">
-          <table class="table table-dashboard table-hover table-card mg-b-0" id="allocation-table">
+          <table class="table table-dashboard table-card mg-b-0" id="allocation-table">
             <thead>
               <tr>
                 <th>Region</th>

@@ -4,7 +4,7 @@ from .views import OpenOrderListView, OrderCreateView, OrderUpdateView, \
     OrderCloseView, OrderDetailView, AllocationCreateView, \
     AllocationUpdateView, AllocationDeleteView, LetterFormView, \
     AllocationLetterView, DistributionCreateView, DistributionUpdateView, \
-    DistributionDeleteView
+    DistributionDeleteView, DistributionDetailView
 
 
 app_name = 'orders'
@@ -48,6 +48,11 @@ urlpatterns = [
         'allocations/<uuid:pk>/delete/',
         AllocationDeleteView.as_view(),
         name='allocation-delete'
+    ),
+    path(
+        'distributions/<uuid:pk>/',
+        DistributionDetailView.as_view(),
+        name='order-distribution-detail'
     ),
     path(
         '<uuid:pk>/distributions/create/',

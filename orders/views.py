@@ -255,6 +255,12 @@ class AllocationLetterView(BaseOrderView, BaseDetailView):
         return response
 
 
+class DistributionDetailView(BaseOrderView, DetailView):
+    """Modal detail view for the distribution quantity calculation."""
+    template_name = 'orders/modals/distribution_detail.html'
+    model = Distribution
+
+
 class DistributionCreateView(BaseOrderView, CreateView):
     """Creates a distribution repoort for delivery order."""
     template_name = 'orders/modals/distribution_form.html'
