@@ -32,3 +32,10 @@
     name: Benishangul Gumuz Agricultural Bureau
     region: Benishangul-Gumuz
     code: BEN
+
+- model: shared.customer
+  pk: 6
+  fields:
+    name: Tigray
+    region: Tigray
+    code: TIG

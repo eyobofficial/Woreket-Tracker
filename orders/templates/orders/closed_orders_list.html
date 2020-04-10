@@ -12,13 +12,7 @@
           <li class="breadcrumb-item active" aria-current="page">Delivery Orders</li>
         </ol>
       </nav>
-      <h4 class="mg-b-0 tx-spacing--1">All Open Delivery Orders</h4>
-    </div>
-    <div class="d-none d-md-block">
-      <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
-        data-url="{% url 'orders:order-create' %}">
-        <i data-feather="plus" class="wd-10 mg-r-5"></i>Add Delivery Order
-      </button>
+      <h4 class="mg-b-0 tx-spacing--1">All Closed Delivery Orders</h4>
     </div>
   </div>
 
@@ -80,14 +74,14 @@
       <div class="card mg-b-10">
         <div class="card-header pd-t-20 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-0">
           <div>
-            <h6 class="mg-b-5 pb-1">Open Distribution Orders</h6>
+            <h6 class="mg-b-5 pb-1">Closed Distribution Orders</h6>
           </div>
         </div><!-- card-header -->
         <div class="table-responsive">
           <table class="table table-dashboard mg-b-0">
             <thead>
               <tr>
-                <th>Opened Date</th>
+                <th>Closed Date</th>
                 <th>Vessel</th>
                 <th>Letter of Credit</th>
                 <th>Batch</th>
@@ -100,7 +94,7 @@
             <tbody>
               {% for order in object_list %}
               <tr>
-                <td class="tx-color-03 tx-normal">{{ order.created_at|date:'d/m/Y' }}</td>
+                <td class="tx-color-03 tx-normal">{{ order.updated_at|date:'d/m/Y' }}</td>
                 <td class="tz-color-03 tx-medium">
                   <a href="{% url 'orders:order-detail' order.pk %}">{{ order.vessel }}</a>
                 </td>
@@ -108,16 +102,18 @@
                 <td class="tz-color-03 tx-normal">{{ order.batch.name }}</td>
                 <td class="tz-color-03 tx-normal">{{ order.batch.supplier.name }}</td>
                 <td class="tz-color-03 tx-normal">{{ order.batch.product.name }}</td>
+
                 {% if order.get_allocated_quantity %}
                 <td class="text-right tx-medium tx-teal">{{ order.get_allocated_quantity|intcomma }} {{ order.unit.code|upper }}</td>
                 {% else %}
                 <td class="text-right tx-medium">-</td>
                 {% endif %}
-                <td class="text-right"><span class="badge badge-success">open</span></td>
+
+                <td class="text-right"><span class="badge badge-secondary">closed</span></td>
               </tr>
               {% empty %}
               <tr>
-                <td colspan="8" class="tx-medium tx-color-03 text-center pt-5 pb-5">No Open Delivery Order</td>
+                <td colspan="8" class="tx-medium tx-color-03 text-center pt-5 pb-5">No Closed Delivery Orders</td>
               </tr>
               {% endfor %}
             </tbody>

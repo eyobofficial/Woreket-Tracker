@@ -95,7 +95,7 @@ class DeliveryOrder(models.Model):
         return self.lc_number
 
     def get_absolute_url(self):
-        return reverse('orders:open-order-detail', args=[self.pk])
+        return reverse('orders:order-detail', args=[self.pk])
 
     @property
     def unit(self):

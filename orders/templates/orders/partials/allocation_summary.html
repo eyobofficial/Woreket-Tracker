@@ -59,7 +59,7 @@
         </div>
         <div class="d-flex mg-t-20 mg-sm-t-0">
           <div class="btn-group flex-fill">
-            {% if not object.is_fully_allocated %}
+            {% if not object.is_fully_allocated and object.status == object.OPEN %}
               <a class="tx-12 link-03 btn-modal"
                 data-url="{% url 'orders:order-allocation-create' object.pk %}">
                   <i data-feather="plus" class="wd-15 ht-15"></i> Add allocation
@@ -79,7 +79,7 @@
                 <th class="text-right">Rate (USD)</th>
                 <th class="text-right allocation-amount-col">Amount (USD)</th>
                 <th class="text-right allocation-retention-col">10% Amount (USD)</th>
-                <th></th>
+                {% if object.status == object.OPEN %}<th></th>{% endif %}
               </tr>
             </thead>
             <tbody>
@@ -90,6 +90,7 @@
                 <td class="tz-color-03 tx-normal text-right">{{ object.batch.rate|intcomma }}</td>
                 <td class="text-right tx-normal text-right allocation-amount-col">{{ allocation.get_amount|intcomma }}</td>
                 <td class="tx-medium tx-medium text-right allocation-retention-col">{{ allocation.get_retention|intcomma }}</td>
+                {% if object.status == object.OPEN %}
                 <td class="text-right">
                   <div class="mg-l-auto d-flex justify-content-end">
                     <nav class="nav nav-icon-only">
@@ -104,6 +105,7 @@
                     </nav>
                   </div>
                 </td>
+                {% endif %}
               </tr>
               {% empty %}
               <tr class="empty-row">

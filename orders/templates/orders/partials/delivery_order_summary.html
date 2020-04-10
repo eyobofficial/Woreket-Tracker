@@ -94,7 +94,8 @@
           '{{ graph.regions.1 }}',
           '{{ graph.regions.2 }}',
           '{{ graph.regions.3 }}',
-          '{{ graph.regions.4 }}'
+          '{{ graph.regions.4 }}',
+          '{{ graph.regions.5 }}'
         ],
         datasets: [{
           label: 'Allocated ({{ object.unit.code|upper }})',
@@ -104,6 +105,7 @@
             '{{ graph.allocations.2 }}',
             '{{ graph.allocations.3 }}',
             '{{ graph.allocations.4 }}',
+            '{{ graph.allocations.5 }}'
           ],
           backgroundColor: '#65e0e0'
         }, {
@@ -114,6 +116,7 @@
             '{{ graph.distributions.2 }}',
             '{{ graph.distributions.3 }}',
             '{{ graph.distributions.4 }}',
+            '{{ graph.distributions.5 }}'
           ],
           backgroundColor: '#66a4fb'
         }]
@@ -129,7 +132,7 @@
         scales: {
           xAxes: [{
             display: true,
-            barPercentage: 0.7
+            barPercentage: 0.9
           }],
           yAxes: [{
             display: true,

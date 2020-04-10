@@ -4,7 +4,8 @@ from .views import OpenOrderListView, OrderCreateView, OrderUpdateView, \
     OrderCloseView, OrderDetailView, AllocationCreateView, \
     AllocationUpdateView, AllocationDeleteView, LetterFormView, \
     AllocationLetterView, DistributionCreateView, DistributionUpdateView, \
-    DistributionDeleteView, DistributionDetailView
+    DistributionDeleteView, DistributionDetailView, ClosedOrderListView, \
+    OrderReopenView, OrderDeleteView
 
 
 app_name = 'orders'
@@ -12,12 +13,23 @@ app_name = 'orders'
 
 urlpatterns = [
     path('', OpenOrderListView.as_view(), name='open-orders-list'),
-    path('<uuid:pk>/', OrderDetailView.as_view(), name='open-order-detail'),
-    path('create/', OrderCreateView.as_view(), name='open-order-create'),
+    path('closed/', ClosedOrderListView.as_view(), name='closed-orders-list'),
+    path('<uuid:pk>/', OrderDetailView.as_view(), name='order-detail'),
+    path('create/', OrderCreateView.as_view(), name='order-create'),
     path(
         '<uuid:pk>/update/',
         OrderUpdateView.as_view(),
         name='open-order-update'
+    ),
+    path(
+        '<uuid:pk>/delete/',
+        OrderDeleteView.as_view(),
+        name='order-delete'
+    ),
+    path(
+        '<uuid:pk>/open/',
+        OrderReopenView.as_view(),
+        name='order-open'
     ),
     path(
         '<uuid:pk>/close/',

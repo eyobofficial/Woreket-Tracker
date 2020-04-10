@@ -24,14 +24,20 @@ class OpenOrderListView(BaseOrderView, ListView):
         return qs.filter(status=DeliveryOrder.OPEN)
 
 
-class OrderDetailView(BaseOrderView, DetailView):
-    """Displays a detail of a single delivery order."""
-    template_name = 'orders/open_order_detail.html'
+class ClosedOrderListView(BaseOrderView, ListView):
+    """Lists all delivery orders with open status."""
+    template_name = 'orders/closed_orders_list.html'
     model = DeliveryOrder
 
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(status=DeliveryOrder.OPEN)
+        return qs.filter(status=DeliveryOrder.CLOSED)
+
+
+class OrderDetailView(BaseOrderView, DetailView):
+    """Displays a detail of a single delivery order."""
+    template_name = 'orders/order_detail.html'
+    model = DeliveryOrder
 
     def get_context_data(self, **kwargs):
         customers = Customer.objects.all()
@@ -129,6 +135,25 @@ class OrderCloseView(BaseOrderView, UpdateView):
         return redirect_url
 
 
+class OrderReopenView(BaseOrderView, UpdateView):
+    """Opens a delivery order instance."""
+    template_name = 'orders/modals/order_open.html'
+    model = DeliveryOrder
+    fields = ('status', )
+
+    def form_valid(self, form):
+        redirect_url = super().form_valid(form)
+        self.object.touch(updated_by=self.request.user)
+        return redirect_url
+
+
+class OrderDeleteView(BaseOrderView, DeleteView):
+    """Deletes a deliver order instance."""
+    template_name = 'orders/modals/order_delete_form.html'
+    model = DeliveryOrder
+    success_url = reverse_lazy('orders:closed-orders-list')
+
+
 class AllocationCreateView(BaseOrderView, CreateView):
     """Creates an allocation for delivery order."""
     template_name = 'orders/modals/allocation_form.html'
@@ -150,7 +175,7 @@ class AllocationCreateView(BaseOrderView, CreateView):
     def get_success_url(self):
         order_pk = self.kwargs.get('pk')
         page_section = self.request.GET.get('section')
-        url = reverse('orders:open-order-detail', args=[order_pk])
+        url = reverse('orders:order-detail', args=[order_pk])
         if page_section is not None:
             url = f'{url}#{page_section}'
         return url
@@ -186,7 +211,7 @@ class AllocationUpdateView(BaseOrderView, UpdateView):
     def get_success_url(self):
         page_section = self.request.GET.get('section')
         url = reverse(
-            'orders:open-order-detail',
+            'orders:order-detail',
             args=[self.object.delivery_order.pk]
         )
         if page_section:
@@ -207,7 +232,7 @@ class AllocationDeleteView(BaseOrderView, DeleteView):
     def get_success_url(self):
         page_section = self.request.GET.get('section')
         url = reverse(
-            'orders:open-order-detail',
+            'orders:order-detail',
             args=[self.object.delivery_order.pk]
         )
         if page_section is not None:
@@ -282,7 +307,7 @@ class DistributionCreateView(BaseOrderView, CreateView):
     def get_success_url(self):
         order_pk = self.kwargs.get('pk')
         page_section = self.request.GET.get('section')
-        url = reverse('orders:open-order-detail', args=[order_pk])
+        url = reverse('orders:order-detail', args=[order_pk])
         if page_section is not None:
             url = f'{url}#{page_section}'
         return url
@@ -321,7 +346,7 @@ class DistributionUpdateView(BaseOrderView, UpdateView):
     def get_success_url(self):
         page_section = self.request.GET.get('section')
         url = reverse(
-            'orders:open-order-detail',
+            'orders:order-detail',
             args=[self.object.delivery_order.pk]
         )
         if page_section is not None:
@@ -349,7 +374,7 @@ class DistributionDeleteView(BaseOrderView, DeleteView):
     def get_success_url(self):
         page_section = self.request.GET.get('section')
         url = reverse(
-            'orders:open-order-detail',
+            'orders:order-detail',
             args=[self.object.delivery_order.pk]
         )
         if page_section is not None:
