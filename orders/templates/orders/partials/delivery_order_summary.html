@@ -1,6 +1,6 @@
 {% load humanize %}
 
-<div class="row row-xs row-flex mg-b-30">
+<div class="row row-xs row-flex mg-b-10">
   <div class="col-sm-8">
     <div class="card ht-100p" id="delivery-order-section">
       <div
@@ -93,6 +93,70 @@
             {% endif %}
           </li>
         </ul>
+      </div><!-- card-body -->
+    </div><!-- card -->
+  </div><!-- col -->
+</div>
+
+<!-- Card sidenotes -->
+<div class="row row-xs row-flex mg-b-20">
+  <div class="col-lg-4 col-md-6 mg-t-10">
+    <div class="card ht-100p">
+      <div class="card-body pd-y-20 pd-x-25">
+        <div class="row row-sm">
+          <div class="col-8">
+            <h3 class="tx-normal tx-rubik tx-spacing--1 mg-b-5">{{ object.batch.product.name }}</h3>
+            <h6 class="tx-12 tx-semibold tx-uppercase tx-spacing-1 tx-primary mg-b-5">Product</h6>
+            <p class="tx-11 tx-color-03 mg-b-0">Purchased product by this delivery order.</p>
+          </div>
+          <div class="col-4 d-flex flex-row">
+            <div class="avatar d-none d-sm-block mg-l-35 mg-t-15 pd-30">
+              <span class="avatar-initial rounded-circle bg-primary op-5">
+                <i class="fas fa-seedling tx-30"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div><!-- card-body -->
+    </div><!-- card -->
+  </div><!-- col -->
+  <div class="col-lg-4 col-md-6 mg-t-10">
+    <div class="card ht-100p">
+      <div class="card-body pd-y-20 pd-x-25">
+        <div class="row row-sm">
+          <div class="col-8">
+            <h3 class="tx-normal tx-rubik tx-spacing--1 mg-b-5">{{ object.vessel }}</h3>
+            <h6 class="tx-12 tx-semibold tx-uppercase tx-spacing-1 tx-teal mg-b-5">Vessel</h6>
+            <p class="tx-11 tx-color-03 mg-b-0">Name of the vessel used to transport this delivery order.</p>
+          </div>
+          <div class="col-4 d-flex flex-row">
+            <div class="avatar d-none d-sm-block mg-l-35 mg-t-15 pd-30">
+              <span class="avatar-initial rounded-circle bg-teal op-5">
+                <i class="fas fa-anchor tx-30"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div><!-- card-body -->
+    </div><!-- card -->
+  </div><!-- col -->
+  <div class="col-lg-4 col-md-6 mg-t-10">
+    <div class="card ht-100p">
+      <div class="card-body pd-y-20 pd-x-25">
+        <div class="row row-sm">
+          <div class="col-8">
+            <h3 class="tx-normal tx-rubik tx-spacing--1 mg-b-5">${{ object.get_final_settlement|intcomma }}</h3>
+            <h6 class="tx-12 tx-semibold tx-uppercase tx-spacing-1 tx-pink mg-b-5">Final Settlement</h6>
+            <p class="tx-11 tx-color-03 mg-b-0">The 10% final settlement to be released to the supplier.</p>
+          </div>
+          <div class="col-4 d-flex flex-row">
+            <div class="avatar d-none d-sm-block mg-l-35 mg-t-15 pd-30">
+              <span class="avatar-initial rounded-circle bg-pink op-5">
+                <i class="fas fa-coins tx-30"></i>
+              </span>
+            </div>
+          </div>
+        </div>
       </div><!-- card-body -->
     </div><!-- card -->
   </div><!-- col -->
