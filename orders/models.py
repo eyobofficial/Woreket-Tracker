@@ -55,6 +55,10 @@ class DeliveryOrder(models.Model):
     )
     vessel = models.CharField(max_length=120, help_text='Shipment vessel name.')
     batch = models.ForeignKey(Batch, null=True, on_delete=models.SET_NULL)
+    quantity = models.DecimalField(
+        'agreement quantity',
+        max_digits=10, decimal_places=2
+    )
     bill_of_loading = models.CharField(
         max_length=30,
         help_text='Bill of loading (B/L) number.'
@@ -142,6 +146,30 @@ class DeliveryOrder(models.Model):
                 return False
         return True
 
+    def get_agreement_amount(self):
+        """Returns the amount as per the agreement in USD.
+
+        Returns:
+            amount (Decimal): total agreement amount in USD
+        """
+        return round(self.quantity * self.batch.rate, 2)
+
+    def get_advance_amount(self):
+        """Returns the advance payment (90%) paid as per the agreement.
+
+        Returns:
+            amount (Decimal): the 90% advance payment in USD
+        """
+        return round(self.get_agreement_amount() * ADVANCE, 2)
+
+    def get_agreement_retention(self):
+        """Returns the 10% retention amount as per the agreement.
+
+        Returns:
+            amount(Decimal): the 10% agreement retention amount in USD
+        """
+        return round(self.get_agreement_amount() * RETENTION, 2)
+
     def get_allocated_quantity(self):
         """Returns the total allocated quantity in product unit.
 
@@ -184,14 +212,6 @@ class DeliveryOrder(models.Model):
             amount += allocation.get_amount()
         return amount
 
-    def get_advance_amount(self):
-        """Returns the advance payment (90%) paid as per the agreement.
-
-        Returns:
-            amount (Decimal): the 90 % advance payment in USD
-        """
-        return self.get_allocated_amount() * ADVANCE
-
     def get_delivered_amount(self):
         """Returns the total delivered amount in USD.
 
@@ -225,14 +245,27 @@ class DeliveryOrder(models.Model):
             retention += distribution.get_retention()
         return retention
 
-    def get_actual_retention(self):
-        """Returns the actual remaining retention amount after
+    def get_final_settlement(self):
+        """Returns the total final 10% settlement amount after
            subtracting shortages.
 
         Returns:
             amount (Decimal): actual retention amount to be paid in USD
         """
-        return self.get_delivered_amount() - self.get_advance_amount()
+        return round(self.get_delivered_amount() - self.get_advance_amount(), 2)
+
+    def get_total_distributed_amount(self):
+        """Returns the total distributed amount. It should hold the same
+           result to the `get_final_settlement` method.
+
+        Returns:
+            amount (Decimal): final distributed amount in USD
+        """
+        total = Decimal(0)
+        for amount in self.distributions.get_distributed_settlement():
+            total += amount
+
+        return round(total, 2)
 
 
 class Allocation(models.Model):
@@ -395,14 +428,14 @@ class Distribution(models.Model):
         delivered_retention = self.delivery_order.get_delivered_retention()
         return round(self.get_retention() / delivered_retention, 2)
 
-    def get_distributed_retention(self):
-        """Returns the distributed amount of the actual retention amount
-           to be paid.
+    def get_distributed_settlement(self):
+        """Returns the distributed amount of the actual retention settlement
+           amount to be paid.
 
         Returns:
             amount (Decimal): actual retention amount to be paid in USD
         """
-        total_retention = self.delivery_order.get_actual_retention()
+        final_settlement = self.delivery_order.get_final_settlement()
         percentage = self.get_distribution_percentage()
 
-        return round(total_retention * percentage, 2)
+        return round(final_settlement * percentage, 2)

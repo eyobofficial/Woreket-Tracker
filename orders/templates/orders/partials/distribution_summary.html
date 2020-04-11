@@ -12,15 +12,15 @@
             <span class="tx-normal">Rate</span>
             <span class="tx-medium">${{ object.batch.rate|intcomma }}</span>
           </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="distribution-quantity-col">
-            <span class="tx-normal">Total Quantity</span>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Total delivered quantity" data-target="distribution-quantity-col">
+            <span class="tx-normal">Quantity</span>
             {% if object.get_delivered_quantity %}
             <span class="tx-medium">{{ object.get_delivered_quantity|intcomma }} {{ object.unit.code|upper }}</span>
             {% else %}
             <span class="tx-medium">-</span>
             {% endif %}
           </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Delivered shortage">
             <span class="tx-normal">Shortage</span>
             {% if object.get_total_shortage %}
             <span class="tx-medium">{{ object.get_total_shortage|intcomma }} {{ object.unit.code|upper }}</span>
@@ -28,16 +28,16 @@
             <span class="tx-medium">-</span>
             {% endif %}
           </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="distribution-amount-col">
-            <span class="tx-normal">Total Amount</span>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Total delivered amount" data-target="distribution-amount-col">
+            <span class="tx-normal">Amount</span>
             {% if object.get_delivered_amount %}
             <span class="tx-medium">${{ object.get_delivered_amount|intcomma }}</span>
             {% else %}
             <span class="tx-medium">-</span>
             {% endif %}
           </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="distribution-retention-col">
-            <span class="tx-normal">Total 10% Amount</span>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="10% amount for delivered amount" data-target="distribution-retention-col">
+            <span class="tx-normal">10% Amount</span>
             {% if object.get_delivered_retention %}
             <span class="tx-medium">${{ object.get_delivered_retention|intcomma }}</span>
             {% else %}
@@ -45,11 +45,11 @@
             {% endif %}
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="distribution-distributed-col">
-            <span class="tx-normal tx-primary">Payment Due</span>
-            {% if object.get_actual_retention %}
-            <span class="tx-medium tx-primary">${{ object.get_actual_retention|intcomma }}</span>
+            <span class="tx-normal">Distributed Amt.</span>
+            {% if object.get_final_settlement %}
+            <span class="tx-medium">${{ object.get_final_settlement|intcomma }}</span>
             {% else %}
-            <span class="tx-medium tx-primary">-</span>
+            <span class="tx-medium">-</span>
             {% endif %}
           </li>
         </ul>
@@ -76,7 +76,7 @@
 
       <div class="card-body pd-x-0 pd-t-0">
         <div class="table-responsive">
-          <table class="table table-dashboard table-card mg-b-0" id="distribution-table">
+          <table class="table table-dashboard table-striped table-card mg-b-0" id="distribution-table">
             <thead>
               <tr>
                 <th>Region</th>
@@ -93,7 +93,7 @@
               <tr>
                 <td class="tz-color-03 tx-normal">{{ distribution.buyer.region }}</td>
                 <td class="tz-color-03 tx-normal text-right distribution-quantity-col">
-                  <a data-url="{% url 'orders:order-distribution-detail' distribution.pk %}" class="btn-modal">
+                  <a data-url="{% url 'orders:order-distribution-detail' distribution.pk %}" class="popup-link btn-modal">
                     <span class="tx-medium">{{ distribution.get_total_quantity|intcomma }}</span>
                     &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
                   </a>
@@ -102,7 +102,7 @@
                 <td class="text-right tx-normal distribution-amount-col">{{ distribution.get_amount|intcomma }}</td>
                 <td class="text-right tx-normal distribution-retention-col">{{ distribution.get_retention|intcomma }}</td>
                 <td class="tx-medium tx-medium text-right distribution-distributed-col">
-                  {{ distribution.get_distributed_retention|intcomma }}
+                  {{ distribution.get_distributed_settlement|intcomma }}
                   <span class="mg-l-5 tx-11 tx-normal tx-success" title="Payment distribution percentage.">{{ distribution.get_distribution_percentage }}%</span>
                 </td>
                 {% if object.status == object.OPEN %}

@@ -7,12 +7,13 @@ from .fields import MoneyField
 
 class DeliveryOrderForm(forms.ModelForm):
     """Model form for creating new deliveries."""
+    quantity = MoneyField(max_digits=10, decimal_places=2)
 
     class Meta:
         model = DeliveryOrder
         fields = (
             'lc_number', 'batch', 'bill_of_loading',
-            'port',  'vessel', 'arrival_date'
+            'quantity', 'port',  'vessel', 'arrival_date'
         )
 
 

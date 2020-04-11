@@ -46,35 +46,51 @@
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-normal">Batch</span>
-            <span class="tx-medium">{{ object.batch.name }}</span>
+            <span class="tx-medium">
+              <a data-url="{% url 'orders:batch-summary' object.batch.pk %}" class="popup-link btn-modal">
+                <span class="tx-medium">{{ object.batch.name }}</span>
+                &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
+              </a>
+            </span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Product</span>
-            <span class="tx-medium">{{ object.batch.product.name }}</span>
+            <span class="tx-normal">B/L Document No.</span>
+            <span class="tx-medium">
+              <a data-url="{% url 'orders:bill-of-loading' object.pk %}" class="popup-link btn-modal">
+                <span class="tx-medium">{{ object.bill_of_loading }}</span>
+                &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
+              </a>
+            </span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Supplier</span>
-            <span class="tx-medium">{{ object.batch.supplier.name }}</span>
+            <span class="tx-normal">Agreement Quantity</span>
+            <span class="tx-medium">{{ object.quantity|intcomma }}
+              <span class="tx-medium">{{ object.unit.code|upper }}</span>
+            </span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-normal">Rate</span>
             <span class="tx-medium">${{ object.batch.rate|intcomma }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">B/L Document No.</span>
-            <span class="tx-medium">{{ object.bill_of_loading }}</span>
+            <span class="tx-normal">Total Amount</span>
+            <span class="tx-medium">${{ object.get_agreement_amount|intcomma }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Vessel</span>
-            <span class="tx-medium">{{ object.vessel }}</span>
+            <span class="tx-normal">Advance Amount (90%)</span>
+            <span class="tx-medium">${{ object.get_advance_amount|intcomma }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Destination Port</span>
-            <span class="tx-medium">{{ object.port.name }}</span>
+            <span class="tx-normal">10% Amount</span>
+            <span class="tx-medium">${{ object.get_agreement_retention|intcomma }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Vessel Arrival Date</span>
-            <span class="tx-medium">{{ object.arrival_date|date:'d/m/Y' }}</span>
+            <span class="tx-medium">Final Settlement</span>
+            {% if object.get_final_settlement %}
+            <span class="tx-medium">${{ object.get_final_settlement|intcomma }}</span>
+            {% else %}
+            <span class="tx-medium">-</span>
+            {% endif %}
           </li>
         </ul>
       </div><!-- card-body -->

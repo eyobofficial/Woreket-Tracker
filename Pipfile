@@ -31,6 +31,7 @@ pendulum = "*"
 celery = "==4.4.2"
 pyyaml = "*"
 django-countries = "*"
+ipython = "*"
 
 [requires]
 python_version = "3.6"

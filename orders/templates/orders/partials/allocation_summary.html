@@ -13,36 +13,28 @@
             <span class="tx-normal">Rate</span>
             <span class="tx-medium">${{ object.batch.rate|intcomma }}</span>
           </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="allocation-quantity-col">
-            <span class="tx-normal">Total Quantity</span>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Total allocated quantity" data-target="allocation-quantity-col">
+            <span class="tx-normal">Quantity</span>
             {% if object.get_allocated_quantity %}
             <span class="tx-medium">{{ object.get_allocated_quantity|intcomma }} {{ object.unit.code|upper }}</span>
             {% else %}
             <span class="tx-medium">-</span>
             {% endif %}
           </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="allocation-amount-col">
-            <span class="tx-normal">Total Amount</span>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Total allocated amount" data-target="allocation-amount-col">
+            <span class="tx-normal">Amount</span>
             {% if object.get_allocated_amount %}
             <span class="tx-medium">${{ object.get_allocated_amount|intcomma }}</span>
             {% else %}
             <span class="tx-medium">-</span>
             {% endif %}
           </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Advance (90%)</span>
-            {% if object.get_advance_amount %}
-            <span class="tx-medium">${{ object.get_advance_amount|intcomma }}</span>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="10% amount for allocated amount" data-target="allocation-retention-col">
+            <span class="tx-normal">10% Amount</span>
+            {% if object.get_allocated_retention %}
+            <span class="tx-medium">${{ object.get_allocated_retention|intcomma }}</span>
             {% else %}
             <span class="tx-medium">-</span>
-            {% endif %}
-          </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="allocation-retention-col">
-            <span class="tx-normal tx-primary">Total 10% Amount</span>
-            {% if object.get_allocated_retention %}
-            <span class="tx-medium tx-primary">${{ object.get_allocated_retention|intcomma }}</span>
-            {% else %}
-            <span class="tx-medium tx-primary">-</span>
             {% endif %}
           </li>
         </ul>
@@ -71,7 +63,7 @@
 
       <div class="card-body pd-x-0 pd-t-0">
         <div class="table-responsive">
-          <table class="table table-dashboard table-card mg-b-0" id="allocation-table">
+          <table class="table table-dashboard table-striped table-card mg-b-0" id="allocation-table">
             <thead>
               <tr>
                 <th>Region</th>

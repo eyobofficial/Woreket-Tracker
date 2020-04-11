@@ -5,7 +5,7 @@ from .views import OpenOrderListView, OrderCreateView, OrderUpdateView, \
     AllocationUpdateView, AllocationDeleteView, LetterFormView, \
     AllocationLetterView, DistributionCreateView, DistributionUpdateView, \
     DistributionDeleteView, DistributionDetailView, ClosedOrderListView, \
-    OrderReopenView, OrderDeleteView
+    OrderReopenView, OrderDeleteView, BatchSummaryView, BillOfLoadingSummary
 
 
 app_name = 'orders'
@@ -35,6 +35,16 @@ urlpatterns = [
         '<uuid:pk>/close/',
         OrderCloseView.as_view(),
         name='order-close'
+    ),
+    path(
+        'batch/<uuid:pk>/summary/',
+        BatchSummaryView.as_view(),
+        name='batch-summary'
+    ),
+    path(
+        'bill-of-loading/<uuid:pk>/summary/',
+        BillOfLoadingSummary.as_view(),
+        name='bill-of-loading'
     ),
     path(
         '<uuid:pk>/letter-form/',

@@ -80,6 +80,18 @@ class OrderDetailView(BaseOrderView, DetailView):
         return super().get_context_data(**kwargs)
 
 
+class BatchSummaryView(BaseOrderView, DetailView):
+    """A popup modal for batch summary page."""
+    template_name = 'orders/modals/batch_summary.html'
+    model = Batch
+
+
+class BillOfLoadingSummary(BaseOrderView, DetailView):
+    """A popup modal for bill of loading summary page."""
+    template_name = 'orders/modals/bill_of_loading_summary.html'
+    model = DeliveryOrder
+
+
 class OrderCreateView(BaseOrderView, CreateView):
     """Creates new delivery order instances."""
     template_name = 'orders/modals/order_form.html'
@@ -95,7 +107,7 @@ class OrderCreateView(BaseOrderView, CreateView):
         return super().get_context_data(**kwargs)
 
     def get_success_url(self):
-        return reverse('orders:open-order-detail', args=[self.object.pk])
+        return reverse('orders:order-detail', args=[self.object.pk])
 
     def form_valid(self, form):
         self.object = form.save(commit=False)

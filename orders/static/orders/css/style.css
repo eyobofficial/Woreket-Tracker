@@ -2,15 +2,21 @@
     cursor: pointer;
 }
 
-.distribution-quantity-col a.btn-modal {
+a.popup-link.btn-modal {
     cursor: pointer;
     color: #0168fa;
 }
 
-.distribution-quantity-col a.btn-modal:hover {
+a.popup-link.btn-modal:hover {
     color: #0148ae;
 }
 
-.distribution-quantity-col a.btn-modal:hover span {
+a.popup-link.btn-modal:hover span {
     text-decoration: underline;
+}
+
+.table-dashboard thead th:last-child,
+.table-dashboard tbody td:last-child {
+    padding-right: 8px !important;
+    padding-left: 8px !important;
 }
