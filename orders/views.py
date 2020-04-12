@@ -17,12 +17,11 @@ from .models import DeliveryOrder, Allocation, Port, Distribution
 from .letters.allocationletter import AllocationLetter
 
 
-class OpenOrderListView(BaseOrderView, ListView):
-    """Lists all delivery orders with open status."""
-    template_name = 'orders/open_orders_list.html'
+class BaseOrderListView(BaseOrderView, ListView):
+    """Abstract base class for open & closed order list views."""
     model = DeliveryOrder
-    queryset = DeliveryOrder.objects.filter(status=DeliveryOrder.OPEN)
     paginate_by = 10
+    status = None
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -49,8 +48,7 @@ class OpenOrderListView(BaseOrderView, ListView):
         # Build product menu
         ProductMenu = namedtuple('ProductMenu', ['product', 'count'])
         products = Product.objects.filter(
-            batches__delivery_orders__status=DeliveryOrder.OPEN,
-            batches__delivery_orders__isnull=False
+            batches__delivery_orders__status=self.status
         )
         products = Counter(products)
         products = [ProductMenu(p, c) for p, c in products.items()]
@@ -62,7 +60,7 @@ class OpenOrderListView(BaseOrderView, ListView):
         # Build Batch Menu
         BatchMenu = namedtuple('BatchMenu', ['batch', 'count'])
         batches = Batch.objects.filter(
-            delivery_orders__status=DeliveryOrder.OPEN,
+            delivery_orders__status=self.status,
             delivery_orders__isnull=False
         )
         batches = Counter(batches)
@@ -73,10 +71,10 @@ class OpenOrderListView(BaseOrderView, ListView):
         selected_batch = Batch.objects.filter(pk=batch_pk).first()
 
         kwargs.update({
-            'open_count': self.queryset.count(),
+            'order_count': self.queryset.count(),
             'search_query': self.request.GET.get('search', '').strip(),
 
-            'lc_menu': self.get_lc_list(status=DeliveryOrder.OPEN),
+            'lc_menu': self.get_lc_list(),
             'selected_lc': self.request.GET.get('lc'),
 
             'product_menu': products,
@@ -96,7 +94,7 @@ class OpenOrderListView(BaseOrderView, ListView):
         )
         return search_qs
 
-    def get_lc_list(self, status):
+    def get_lc_list(self):
         """Returns LC numbers for open delivery orders.
 
         Args:
@@ -107,21 +105,25 @@ class OpenOrderListView(BaseOrderView, ListView):
             TypeError: when a status argument is missing
         """
         LCNumber = namedtuple('LCNumber', ['lc_number', 'count'])
-        qs = DeliveryOrder.objects.filter(status=status).values_list(
+        qs = DeliveryOrder.objects.filter(status=self.status).values_list(
             'lc_number', flat=True
         )
         counter = Counter(qs)
         return [LCNumber(l, c) for l, c in counter.items()]
 
 
-class ClosedOrderListView(BaseOrderView, ListView):
+class OpenOrderListView(BaseOrderListView):
+    """Lists all delivery orders with open status."""
+    template_name = 'orders/open_orders_list.html'
+    queryset = DeliveryOrder.objects.filter(status=DeliveryOrder.OPEN)
+    status = DeliveryOrder.OPEN
+
+
+class ClosedOrderListView(BaseOrderListView):
     """Lists all delivery orders with open status."""
     template_name = 'orders/closed_orders_list.html'
-    model = DeliveryOrder
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(status=DeliveryOrder.CLOSED)
+    queryset = DeliveryOrder.objects.filter(status=DeliveryOrder.CLOSED)
+    status = DeliveryOrder.CLOSED
 
 
 class OrderDetailView(BaseOrderView, DetailView):
