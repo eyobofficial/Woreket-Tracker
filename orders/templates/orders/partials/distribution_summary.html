@@ -62,7 +62,7 @@
       <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-10">
         <div>
           <h6 class="mg-b-3">Region Distributions</h6>
-          <p class="tx-13 tx-color-03 mg-b-10">Actual distribution data to regions.</p>
+          <p class="tx-13 tx-color-03 mg-b-0">Actual distribution data to regions.</p>
         </div>
         <div class="d-flex mg-t-20 mg-sm-t-0">
           <div class="btn-group flex-fill">
@@ -85,7 +85,7 @@
                 <th class="text-right distribution-amount-col">Amount (USD)</th>
                 <th class="text-right distribution-retention-col">10% Amount (USD)</th>
                 <th class="text-right distribution-distributed-col">Distributed Amount</th>
-                {% if object.status == object.OPEN %}<th></th>{% endif %}
+                {% if object.status == object.OPEN %}<th class="action"></th>{% endif %}
               </tr>
             </thead>
             <tbody>
@@ -106,7 +106,7 @@
                   <span class="mg-l-5 tx-11 tx-normal tx-success" title="Payment distribution percentage.">{{ distribution.get_distribution_percentage }}%</span>
                 </td>
                 {% if object.status == object.OPEN %}
-                <td class="text-right">
+                <td class="text-right action">
                   <div class="mg-l-auto d-flex justify-content-end">
                     <nav class="nav nav-icon-only">
                       <a data-url="{% url 'orders:order-distribution-update' distribution.pk %}"

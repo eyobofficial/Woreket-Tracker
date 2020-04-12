@@ -1,3 +1,6 @@
+from collections import Counter, namedtuple
+
+from django.db.models import Q
 from django.http import FileResponse, HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
@@ -5,7 +8,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
 from django.views.generic.detail import BaseDetailView
 from django.urls import reverse_lazy, reverse
 
-from shared.models import Customer, Batch
+from shared.models import Customer, Batch, Product
 
 from .forms import DeliveryOrderForm, AllocationForm, LetterDownloadForm, \
     DistributionForm
@@ -18,10 +21,97 @@ class OpenOrderListView(BaseOrderView, ListView):
     """Lists all delivery orders with open status."""
     template_name = 'orders/open_orders_list.html'
     model = DeliveryOrder
+    queryset = DeliveryOrder.objects.filter(status=DeliveryOrder.OPEN)
+    paginate_by = 10
 
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(status=DeliveryOrder.OPEN)
+        lc_number = self.request.GET.get('lc')
+        batch_pk = self.request.GET.get('batch')
+        product_pk = self.request.GET.get('product')
+        search_query = self.request.GET.get('search')
+
+        if lc_number is not None:
+            qs = qs.filter(lc_number=lc_number)
+
+        if product_pk is not None:
+            qs = qs.filter(batch__product__pk=product_pk).distinct()
+
+        if batch_pk is not None:
+            qs = qs.filter(batch__pk=batch_pk)
+
+        if search_query is not None:
+            search_query = search_query.strip()
+            qs = self.get_search_result(search_query)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        # Build product menu
+        ProductMenu = namedtuple('ProductMenu', ['product', 'count'])
+        products = Product.objects.filter(
+            batches__delivery_orders__status=DeliveryOrder.OPEN,
+            batches__delivery_orders__isnull=False
+        )
+        products = Counter(products)
+        products = [ProductMenu(p, c) for p, c in products.items()]
+
+        # Selected Product
+        product_pk = self.request.GET.get('product')
+        selected_product = Product.objects.filter(pk=product_pk).first()
+
+        # Build Batch Menu
+        BatchMenu = namedtuple('BatchMenu', ['batch', 'count'])
+        batches = Batch.objects.filter(
+            delivery_orders__status=DeliveryOrder.OPEN,
+            delivery_orders__isnull=False
+        )
+        batches = Counter(batches)
+        batches = [BatchMenu(b, c) for b, c in batches.items()]
+
+        # Selected Batch
+        batch_pk = self.request.GET.get('batch')
+        selected_batch = Batch.objects.filter(pk=batch_pk).first()
+
+        kwargs.update({
+            'open_count': self.queryset.count(),
+            'search_query': self.request.GET.get('search', '').strip(),
+
+            'lc_menu': self.get_lc_list(status=DeliveryOrder.OPEN),
+            'selected_lc': self.request.GET.get('lc'),
+
+            'product_menu': products,
+            'selected_product': selected_product,
+
+            'batch_menu': batches,
+            'selected_batch': selected_batch
+        })
+        return super().get_context_data(**kwargs)
+
+    def get_search_result(self, query):
+        """Returns a delivery order queryset using search query."""
+        search_qs = self.queryset.filter(
+            Q(vessel__icontains=query) |
+            Q(lc_number__icontains=query) |
+            Q(batch__product__name__icontains=query)
+        )
+        return search_qs
+
+    def get_lc_list(self, status):
+        """Returns LC numbers for open delivery orders.
+
+        Args:
+            status (constant): status of the delivery orders to return
+        Return:
+            lc numbers: list of tuple of lc numbers with their count
+        Raise:
+            TypeError: when a status argument is missing
+        """
+        LCNumber = namedtuple('LCNumber', ['lc_number', 'count'])
+        qs = DeliveryOrder.objects.filter(status=status).values_list(
+            'lc_number', flat=True
+        )
+        counter = Counter(qs)
+        return [LCNumber(l, c) for l, c in counter.items()]
 
 
 class ClosedOrderListView(BaseOrderView, ListView):

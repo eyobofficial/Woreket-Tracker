@@ -1,7 +1,20 @@
 {% extends 'shared/base.html' %}
 {% load static %}
 
+
+{% block vendor-css %}
+<link href="{% static 'shared/lib/datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+<link href="{% static 'shared/lib/datatables.net-responsive-dt/css/responsive.dataTables.min.css' %}" rel="stylesheet">
+{% endblock %}
+
 <!-- CSS -->
 {% block extra-css %}
 <link rel="stylesheet" type="text/css" href="{% static 'orders/css/style.css' %}">
+{% endblock %}
+
+{% block vendor-js %}
+<script src="{% static 'shared/lib/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'shared/lib/datatables.net-dt/js/dataTables.dataTables.min.js' %}"></script>
+<script src="{% static 'shared/lib/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'shared/lib/datatables.net-responsive-dt/js/responsive.dataTables.min.js' %}"></script>
 {% endblock %}

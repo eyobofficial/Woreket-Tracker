@@ -4,126 +4,184 @@
 {% block title %}Delivery Orders | Payment Tracker{% endblock %}
 
 {% block content %}
-  <div class="d-sm-flex align-items-center justify-content-between mg-b-20 mg-lg-b-25 mg-xl-b-30">
-    <div>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb breadcrumb-style1 mg-b-10">
-          <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Delivery Orders</li>
-        </ol>
-      </nav>
-      <h4 class="mg-b-0 tx-spacing--1">All Open Delivery Orders</h4>
+<div class="content content-fixed bd-b">
+  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb breadcrumb-style1 mg-b-10">
+            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Delivery Orders</li>
+          </ol>
+        </nav>
+        <h4 class="mg-b-0">All Open Delivery Orders</h4>
+      </div>
+      <div class="d-none d-md-block mg-t-20 mg-sm-t-0">
+        <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
+          data-url="{% url 'orders:order-create' %}">
+          <i data-feather="plus" class="wd-10 mg-r-5"></i>Add Delivery Order
+        </button>
+      </div>
     </div>
-    <div class="d-none d-md-block">
-      <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
-        data-url="{% url 'orders:order-create' %}">
-        <i data-feather="plus" class="wd-10 mg-r-5"></i>Add Delivery Order
-      </button>
-    </div>
-  </div>
+  </div><!-- container -->
+</div><!-- content -->
 
-  <div class="row row-xs">
-    <div class="col-sm-6 col-lg-3">
-      <div class="card card-body">
-        <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">Conversion Rate</h6>
-        <div class="d-flex d-lg-block d-xl-flex align-items-end">
-          <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">0.81%</h3>
-          <p class="tx-11 tx-color-03 mg-b-0"><span class="tx-medium tx-success">1.2% <i
-                class="icon ion-md-arrow-up"></i></span> than last week</p>
-        </div>
-        <div class="chart-three">
-          <div id="flotChart3" class="flot-chart ht-30"></div>
-        </div><!-- chart-three -->
-      </div>
-    </div><!-- col -->
-    <div class="col-sm-6 col-lg-3 mg-t-10 mg-sm-t-0">
-      <div class="card card-body">
-        <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">Unique Purchases</h6>
-        <div class="d-flex d-lg-block d-xl-flex align-items-end">
-          <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">3,137</h3>
-          <p class="tx-11 tx-color-03 mg-b-0"><span class="tx-medium tx-danger">0.7% <i
-                class="icon ion-md-arrow-down"></i></span> than last week</p>
-        </div>
-        <div class="chart-three">
-          <div id="flotChart4" class="flot-chart ht-30"></div>
-        </div><!-- chart-three -->
-      </div>
-    </div><!-- col -->
-    <div class="col-sm-6 col-lg-3 mg-t-10 mg-lg-t-0">
-      <div class="card card-body">
-        <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">Avg. Order Value</h6>
-        <div class="d-flex d-lg-block d-xl-flex align-items-end">
-          <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">$306.20</h3>
-          <p class="tx-11 tx-color-03 mg-b-0"><span class="tx-medium tx-danger">0.3% <i
-                class="icon ion-md-arrow-down"></i></span> than last week</p>
-        </div>
-        <div class="chart-three">
-          <div id="flotChart5" class="flot-chart ht-30"></div>
-        </div><!-- chart-three -->
-      </div>
-    </div><!-- col -->
-    <div class="col-sm-6 col-lg-3 mg-t-10 mg-lg-t-0">
-      <div class="card card-body">
-        <h6 class="tx-uppercase tx-11 tx-spacing-1 tx-color-02 tx-semibold mg-b-8">Order Quantity</h6>
-        <div class="d-flex d-lg-block d-xl-flex align-items-end">
-          <h3 class="tx-normal tx-rubik mg-b-0 mg-r-5 lh-1">1,650</h3>
-          <p class="tx-11 tx-color-03 mg-b-0"><span class="tx-medium tx-success">2.1% <i
-                class="icon ion-md-arrow-up"></i></span> than last week</p>
-        </div>
-        <div class="chart-three">
-          <div id="flotChart6" class="flot-chart ht-30"></div>
-        </div><!-- chart-three -->
-      </div>
-    </div><!-- col -->
+<div class="content">
+  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+    <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="card mg-b-20 mg-t-10" id="orders-table-card">
+            <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-0">
+              <div>
+                <h6 class="mg-b-3 pb-0">Open Distribution Orders</h6>
+                <p class="tx-13 tx-color-03 mg-b-20">Currently open or unsettled distribution orders.</p>
+              </div>
+              <div class="d-flex mg-t-20 mg-sm-t-0">
+                <form>
+                  <div class="search-form mg-l-15 d-none d-sm-flex justify-content-end">
+                    <input type="search" name="search" class="form-control" placeholder="Search" value="{{ search_query }}">
+                    <button class="btn" type="submit"><i data-feather="search"></i></button>
+                  </div>
+                </form>
+              </div>
+            </div><!-- card-header -->
+            <div class="table-responsive">
+              <table class="table table-dashboard mg-b-0" id="open-delivery-order-table">
+                <thead>
+                  <tr>
+                    <th>Opened Date</th>
+                    <th>Vessel</th>
+                    <th>Letter of Credit</th>
+                    <th>Batch</th>
+                    <th>Product</th>
+                    <th class="text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for order in object_list %}
+                  <tr>
+                    <td class="tx-color-03 tx-normal">{{ order.created_at|date:'d/m/Y' }}</td>
+                    <td class="tz-color-03 tx-medium">
+                      <a href="{% url 'orders:order-detail' order.pk %}">{{ order.vessel }}</a>
+                    </td>
+                    <td class="tz-color-03 tx-normal">{{ order.lc_number }}</td>
+                    <td class="tz-color-03 tx-normal">{{ order.batch.name }}</td>
+                    <td class="tz-color-03 tx-normal">{{ order.batch.product.name }}</td>
+                    <td class="text-right"><span class="badge badge-success">open</span></td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    {% if search_query %}
+                    <td colspan="8" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Result Found</td>
+                    {% else %}
+                    <td colspan="8" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Open Delivery Order</td>
+                    {% endif %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div><!-- table-responsive -->
+          </div><!-- card -->
 
-    <div class="col-sm-12 mg-t-20 mg-b-40">
-      <div class="card mg-b-10">
-        <div class="card-header pd-t-20 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-0">
-          <div>
-            <h6 class="mg-b-5 pb-1">Open Distribution Orders</h6>
-          </div>
-        </div><!-- card-header -->
-        <div class="table-responsive">
-          <table class="table table-dashboard mg-b-0">
-            <thead>
-              <tr>
-                <th>Opened Date</th>
-                <th>Vessel</th>
-                <th>Letter of Credit</th>
-                <th>Batch</th>
-                <th>Supplier</th>
-                <th>Product</th>
-                <th class="text-right">Allocated Quantity</th>
-                <th class="text-right">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for order in object_list %}
-              <tr>
-                <td class="tx-color-03 tx-normal">{{ order.created_at|date:'d/m/Y' }}</td>
-                <td class="tz-color-03 tx-medium">
-                  <a href="{% url 'orders:order-detail' order.pk %}">{{ order.vessel }}</a>
-                </td>
-                <td class="tz-color-03 tx-normal">{{ order.lc_number }}</td>
-                <td class="tz-color-03 tx-normal">{{ order.batch.name }}</td>
-                <td class="tz-color-03 tx-normal">{{ order.batch.supplier.name }}</td>
-                <td class="tz-color-03 tx-normal">{{ order.batch.product.name }}</td>
-                {% if order.get_allocated_quantity %}
-                <td class="text-right tx-medium tx-teal">{{ order.get_allocated_quantity|intcomma }} {{ order.unit.code|upper }}</td>
+          <!-- Pagination -->
+          <nav aria-label="Page navigation example" id="pagination-nav">
+          {% if is_paginated %}
+            <ul class="pagination pagination-circle justify-content-end mg-b-0">
+              {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a class="page-link page-link-icon" href="?page={{ page_obj.previous_page_number }}">
+                  <i class="fas fa-chevron-left"></i>
+                </a>
+              </li>
+              {% else %}
+              <li class="page-item disabled">
+                <a class="page-link page-link-icon" href="#">
+                  <i class="fas fa-chevron-left"></i>
+                </a>
+              </li>
+              {% endif %}
+
+              {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
                 {% else %}
-                <td class="text-right tx-medium">-</td>
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
                 {% endif %}
-                <td class="text-right"><span class="badge badge-success">open</span></td>
-              </tr>
-              {% empty %}
-              <tr>
-                <td colspan="8" class="tx-medium tx-color-03 text-center pt-5 pb-5">No Open Delivery Order</td>
-              </tr>
               {% endfor %}
-            </tbody>
-          </table>
-        </div><!-- table-responsive -->
-      </div><!-- card -->
-    </div><!-- col -->
-  </div><!-- row -->
+
+              {% if page_obj.has_next %}
+              <li class="page-item">
+                <a class="page-link page-link-icon" href="?page={{ page_obj.next_page_number }}"><i class="fas fa-chevron-right"></i></a>
+              </li>
+              {% else %}
+              <li class="page-item disabled">
+                <a class="page-link page-link-icon" href="#">
+                  <i class="fas fa-chevron-right"></i>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          {% endif %}
+          </nav>
+        </div><!-- col -->
+
+        <div class="col-md-3 col-sm-12 mg-t-10 mg-lg-t-0 pd-sm-l-40">
+          {% if product_menu %}
+          <h6 class="tx-uppercase tx-semibold mg-t-10 mg-b-15">Products</h6>
+          <nav class="nav nav-classic tx-13">
+            <a href="{{ request.path }}" class="nav-link {% if not selected_product and not selected_batch and not selected_lc %}active{% endif %}">
+              <span>All</span> <span class="badge">{{ open_count }}</span>
+            </a>
+            {% for item in product_menu %}
+            <a href="{{ request.path }}?product={{ item.product.id }}"
+              class="nav-link {% if item.product.id == selected_product.pk %}active{% endif %}">
+              <span>{{ item.product.name }}</span> <span class="badge">{{ item.count }}</span>
+            </a>
+            {% endfor %}
+          </nav>
+          {% endif %}
+          <hr>
+          {% if lc_menu %}
+          <h6 class="tx-uppercase tx-semibold mg-t-10 mg-b-15">Letter of Credit (L/C)</h6>
+          <nav class="nav nav-classic tx-13 mg-lg-b-20">
+          {% for lc in lc_menu %}
+            <a href="{{ request.path }}?lc={{ lc.lc_number }}" class="nav-link {% if lc.lc_number == selected_lc %}active{% endif %}">
+              <span>{{ lc.lc_number }}</span> <span class="badge">{{ lc.count }}</span></a>
+          {% endfor %}
+          </nav>
+          {% endif %}
+          <hr>
+          {% if batch_menu %}
+          <h6 class="tx-uppercase tx-semibold mg-t-10 mg-b-15">Purchased Batches</h6>
+          <nav class="nav nav-classic tx-13 mg-lg-b-20">
+            {% for item in batch_menu %}
+            <a href="{{ request.path }}?batch={{ item.batch.pk }}" class="nav-link {% if item.batch.id == selected_batch.id %}active{% endif %}">
+              <span>{{ item.batch.name }} ({{ item.batch.product.name }})</span> <span class="badge">{{ item.count }}</span>
+            </a>
+            {% endfor %}
+          </nav>
+          {% endif %}
+        </div><!-- col -->
+      </div><!-- row -->
+    </div><!-- container -->
+  </div><!-- container -->
+</div><!-- content -->
+
+<script>
+  $(function() {
+    $('input[name=search]').on('keyup change', function() {
+      var query = $(this).val();
+      var url = '{{ request.path }}?search=' + query;
+
+      $.get(url, function(data) {
+        var $table = $('#open-delivery-order-table');
+        var $pagination = $('#pagination-nav');
+
+        $table.replaceWith($(data).find('#open-delivery-order-table'));
+        $pagination.replaceWith($(data).find('#pagination-nav'));
+      });
+    });
+  });
+</script>
 {% endblock %}

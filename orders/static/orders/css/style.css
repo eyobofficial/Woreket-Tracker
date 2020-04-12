@@ -15,8 +15,17 @@ a.popup-link.btn-modal:hover span {
     text-decoration: underline;
 }
 
-.table-dashboard thead th:last-child,
-.table-dashboard tbody td:last-child {
+.table thead th.action:last-child,
+.table tbody td.action:last-child {
     padding-right: 8px !important;
     padding-left: 8px !important;
+}
+
+#orders-table-card .search-form .form-control {
+    width: 70%;
+    height: calc(1.3em + 0.8375rem + 2px);
+}
+
+#orders-table-card .search-form  button {
+    z-index: 100;
 }

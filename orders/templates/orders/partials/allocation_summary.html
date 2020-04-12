@@ -47,7 +47,7 @@
       <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-10">
         <div>
           <h6 class="mg-b-3">Region Allocations</h6>
-          <p class="tx-13 tx-color-03 mg-b-10">Region allocations as per the agreement</p>
+          <p class="tx-13 tx-color-03 mg-b-0">Region allocations as per the agreement</p>
         </div>
         <div class="d-flex mg-t-20 mg-sm-t-0">
           <div class="btn-group flex-fill">
@@ -71,7 +71,7 @@
                 <th class="text-right">Rate (USD)</th>
                 <th class="text-right allocation-amount-col">Amount (USD)</th>
                 <th class="text-right allocation-retention-col">10% Amount (USD)</th>
-                {% if object.status == object.OPEN %}<th></th>{% endif %}
+                {% if object.status == object.OPEN %}<th class="action"></th>{% endif %}
               </tr>
             </thead>
             <tbody>
@@ -83,7 +83,7 @@
                 <td class="text-right tx-normal text-right allocation-amount-col">{{ allocation.get_amount|intcomma }}</td>
                 <td class="tx-medium tx-medium text-right allocation-retention-col">{{ allocation.get_retention|intcomma }}</td>
                 {% if object.status == object.OPEN %}
-                <td class="text-right">
+                <td class="text-right action">
                   <div class="mg-l-auto d-flex justify-content-end">
                     <nav class="nav nav-icon-only">
                       <a data-url="{% url 'orders:order-allocation-update' allocation.pk %}"

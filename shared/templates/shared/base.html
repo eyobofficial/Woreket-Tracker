@@ -24,6 +24,9 @@
     <link href="{% static 'shared/lib/jqvmap/jqvmap.min.css' %}" rel="stylesheet">
     <link href="{% static 'shared/lib/select2/css/select2.min.css' %}" rel="stylesheet">
 
+    <!-- Extra vendor css plugins/libraries -->
+    {% block vender-css %}{% endblock %}
+
     <!-- DashForge CSS -->
     <link rel="stylesheet" href="{% static 'shared/css/dashforge.dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'shared/css/dashforge.css' %}">
@@ -104,11 +107,15 @@
       </div><!-- navbar-right -->
     </header><!-- navbar -->
 
+    {% block content %}{% endblock %}
+
+    {% comment %}
     <div class="content content-fixed">
       <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
-        {% block content %}{% endblock %}
+
       </div><!-- container -->
     </div><!-- content -->
+    {% endcomment %}
 
     <!-- Modal -->
     <div class="fade modal" id="modal-widget" tabindex="-1" role="dialog"></div>

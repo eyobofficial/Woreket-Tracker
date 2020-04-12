@@ -6,70 +6,77 @@
 
 {% block content %}
 
-<!-- Breadcrumb -->
-<div class="d-sm-flex align-items-center justify-content-between mg-b-20 mg-lg-b-25 mg-xl-b-30">
-  <div>
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb breadcrumb-style1 mg-b-10">
-        <li class="breadcrumb-item"><a href="#">Dashbooard</a></li>
-        {% if object.status == object.CLOSED %}
-        <li class="breadcrumb-item"><a href="{% url 'orders:closed-orders-list' %}">Closed Delivery Orders</a></li>
-        {% else %}
-        <li class="breadcrumb-item"><a href="{% url 'orders:open-orders-list' %}">Open Delivery Orders</a></li>
-        {% endif %}
-        <li class="breadcrumb-item active" aria-current="page">{{ object.lc_number }} </li>
-      </ol>
-    </nav>
-    <h4 class="mg-b-0 tx-spacing--1">Delivery Order for {{ object.vessel }} Vessel</h4>
-  </div>
+<div class="content content-fixed">
+  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+    <!-- Breadcrumb -->
+    <div class="d-sm-flex align-items-center justify-content-between mg-b-20 mg-lg-b-25 mg-xl-b-30">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb breadcrumb-style1 mg-b-10">
+            <li class="breadcrumb-item"><a href="#">Dashbooard</a></li>
+            {% if object.status == object.CLOSED %}
+            <li class="breadcrumb-item"><a href="{% url 'orders:closed-orders-list' %}">Closed Delivery Orders</a></li>
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'orders:open-orders-list' %}">Open Delivery Orders</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ object.lc_number }} </li>
+          </ol>
+        </nav>
+        <h4 class="mg-b-0 tx-spacing--1">Delivery Order for {{ object.vessel }} Vessel</h4>
+      </div>
 
-  {% if object.status == object.OPEN %}
-  <div class="d-none d-md-block">
-    <button class="btn btn-sm pd-x-15 btn-white btn-uppercase btn-modal" data-url="{% url 'orders:order-close' object.pk %}">
-      <i data-feather="flag" class="wd-10 mg-r-5"></i> Close
-    </button>
-    <button class="btn btn-sm pd-x-15 btn-white btn-uppercase mg-l-5 btn-modal" data-url="{% url 'orders:order-letter-form' object.pk %}">
-      <i data-feather="file-text" class="wd-10 mg-r-5"></i> Letter
-    </button>
-    <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
-      data-url="{% url 'orders:open-order-update' object.pk %}">
-      <i data-feather="edit" class="wd-10 mg-r-5"></i> Edit
-    </button>
-  </div>
-  {% else %}
-  <div class="d-none d-md-block">
-    <button class="btn btn-sm pd-x-15 btn-white btn-uppercase mg-l-5 btn-modal"
-      data-url="{% url 'orders:order-open' object.pk %}">
-      <i data-feather="share" class="wd-10 mg-r-5"></i> Re-Open
-    </button>
-    <button class="btn btn-sm pd-x-15 btn-danger btn-uppercase mg-l-5 btn-modal"
-      data-url="{% url 'orders:order-delete' object.pk %}">
-      <i data-feather="trash" class="wd-10 mg-r-5"></i> Delete
-    </button>
-  </div>
-  {% endif %}
-</div>
+      {% if object.status == object.OPEN %}
+      <div class="d-none d-md-block">
+        <button class="btn btn-sm pd-x-15 btn-white btn-uppercase btn-modal"
+          data-url="{% url 'orders:order-close' object.pk %}">
+          <i data-feather="flag" class="wd-10 mg-r-5"></i> Close
+        </button>
+        <button class="btn btn-sm pd-x-15 btn-white btn-uppercase mg-l-5 btn-modal"
+          data-url="{% url 'orders:order-letter-form' object.pk %}">
+          <i data-feather="file-text" class="wd-10 mg-r-5"></i> Letter
+        </button>
+        <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
+          data-url="{% url 'orders:open-order-update' object.pk %}">
+          <i data-feather="edit" class="wd-10 mg-r-5"></i> Edit
+        </button>
+      </div>
+      {% else %}
+      <div class="d-none d-md-block">
+        <button class="btn btn-sm pd-x-15 btn-white btn-uppercase mg-l-5 btn-modal"
+          data-url="{% url 'orders:order-open' object.pk %}">
+          <i data-feather="share" class="wd-10 mg-r-5"></i> Re-Open
+        </button>
+        <button class="btn btn-sm pd-x-15 btn-danger btn-uppercase mg-l-5 btn-modal"
+          data-url="{% url 'orders:order-delete' object.pk %}">
+          <i data-feather="trash" class="wd-10 mg-r-5"></i> Delete
+        </button>
+      </div>
+      {% endif %}
+    </div>
 
-{% if object.status == object.CLOSED %}
-<div class="alert alert-info d-flex align-items-center" role="alert">
-  <i data-feather="info" class="mg-r-10"></i> This delivery order was closed on {{ object.updated_at|date:'d/m/Y'}}.
-</div>
-{% endif %}
+    {% if object.status == object.CLOSED %}
+    <div class="alert alert-info d-flex align-items-center" role="alert">
+      <i data-feather="info" class="mg-r-10"></i> This delivery order was closed on {{ object.updated_at|date:'d/m/Y'}}.
+    </div>
+    {% endif %}
 
-{% if object.get_delivered_quantity > object.get_allocated_quantity %}
-<div class="alert alert-danger d-flex align-items-center" role="alert">
-  <i data-feather="alert-circle" class="mg-r-10"></i> The distributed quantity is greater than the allocated quantity.
-</div>
-{% endif %}
+    {% if object.get_delivered_quantity > object.get_allocated_quantity %}
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+      <i data-feather="alert-circle" class="mg-r-10"></i> The distributed quantity is greater than the allocated quantity.
+    </div>
+    {% endif %}
 
-<!-- Delivery Order Summary -->
-{% include 'orders/partials/delivery_order_summary.html' with object=object %}
+    <!-- Delivery Order Summary -->
+    {% include 'orders/partials/delivery_order_summary.html' with object=object %}
 
-<!-- Allocation Summary -->
-{% include 'orders/partials/allocation_summary.html' with object=object %}
+    <!-- Allocation Summary -->
+    {% include 'orders/partials/allocation_summary.html' with object=object %}
 
-<!-- Distribution Summary -->
-{% include 'orders/partials/distribution_summary.html' with object=object %}
+    <!-- Distribution Summary -->
+    {% include 'orders/partials/distribution_summary.html' with object=object %}
+
+  </div><!-- container -->
+</div><!-- content -->
 
 <script>
   $(function () {

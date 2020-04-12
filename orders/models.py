@@ -49,10 +49,7 @@ class DeliveryOrder(models.Model):
     )
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    lc_number = models.CharField(
-        'letter of credit number',
-        max_length=30, unique=True
-    )
+    lc_number = models.CharField('letter of credit number', max_length=30)
     vessel = models.CharField(max_length=120, help_text='Shipment vessel name.')
     batch = models.ForeignKey(Batch, null=True, on_delete=models.SET_NULL)
     quantity = models.DecimalField(
