@@ -126,43 +126,8 @@
           </nav>
         </div><!-- col -->
 
-        <div class="col-md-3 col-sm-12 mg-t-10 mg-lg-t-0 pd-sm-l-40">
-          {% if product_menu %}
-          <h6 class="tx-uppercase tx-semibold mg-t-10 mg-b-15">Products</h6>
-          <nav class="nav nav-classic tx-13">
-            <a href="{{ request.path }}" class="nav-link {% if not selected_product and not selected_batch and not selected_lc %}active{% endif %}">
-              <span>All</span> <span class="badge">{{ order_count }}</span>
-            </a>
-            {% for item in product_menu %}
-            <a href="{{ request.path }}?product={{ item.product.id }}"
-              class="nav-link {% if item.product.id == selected_product.pk %}active{% endif %}">
-              <span>{{ item.product.name }}</span> <span class="badge">{{ item.count }}</span>
-            </a>
-            {% endfor %}
-          </nav>
-          {% endif %}
-          <hr>
-          {% if lc_menu %}
-          <h6 class="tx-uppercase tx-semibold mg-t-10 mg-b-15">Letter of Credit (L/C)</h6>
-          <nav class="nav nav-classic tx-13 mg-lg-b-20">
-          {% for lc in lc_menu %}
-            <a href="{{ request.path }}?lc={{ lc.lc_number }}" class="nav-link {% if lc.lc_number == selected_lc %}active{% endif %}">
-              <span>{{ lc.lc_number }}</span> <span class="badge">{{ lc.count }}</span></a>
-          {% endfor %}
-          </nav>
-          {% endif %}
-          <hr>
-          {% if batch_menu %}
-          <h6 class="tx-uppercase tx-semibold mg-t-10 mg-b-15">Purchased Batches</h6>
-          <nav class="nav nav-classic tx-13 mg-lg-b-20">
-            {% for item in batch_menu %}
-            <a href="{{ request.path }}?batch={{ item.batch.pk }}" class="nav-link {% if item.batch.id == selected_batch.id %}active{% endif %}">
-              <span>{{ item.batch.name }} ({{ item.batch.product.name }})</span> <span class="badge">{{ item.count }}</span>
-            </a>
-            {% endfor %}
-          </nav>
-          {% endif %}
-        </div><!-- col -->
+        <!-- Aside filter links -->
+        {% include 'orders/partials/links_aside.html' %}
       </div><!-- row -->
     </div><!-- container -->
   </div><!-- container -->

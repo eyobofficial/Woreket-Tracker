@@ -26,6 +26,20 @@ a.popup-link.btn-modal:hover span {
     height: calc(1.3em + 0.8375rem + 2px);
 }
 
-#orders-table-card .search-form  button {
+#orders-table-card .search-form button {
     z-index: 100;
+}
+
+.show-toggle {
+    line-height: 1.4;
+}
+
+.show-toggle:hover {
+    color: #0168fa;
+    text-decoration: underline;
+    transition: 0.3s all;
+}
+
+.show-toggle:focus {
+    color: #8392a5;
 }
