@@ -30,9 +30,13 @@
 
         <form method="POST">
           {% csrf_token %}
+
+          <!-- Redirect URL -->
+          <input type="hidden" name="next" value="{{ next }}">
+
           <div class="form-group">
-            <label>Username or Email</label>
-            <input name="username" class="form-control" placeholder="yourname@yourmail.com">
+            <label>Email or Phone Number</label>
+            <input name="username" class="form-control" placeholder="yourname@yourmail.com" value="{{ form.username.value|default_if_none:'' }}">
           </div>
           <div class="form-group">
             <div class="d-flex justify-content-between mg-b-5">

@@ -89,6 +89,7 @@ class DeliveryOrder(models.Model):
     class Meta:
         default_related_name = 'delivery_orders'
         ordering = ('-created_at', )
+        permissions = [('close_deliveryorder', 'Close delivery order')]
         verbose_name = 'Delivery Order'
         verbose_name_plural = 'Delivery Orders'
 

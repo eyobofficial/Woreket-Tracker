@@ -18,7 +18,7 @@ python manage.py loaddata customers categories ports units
 
 # Create a default superuser account
 echo 'Create a default superuser account...'
-python manage.py create_default_superuser
+python manage.py defaultsuperuser
 
 
 echo 'Collect static files...'

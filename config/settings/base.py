@@ -152,7 +152,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 # Authentications
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'accounts.backends.EmailBackend'
+    'accounts.backends.PhoneNumberBackend'
 ]
 
 
@@ -161,7 +161,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
 # Login/logout
-LOGIN_REDIRECT_URL = 'retentions:lc-overview'
+LOGIN_REDIRECT_URL = 'orders:open-orders-list'
 LOGOUT_REDIRECT_URL = 'accounts:login'
 
 
@@ -169,8 +169,8 @@ LOGOUT_REDIRECT_URL = 'accounts:login'
 CORS_ORIGIN_ALLOW_ALL = True
 
 # Default Admin Account
-DEFAULT_ADMIN_USERNAME = config('ADMIN_USERNAME')
 DEFAULT_ADMIN_EMAIL = config('ADMIN_EMAIL')
+DEFAULT_ADMIN_PHONE_NUMBER = config('ADMIN_PHONE_NUMBER')
 DEFAULT_ADMIN_PASSWORD = config('ADMIN_PASSWORD')
 DEFAULT_ADMIN_FIRST_NAME = config('ADMIN_FIRST_NAME', '')
 DEFAULT_ADMIN_LAST_NAME = config('ADMIN_LAST_NAME', '')
@@ -187,3 +187,12 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
+
+
+# Django Phonenumber Field
+PHONENUMBER_DEFAULT_REGION = 'ET'
+PHONENUMBER_DB_FORMAT = 'NATIONAL'
+
+
+# Start-up fixtures
+FIXTURES = ['categories', 'customers', 'units', 'ports']
