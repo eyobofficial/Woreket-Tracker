@@ -109,6 +109,17 @@
 
     {% block content %}{% endblock %}
 
+    <footer class="footer">
+      <div>
+        <span>&copy; {% now 'Y' %} Payment Tracker.</span>
+      </div>
+      <div>
+        <nav class="nav">
+          <span>Created by <a href="#">Zede.Tech</a></span>
+        </nav>
+      </div>
+    </footer>
+
     <!-- Modal -->
     <div class="fade modal" id="modal-widget" tabindex="-1" role="dialog"></div>
     <script>

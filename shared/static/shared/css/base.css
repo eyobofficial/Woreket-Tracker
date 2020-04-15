@@ -43,3 +43,17 @@ label.disabled {
     background-color: #FFFF99;
     transition: 0.4s;
 }
+
+
+.page-profile {
+    min-height: 92vh;
+    position: relative;
+    margin: 0;
+    padding-bottom: 20px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
