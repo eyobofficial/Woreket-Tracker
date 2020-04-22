@@ -8,6 +8,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
 from django.views.generic.detail import BaseDetailView
 from django.urls import reverse_lazy, reverse
 
+from shared.constants import ROLE_SUPPLIER
 from shared.models import Customer, Batch, Product
 
 from .forms import DeliveryOrderForm, AllocationForm, LetterDownloadForm, \
@@ -22,13 +23,19 @@ class BaseOrderListView(BaseOrderView, ListView):
     model = DeliveryOrder
     paginate_by = 10
     status = None
+    access_groups = '__all__'
 
     def get_queryset(self):
         qs = super().get_queryset()
+
+        user = self.request.user
         lc_number = self.request.GET.get('lc')
         batch_pk = self.request.GET.get('batch')
         product_pk = self.request.GET.get('product')
         search_query = self.request.GET.get('search')
+
+        if user.role and user.role.name == ROLE_SUPPLIER:
+            qs = qs.filter(batch__supplier=user.supplier)
 
         if lc_number is not None:
             qs = qs.filter(lc_number=lc_number)
@@ -45,11 +52,15 @@ class BaseOrderListView(BaseOrderView, ListView):
         return qs
 
     def get_context_data(self, **kwargs):
+        user = self.request.user
         # Build product menu
         ProductMenu = namedtuple('ProductMenu', ['product', 'count'])
         products = Product.objects.filter(
             batches__delivery_orders__status=self.status
         )
+        if user.role.name == ROLE_SUPPLIER:
+            products = products.filter(batches__supplier=user.supplier)
+
         products = Counter(products)
         products = [ProductMenu(p, c) for p, c in products.items()]
 
@@ -63,6 +74,9 @@ class BaseOrderListView(BaseOrderView, ListView):
             delivery_orders__status=self.status,
             delivery_orders__isnull=False
         )
+        if user.role.name == ROLE_SUPPLIER:
+            batches = batches.filter(supplier=user.supplier)
+
         batches = Counter(batches)
         batches = [BatchMenu(b, c) for b, c in batches.items()]
 
@@ -105,9 +119,13 @@ class BaseOrderListView(BaseOrderView, ListView):
             TypeError: when a status argument is missing
         """
         LCNumber = namedtuple('LCNumber', ['lc_number', 'count'])
-        qs = DeliveryOrder.objects.filter(status=self.status).values_list(
-            'lc_number', flat=True
-        )
+        user = self.request.user
+        qs = DeliveryOrder.objects.filter(status=self.status)
+
+        if user.role.name == ROLE_SUPPLIER:
+            qs = qs.filter(batch__supplier=user.supplier)
+
+        qs = qs.values_list('lc_number', flat=True)
         counter = Counter(qs)
         return [LCNumber(l, c) for l, c in counter.items()]
 
@@ -130,6 +148,7 @@ class OrderDetailView(BaseOrderView, DetailView):
     """Displays a detail of a single delivery order."""
     template_name = 'orders/order_detail.html'
     model = DeliveryOrder
+    access_roles = '__all__'
 
     def get_context_data(self, **kwargs):
         customers = Customer.objects.all()

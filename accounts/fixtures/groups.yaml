@@ -1,0 +1,19 @@
+- model: auth.Group
+  pk: 1
+  fields:
+    name: Admin
+
+- model: auth.Group
+  pk: 2
+  fields:
+    name: Management
+
+- model: auth.Group
+  pk: 3
+  fields:
+    name: Staff
+
+- model: auth.Group
+  pk: 4
+  fields:
+    name: Supplier

@@ -1,8 +1,9 @@
-from shared.mixins import BaseLoggedInView
+from shared.mixins import BaseAccessMixin
 
 
-class BaseOrderView(BaseLoggedInView):
+class BaseOrderView(BaseAccessMixin):
     """
     Base view for all `orders` app views.
     """
     page_name = 'delivery-orders'
+    access_roles = []

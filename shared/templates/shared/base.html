@@ -76,25 +76,26 @@
         <ul class="nav navbar-menu">
           {% if user.is_authenticated %}
           <li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">Main Navigation</li>
-          <li class="nav-item {% if page_name == 'distribution-orders' %}active{% endif %}">
-            <a href="#" class="nav-link"><i data-feather="box"></i>Distribution Orders</a>
-          </li>
-          <li class="nav-item with-sub {% if page_name == 'delivery-orders' %}active{% endif %}">
-            <a href="" class="nav-link"><i data-feather="box"></i>Delivery Orders</a>
 
-            <ul class="navbar-menu-sub">
-              <li class="nav-sub-item">
-                <a href="{% url 'orders:open-orders-list' %}" class="nav-sub-link">
-                  <i data-feather="activity"></i>Open Delivery Orders
-                </a>
-              </li>
-              <li class="nav-sub-item">
-                <a href="{% url 'orders:closed-orders-list' %}" class="nav-sub-link">
-                  <i data-feather="archive"></i>Closed Delivery Orders
-                </a>
-              </li>
-            </ul>
-          </li>
+          {% if user.status == user.ACTIVE and perms.orders %}
+            <li class="nav-item with-sub {% if page_name == 'delivery-orders' %}active{% endif %}">
+              <a href="" class="nav-link"><i data-feather="box"></i>Delivery Orders</a>
+
+              <ul class="navbar-menu-sub">
+                <li class="nav-sub-item">
+                  <a href="{% url 'orders:open-orders-list' %}" class="nav-sub-link">
+                    <i data-feather="activity"></i>Open Delivery Orders
+                  </a>
+                </li>
+                <li class="nav-sub-item">
+                  <a href="{% url 'orders:closed-orders-list' %}" class="nav-sub-link">
+                    <i data-feather="archive"></i>Closed Delivery Orders
+                  </a>
+                </li>
+              </ul>
+            </li>
+          {% endif %}
+
           <li class="nav-item">
             <a href="#" class="nav-link"><i data-feather="box"></i>Settings</a>
           </li>
@@ -102,7 +103,11 @@
         </ul>
       </div><!-- navbar-menu-wrapper -->
       <div class="navbar-right">
+        {% if user.is_authenticated %}
         <a href="{% url 'accounts:logout' %}"><i data-feather="log-out"></i> &nbsp;Sign Out</a>
+        {% else %}
+        <a href="{% url 'accounts:login' %}"><i data-feather="login-in"></i> &nbsp;Sign In</a>
+        {% endif %}
         </div><!-- dropdown -->
       </div><!-- navbar-right -->
     </header><!-- navbar -->

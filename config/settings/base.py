@@ -54,6 +54,7 @@ INSTALLED_APPS += [
     'accounts.apps.AccountsConfig',
     'shared.apps.SharedConfig',
     'orders.apps.OrdersConfig',
+    'users.apps.UsersConfig'
 ]
 
 MIDDLEWARE = [
@@ -72,7 +73,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -195,4 +196,4 @@ PHONENUMBER_DB_FORMAT = 'NATIONAL'
 
 
 # Start-up fixtures
-FIXTURES = ['categories', 'customers', 'units', 'ports']
+FIXTURES = ['categories', 'customers', 'units', 'ports', 'groups']
