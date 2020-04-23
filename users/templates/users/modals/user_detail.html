@@ -14,11 +14,11 @@
           <h5 id="contactName" class="tx-18 tx-xl-20 mg-b-5 mg-t-20">{{ object.get_full_name }}</h5>
           <p class="tx-13 tx-lg-12 tx-xl-14 tx-color-03 mg-b-30">
             {% if object.status == object.PENDING %}
-            <span class="badge badge-warning">pending</span>
+            <span class="badge badge-warning tx-12">pending</span>
             {% elif object.status == object.ACTIVE %}
-            <span class="badge badge-success">active</span>
+            <span class="badge badge-success pd-x-10 tx-12">active</span>
             {% else %}
-            <span class="badge badge-secondary">disabled</span>
+            <span class="badge badge-secondary tx-12">disabled</span>
             {% endif %}
           </p>
 
