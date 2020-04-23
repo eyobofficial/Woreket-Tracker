@@ -133,9 +133,8 @@
     <script>
       $(function () {
         var $modal = $('#modal-widget');
-        var $btn = $('.btn-modal');
 
-        $btn.on('click', function () {
+        $('body').on('click', '.btn-modal', function () {
           var url = $(this).data('url');
           $.get(url, function (data) {
             $modal.html(data);

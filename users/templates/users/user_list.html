@@ -1,7 +1,7 @@
 {% extends 'orders/base.html' %}
 {% load humanize %}
 
-{% block title %}All Users | Payment Tracker{% endblock %}
+{% block title %}Users | Payment Tracker{% endblock %}
 
 {% block content %}
 <div class="content content-fixed bd-b">
@@ -59,9 +59,8 @@
                     <td class="tx-color-03 tx-normal">{{ user.date_joined|date:'d/m/Y' }}</td>
                     <td class="tz-color-03 tx-medium">
                       <a data-url="{% url 'users:user-detail' user.pk %}" class="popup-link btn-modal">
-                        {{ user.get_full_name }}
+                        {{ user.get_full_name }} &nbsp;<i class="fas fa-external-link-alt tx-color-03 tx-10"></i>
                       </a>
-                      <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3 tx-color-03 tx-normal"></i>
                     </td>
                     <td class="tz-color-03 tx-normal">{{ user.phone_number|default_if_none:'-' }}</td>
                     <td class="tz-color-03 tx-normal">{{ user.role|default_if_none:'-' }}</td>
