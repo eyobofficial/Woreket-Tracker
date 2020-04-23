@@ -15,8 +15,8 @@ a.popup-link.btn-modal:hover span {
     text-decoration: underline;
 }
 
-.table thead th.action:last-child,
-.table tbody td.action:last-child {
+.table-detail .table thead th.action:last-child,
+.table-detail .table tbody td.action:last-child {
     padding-right: 8px !important;
     padding-left: 8px !important;
 }

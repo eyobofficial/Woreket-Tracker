@@ -27,10 +27,14 @@ class BaseAccessMixin(LoginRequiredMixin, UserPassesTestMixin, BaseViewMixin):
 
     def test_func(self):
         user = self.request.user
+        if user.is_superuser:
+            return True
+
         if user.status != User.ACTIVE or user.role is None:
             return False
 
-        elif self.access_roles == '__all__' or user.role in self.access_roles:
+        elif (self.access_roles == '__all__' or
+                user.role in self.access_roles or user.is_superuser):
             return True
 
     def get_permission_denied_message(self):

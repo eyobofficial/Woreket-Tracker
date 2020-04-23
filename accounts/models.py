@@ -12,21 +12,9 @@ from .managers import CustomUserManager
 
 
 class CustomUser(AbstractUser):
-    ADMIN = 'ADMIN'
-    STAFF = 'STAFF'
-    MANAGEMENT = 'MANAGEMENT'
-    SUPPLIER = 'SUPPLIER'
-
-    ROLE_CHOICES = (
-        (ADMIN, 'Admin'),
-        (STAFF, 'Staff'),
-        (MANAGEMENT, 'Management'),
-        (SUPPLIER, 'Supplier')
-    )
-
-    PENDING = 'PENDING'
-    ACTIVE = 'ACTIVE'
-    DISABLED = 'DISABLED'
+    PENDING = 1
+    ACTIVE = 2
+    DISABLED = 3
 
     STATUS_CHOICES = (
         (PENDING, 'Pending'),
@@ -37,8 +25,7 @@ class CustomUser(AbstractUser):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     email = models.EmailField('email address', unique=True)
     phone_number = PhoneNumberField(null=True, unique=True)
-    status = models.CharField(
-        max_length=30,
+    status = models.IntegerField(
         choices=STATUS_CHOICES,
         default=PENDING
     )
@@ -64,3 +51,6 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    def status_str(self):
+        return str(self.status)

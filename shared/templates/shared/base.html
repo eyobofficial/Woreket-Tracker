@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="{% static 'shared/css/dashforge.dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'shared/css/dashforge.css' %}">
     <link rel="stylesheet" href="{% static 'shared/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'shared/css/dashforge.profile.css' %}">
 
     <!-- Extra CSS -->
     {% block extra-css %}{% endblock %}
@@ -75,30 +76,32 @@
 
         <ul class="nav navbar-menu">
           {% if user.is_authenticated %}
-          <li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">Main Navigation</li>
+            <li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">Main Navigation</li>
 
-          {% if user.status == user.ACTIVE and perms.orders %}
-            <li class="nav-item with-sub {% if page_name == 'delivery-orders' %}active{% endif %}">
-              <a href="" class="nav-link"><i data-feather="box"></i>Delivery Orders</a>
+            {% if user.status == user.ACTIVE and perms.orders %}
+              <li class="nav-item with-sub {% if page_name == 'delivery-orders' %}active{% endif %}">
+                <a href="" class="nav-link"><i data-feather="box"></i>Delivery Orders</a>
 
-              <ul class="navbar-menu-sub">
-                <li class="nav-sub-item">
-                  <a href="{% url 'orders:open-orders-list' %}" class="nav-sub-link">
-                    <i data-feather="activity"></i>Open Delivery Orders
-                  </a>
-                </li>
-                <li class="nav-sub-item">
-                  <a href="{% url 'orders:closed-orders-list' %}" class="nav-sub-link">
-                    <i data-feather="archive"></i>Closed Delivery Orders
-                  </a>
-                </li>
-              </ul>
+                <ul class="navbar-menu-sub">
+                  <li class="nav-sub-item">
+                    <a href="{% url 'orders:open-orders-list' %}" class="nav-sub-link">
+                      <i data-feather="activity"></i>Open Delivery Orders
+                    </a>
+                  </li>
+                  <li class="nav-sub-item">
+                    <a href="{% url 'orders:closed-orders-list' %}" class="nav-sub-link">
+                      <i data-feather="archive"></i>Closed Delivery Orders
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            {% endif %}
+
+            {% if user.status == user.ACTIVE and perms.users %}
+            <li class="nav-item {% if page_name == 'users' %}active{% endif %}">
+              <a href="{% url 'users:user-list' %}" class="nav-link"><i data-feather="box"></i>Users</a>
             </li>
-          {% endif %}
-
-          <li class="nav-item">
-            <a href="#" class="nav-link"><i data-feather="box"></i>Settings</a>
-          </li>
+            {% endif %}
           {% endif %}
         </ul>
       </div><!-- navbar-menu-wrapper -->

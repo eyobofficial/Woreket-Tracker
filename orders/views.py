@@ -58,7 +58,7 @@ class BaseOrderListView(BaseOrderView, ListView):
         products = Product.objects.filter(
             batches__delivery_orders__status=self.status
         )
-        if user.role.name == ROLE_SUPPLIER:
+        if user.role and user.role.name == ROLE_SUPPLIER:
             products = products.filter(batches__supplier=user.supplier)
 
         products = Counter(products)
@@ -74,7 +74,7 @@ class BaseOrderListView(BaseOrderView, ListView):
             delivery_orders__status=self.status,
             delivery_orders__isnull=False
         )
-        if user.role.name == ROLE_SUPPLIER:
+        if user.role and user.role.name == ROLE_SUPPLIER:
             batches = batches.filter(supplier=user.supplier)
 
         batches = Counter(batches)
@@ -122,7 +122,7 @@ class BaseOrderListView(BaseOrderView, ListView):
         user = self.request.user
         qs = DeliveryOrder.objects.filter(status=self.status)
 
-        if user.role.name == ROLE_SUPPLIER:
+        if user.role and user.role.name == ROLE_SUPPLIER:
             qs = qs.filter(batch__supplier=user.supplier)
 
         qs = qs.values_list('lc_number', flat=True)
