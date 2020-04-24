@@ -1,26 +1,28 @@
+from collections import namedtuple
+
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.db.models import Q
-from django.views.generic import ListView, DetailView
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, UpdateView
 
 from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, \
     ROLE_SUPPLIER
-from .mixins import BaseUsersView
+from shared.models import Supplier
+
+from .forms import UserForm
+from .mixins import BaseUserEditView
 
 
 User = get_user_model()
 
 
-class UserListView(BaseUsersView, ListView):
+class UserListView(BaseUserEditView, ListView):
     template_name = 'users/user_list.html'
-    model = User
-    queryset = User.objects.filter(is_superuser=False, is_active=True)
     paginate_by = 10
-    access_roles = [ROLE_ADMIN]
 
     def get_queryset(self):
         qs = super().get_queryset()
-        qs = qs.exclude(pk=self.request.user.pk)
-
         status = self.request.GET.get('status')
         role = self.request.GET.get('role')
         search_query = self.request.GET.get('search')
@@ -89,17 +91,29 @@ class UserListView(BaseUsersView, ListView):
         return search_qs
 
 
-class UserDetailView(BaseUsersView, DetailView):
+class UserDetailView(BaseUserEditView, DetailView):
     template_name = 'users/modals/user_detail.html'
-    model = User
-    queryset = User.objects.filter(is_active=True, is_superuser=False)
-    access_roles = [ROLE_ADMIN]
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.exclude(pk=self.request.user.pk)
-        return qs
 
     def get_context_data(self, **kwargs):
         kwargs.update(ROLE_SUPPLIER=ROLE_SUPPLIER)
+        return super().get_context_data(**kwargs)
+
+
+class UserUpdateView(BaseUserEditView, UpdateView):
+    template_name = 'users/modals/user_form.html'
+    form_class = UserForm
+    success_url = reverse_lazy('users:user-list')
+
+    def get_context_data(self, **kwargs):
+        def get_role(role_name):
+            role = Group.objects.get(name=role_name)
+            return role.pk, role.name
+
+        ROLE_CHOICES = [ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, ROLE_SUPPLIER]
+        Role = namedtuple('Role', ['id', 'name'])
+        roles = [Role(get_role(r)[0], get_role(r)[1]) for r in ROLE_CHOICES]
+
+        kwargs.update(role_list=roles)
+        kwargs.update(supplier_list=Supplier.objects.all())
+        kwargs.update(role_supplier=Role(*get_role(ROLE_SUPPLIER)))
         return super().get_context_data(**kwargs)
