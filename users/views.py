@@ -31,7 +31,7 @@ class UserListView(BaseUserEditView, ListView):
             qs = qs.filter(status=status)
 
         if role is not None:
-            qs = qs.filter(role__name=role)
+            qs = qs.filter(groups__name=role)
 
         if search_query is not None:
             search_query = search_query.strip()
@@ -49,10 +49,10 @@ class UserListView(BaseUserEditView, ListView):
 
         # Role
         role = self.request.GET.get('role')
-        admin_list = self.queryset.filter(role__name=ROLE_ADMIN)
-        management_list = self.queryset.filter(role__name=ROLE_MANAGEMENT)
-        staff_list = self.queryset.filter(role__name=ROLE_STAFF)
-        supplier_list = self.queryset.filter(role__name=ROLE_SUPPLIER)
+        admin_list = self.queryset.filter(groups__name=ROLE_ADMIN)
+        management_list = self.queryset.filter(groups__name=ROLE_MANAGEMENT)
+        staff_list = self.queryset.filter(groups__name=ROLE_STAFF)
+        supplier_list = self.queryset.filter(groups__name=ROLE_SUPPLIER)
 
         kwargs.update({
             # Status
@@ -105,17 +105,7 @@ class UserUpdateView(BaseUserEditView, UpdateView):
     success_url = reverse_lazy('users:user-list')
 
     def get_context_data(self, **kwargs):
-        def get_role(role_name):
-            role = Group.objects.get(name=role_name)
-            return role.pk, role.name
-
-        ROLE_CHOICES = [ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, ROLE_SUPPLIER]
-        Role = namedtuple('Role', ['id', 'name'])
-        roles = [Role(get_role(r)[0], get_role(r)[1]) for r in ROLE_CHOICES]
-
-        kwargs.update(role_list=roles)
-        kwargs.update(supplier_list=Supplier.objects.all())
-        kwargs.update(role_supplier=Role(*get_role(ROLE_SUPPLIER)))
+        kwargs.update(role_supplier=Group.objects.get(name=ROLE_SUPPLIER))
         return super().get_context_data(**kwargs)
 
 

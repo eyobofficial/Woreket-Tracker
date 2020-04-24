@@ -6,9 +6,14 @@ from django.db import models
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, \
+    ROLE_SUPPLIER
 from shared.models import Supplier
 
 from .managers import CustomUserManager
+
+
+ROLE_GROUPS = [ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, ROLE_SUPPLIER]
 
 
 class CustomUser(AbstractUser):
@@ -29,11 +34,6 @@ class CustomUser(AbstractUser):
         choices=STATUS_CHOICES,
         default=PENDING
     )
-    role = models.ForeignKey(
-        Group,
-        blank=True, null=True,
-        on_delete=models.SET_NULL
-    )
     supplier = models.ForeignKey(
         Supplier,
         null=True, blank=True,
@@ -52,5 +52,7 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
-    def status_str(self):
-        return str(self.status)
+    @property
+    def role(self):
+        """Gets user role."""
+        return self.groups.filter(name__in=ROLE_GROUPS).first()

@@ -23,7 +23,6 @@ class BaseOrderListView(BaseOrderView, ListView):
     model = DeliveryOrder
     paginate_by = 10
     status = None
-    access_groups = '__all__'
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -135,6 +134,7 @@ class OpenOrderListView(BaseOrderListView):
     template_name = 'orders/open_orders_list.html'
     queryset = DeliveryOrder.objects.filter(status=DeliveryOrder.OPEN)
     status = DeliveryOrder.OPEN
+    access_roles = '__all__'
 
 
 class ClosedOrderListView(BaseOrderListView):
@@ -142,6 +142,7 @@ class ClosedOrderListView(BaseOrderListView):
     template_name = 'orders/closed_orders_list.html'
     queryset = DeliveryOrder.objects.filter(status=DeliveryOrder.CLOSED)
     status = DeliveryOrder.CLOSED
+    access_roles = '__all__'
 
 
 class OrderDetailView(BaseOrderView, DetailView):

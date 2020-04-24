@@ -34,7 +34,7 @@ class BaseAccessMixin(LoginRequiredMixin, UserPassesTestMixin, BaseViewMixin):
             return False
 
         elif (self.access_roles == '__all__' or
-                user.role in self.access_roles or user.is_superuser):
+                user.groups.all() in self.access_roles or user.is_superuser):
             return True
 
     def get_permission_denied_message(self):

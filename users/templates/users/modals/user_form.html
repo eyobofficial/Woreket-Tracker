@@ -13,11 +13,8 @@
     </div><!-- modal-header -->
 
     <!-- LC Form -->
-    <form action="{{ request.path }}?section=delivery-order-section" method="POST">
+    <form action="{{ request.path }}" method="POST">
       {% csrf_token %}
-
-      <!-- Hidden fields -->
-      <input type="hidden" name="" value="">
 
       <div class="modal-body pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
         <div class="row">
@@ -27,7 +24,7 @@
               <label for="first-name" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">First Name</label>
               <input
                 id="first-name" class="form-control" name="first_name"
-                value="{{ form.first_name.value }}" placeholder="Enter first name" required
+                value="{{ form.first_name.value|default_if_none:'' }}" placeholder="Enter first name" required
               />
             </div>
 
@@ -36,7 +33,7 @@
               <label for="last-name" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Last Name</label>
               <input
                 id="last-name" class="form-control"
-                name="last_name" value="{{ form.last_name.value }}"
+                name="last_name" value="{{ form.last_name.value|default_if_none:'' }}"
                 placeholder="Enter last name" required
               />
             </div>
@@ -45,27 +42,27 @@
             <div class="form-group">
               <label for="role" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Role</label>
               <select name="role" id="role" class="form-control custom-select" required>
-                {% if not form.role.value %}
+                {% if not form.instance.role %}
                 <option selected disabled value="">Choose Role</option>
                 {% endif %}
 
-                {% for role in role_list %}
-                <option value="{{ role.id }}" {% if form.instance.role.name == role.name %}selected{% endif %}>{{ role.name }}</option>
+                {% for choice in form.fields.role.choices %}
+                <option value="{{ choice.0 }}" {% if form.instance.role.pk == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
                 {% endfor %}
               </select>
             </div>
 
             <!-- Supplier -->
-            <div class="form-group {% if form.role.value != role_supplier.id %}d-none{% endif %}">
+            <div class="form-group {% if form.instance.role.pk != role_supplier.pk %}d-none{% endif %}">
               <label for="supplier" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Supplier</label>
-              <select name="supplier" id="supplier" class="form-control custom-select" {% if form.role.value == role_supplier.id %}required{% endif %}>
+              <select name="supplier" id="supplier" class="form-control custom-select" {% if form.instance.role.pk == role_supplier.pk %}required{% endif %}>
                 {% if not form.supplier.value %}
                 <option selected disabled value="">Choose A Supplier</option>
                 {% endif %}
 
-                {% for supplier in supplier_list %}
-                <option value="{{ supplier.id }}" {% if form.instance.supplier.pk == supplier.pk %}selected{% endif %}>
-                  {{ supplier.name }}
+                {% for choice in form.fields.supplier.choices %}
+                <option value="{{ choice.0 }}" {% if form.instance.supplier.pk == choice.0 %}selected{% endif %}>
+                  {{ choice.1 }}
                 </option>
                 {% endfor %}
               </select>
@@ -90,7 +87,7 @@
       var role = $(this).val();
       var $supplier = $('[name=supplier');
 
-      if (role === '{{ role_supplier.id }}') {
+      if (role === '{{ role_supplier.pk }}') {
         $supplier.closest('.form-group').removeClass('d-none');
         $supplier.attr('required', true);
       } else {
