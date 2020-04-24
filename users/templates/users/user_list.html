@@ -81,20 +81,20 @@
                           </a>
 
                           {% if user.status == user.PENDING %}
-                          <a data-url="" class="nav-link d-none d-sm-block btn-modal" title="Approve user">
+                          <a data-url="{% url 'users:user-activate' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Approve user">
                             <i class="mg-l-10 wd-10 fas fa-user-check tx-16"></i>
                           </a>
                           {% elif user.status == user.ACTIVE %}
-                          <a data-url="" class="nav-link d-none d-sm-block btn-modal" title="Deactivate user">
+                          <a data-url="{% url 'users:user-deactivate' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Deactivate user">
                             <i class="mg-l-10 wd-10 fas fa-user-times tx-16"></i>
                           </a>
                           {% else %}
-                          <a data-url="" class="nav-link d-none d-sm-block btn-modal" title="Re-activate user">
+                          <a data-url="{% url 'users:user-activate' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Re-activate user">
                             <i class="mg-l-10 wd-10 fas fa-user-plus tx-16"></i>
                           </a>
                           {% endif %}
 
-                          <a data-url="" class="nav-link d-none d-sm-block btn-modal" title="Delete user">
+                          <a data-url="{% url 'users:user-delete' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Delete user">
                             <i class="mg-l-10 wd-10 far fa-trash-alt tx-16"></i>
                           </a>
                         </nav>

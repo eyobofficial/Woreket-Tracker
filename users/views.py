@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.db.models import Q
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, UpdateView
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 
 from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, \
     ROLE_SUPPLIER
@@ -117,3 +117,20 @@ class UserUpdateView(BaseUserEditView, UpdateView):
         kwargs.update(supplier_list=Supplier.objects.all())
         kwargs.update(role_supplier=Role(*get_role(ROLE_SUPPLIER)))
         return super().get_context_data(**kwargs)
+
+
+class UserActivateView(BaseUserEditView, UpdateView):
+    template_name = 'users/modals/user_activate.html'
+    fields = ('status', )
+    success_url = reverse_lazy('users:user-list')
+
+
+class UserDeactivateView(BaseUserEditView, UpdateView):
+    template_name = 'users/modals/user_deactivate.html'
+    fields = ('status', )
+    success_url = reverse_lazy('users:user-list')
+
+
+class UserDeleteView(BaseUserEditView, DeleteView):
+    template_name = 'users/modals/user_delete_form.html'
+    success_url = reverse_lazy('users:user-list')
