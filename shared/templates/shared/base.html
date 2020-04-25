@@ -107,9 +107,26 @@
       </div><!-- navbar-menu-wrapper -->
       <div class="navbar-right">
         {% if user.is_authenticated %}
-        <a href="{% url 'accounts:logout' %}"><i data-feather="log-out"></i> &nbsp;Sign Out</a>
+          <div class="dropdown dropdown-profile">
+            <a href="" class="dropdown-link" data-toggle="dropdown" data-display="static">
+              <div class="avatar avatar-sm">
+                <span class="avatar-initial rounded-circle bg-info">{{ user.first_name|slice:':1'|first }}</span>
+              </div>
+            </a><!-- dropdown-link -->
+            <div class="dropdown-menu dropdown-menu-right tx-13">
+              <div class="avatar avatar-lg mg-b-15">
+                <span class="avatar-initial rounded-circle bg-info">{{ user.first_name|slice:':1'|first }}</span>
+              </div>
+              <h6 class="tx-semibold mg-b-5">{{ user.get_full_name|title }}</h6>
+              <p class="mg-b-25 tx-12 tx-color-03">{{ user.role.name }}</p>
+
+              <a href="#" class="dropdown-item"><i data-feather="edit-3"></i> Edit Profile</a>
+              <a href="{% url 'accounts:password-change' %}" class="dropdown-item"><i data-feather="lock"></i> Change Password</a>
+              <a href="{% url 'accounts:logout' %}" class="dropdown-item"><i data-feather="log-out"></i>Sign Out</a>
+            </div><!-- dropdown-menu -->
+          </div><!-- dropdown -->
         {% else %}
-        <a href="{% url 'accounts:login' %}"><i data-feather="login-in"></i> &nbsp;Sign In</a>
+          <a href="{% url 'accounts:login' %}"><i data-feather="login-in"></i> &nbsp;Sign In</a>
         {% endif %}
         </div><!-- dropdown -->
       </div><!-- navbar-right -->
