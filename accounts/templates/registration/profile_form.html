@@ -1,0 +1,123 @@
+{% extends 'shared/base.html' %}
+
+{% block title %}Edit Profile | Payment Tracker{% endblock %}
+
+{% block content %}
+<div class="content content-fixed bd-b">
+  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb breadcrumb-style1 mg-b-10">
+            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit Profile</li>
+          </ol>
+        </nav>
+        <h4 class="mg-b-0">Update Your Profile</h4>
+      </div>
+    </div>
+  </div><!-- container -->
+</div><!-- content -->
+
+<div class="content">
+  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+    <div class="row">
+      <div class="col-md-4 col-sm-12">
+
+        {% for message in messages %}
+          <div class="alert alert-success d-flex align-items-center" role="alert">
+            <i data-feather="check-circle" class="mg-r-10"></i> {{ message }}
+          </div>
+        {% endfor %}
+
+        {% if object.status == object.PENDING %}
+          <div class="alert alert-warning" role="alert">
+            <h5 class="alert-heading">
+              <i data-feather="alert-circle" class="mg-r-5"></i> PENDING
+            </h5>
+            <p>Your account is currently awaiting activation.</p>
+          </div>
+        {% elif object.status == object.DISABLED %}
+          <div class="alert alert-secondary" role="alert">
+            <h5 class="alert-heading">
+              <i data-feather="alert-circle" class="mg-r-5"></i> DEACTIVATED
+            </h5>
+            <p>Your account is currently deactivated.</p>
+          </div>
+        {% endif %}
+
+        <form action="{% url 'accounts:profile-update' %}" method="POST" class="mg-md-t-30">
+          {% csrf_token %}
+
+          <!-- First Name -->
+          <div class="form-group">
+            <label for="first-name">First Name <span class="tx-danger">*</span></label>
+            <input
+              id="first-name"
+              class="form-control {% if form.first_name.errors %}parsley-error{% endif %}"
+              name="first_name"
+              value="{{ form.first_name.value|default_if_none:form.instance.first_name }}"
+              placeholder="Enter your first name" required />
+            {% if form.first_name.errors %}
+            <ul class="parsley-errors-list filled">
+              {% for error in form.first_name.errors %}
+              <li class="parsley-required">{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <!-- Last Name -->
+          <div class="form-group">
+            <label for="last-name">Last Name <span class="tx-danger">*</span></label>
+            <input
+              id="last-name" class="form-control {% if form.last_name.errors %}parsley-error{% endif %}"
+              name="last_name"
+              value="{{ form.last_name.value|default_if_none:form.instance.last_name }}"
+              placeholder="Enter your last name"
+              required
+            />
+            {% if form.last_name.errors %}
+            <ul class="parsley-errors-list filled">
+              {% for error in form.last_name.errors %}
+              <li class="parsley-required">{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <!-- Phone Number -->
+          <div class="mg-b-20">
+            <label for="phone-number">Phone number</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text tx-medium" id="basic-addon2">+251</span>
+              </div>
+              <input
+                id="phone-number" class="form-control {% if form.phone_number.errors %}parsley-error{% endif %}"
+                name="phone_number" value="{{ form.instance.phone_number.raw_input|default_if_none:'' }}"
+                placeholder="Enter you mobile number (Optional)" />
+            </div>
+            {% if form.phone_number.errors %}
+            <ul class="parsley-errors-list filled">
+              {% for error in form.phone_number.errors %}
+              <li class="parsley-required">{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <!-- Management -->
+          <div class="form-group">
+            <label for="role">Role</label>
+            <input id="role" class="form-control" value="{{ form.instance.role.name|default_if_none:'-' }}" disabled required>
+          </div>
+
+          <button class="btn btn-brand-02 mg-t-10 pd-x-40">Save</button>
+        </form>
+      </div><!-- col -->
+
+    </div><!-- row -->
+  </div><!-- container -->
+</div>
+{% endblock %}

@@ -57,3 +57,7 @@ label.disabled {
     bottom: 0;
     width: 100%;
 }
+
+input[disabled] {
+    cursor: not-allowed;
+}
