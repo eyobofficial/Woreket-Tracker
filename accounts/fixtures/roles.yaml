@@ -51,6 +51,9 @@
     - - delete_deliveryorder
       - orders
       - deliveryorder
+    - - reopen_deliveryorder
+      - orders
+      - deliveryorder
     - - view_deliveryorder
       - orders
       - deliveryorder
@@ -190,7 +193,37 @@
   pk: 2
   fields:
     name: Management
-    permissions: []
+    permissions:
+    - - view_allocation
+      - orders
+      - allocation
+    - - view_deliveryorder
+      - orders
+      - deliveryorder
+    - - view_distribution
+      - orders
+      - distribution
+    - - view_batch
+      - shared
+      - batch
+    - - view_customer
+      - shared
+      - customer
+    - - view_location
+      - shared
+      - location
+    - - view_product
+      - shared
+      - product
+    - - view_productcategory
+      - shared
+      - productcategory
+    - - view_supplier
+      - shared
+      - supplier
+    - - view_union
+      - shared
+      - union
 - model: auth.group
   pk: 3
   fields:
@@ -320,4 +353,7 @@
   pk: 4
   fields:
     name: Supplier
-    permissions: []
+    permissions:
+    - - view_deliveryorder
+      - orders
+      - deliveryorder
