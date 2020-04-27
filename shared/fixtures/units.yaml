@@ -2,7 +2,7 @@
   pk: 1
   fields:
     name: meteric ton
-    code: mt
+    code: MT
     type: WEIGHT
 
 - model: shared.Unit

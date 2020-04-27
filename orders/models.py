@@ -25,6 +25,7 @@ class Port(models.Model):
     """Dispatch ports."""
     name = models.CharField(max_length=120, unique=True)
     country = CountryField(countries=NeighbourCountry)
+    office = models.CharField(max_length=120, blank=True)
     is_default = models.BooleanField('default', default=False)
 
     class Meta:

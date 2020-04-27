@@ -3,6 +3,7 @@
   fields:
     name: Port Djibouti
     country: DJ
+    office: M/S Ethiopian Shipping and Logistics Service Enterprise Logistics Sector
     is_default: True
 
 - model: orders.Port

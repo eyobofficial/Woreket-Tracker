@@ -418,7 +418,7 @@ class AllocationLetterView(BaseOrderView, BaseDetailView):
         response = HttpResponse(
             content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         )
-        response['Content-Disposition'] = 'attachment; filename=do-letter.docx'
+        response['Content-Disposition'] = 'attachment; filename=allocation.docx'
         letter.generate(response)
         return response
 
