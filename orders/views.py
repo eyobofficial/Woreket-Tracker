@@ -8,7 +8,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
 from django.views.generic.detail import BaseDetailView
 from django.urls import reverse_lazy, reverse
 
-from shared.constants import ROLE_SUPPLIER
+from shared.constants import ROLE_SUPPLIER, ROLE_ADMIN, ROLE_STAFF
 from shared.models import Customer, Batch, Product
 
 from .forms import DeliveryOrderForm, AllocationForm, LetterDownloadForm, \
@@ -151,6 +151,13 @@ class OrderDetailView(BaseOrderView, DetailView):
     model = DeliveryOrder
     access_roles = '__all__'
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        user = self.request.user
+        if user.role.name == ROLE_SUPPLIER and user.supplier:
+            qs = qs.filter(batch__supplier=user.supplier)
+        return qs
+
     def get_context_data(self, **kwargs):
         customers = Customer.objects.all()
         distributed_buyers = self.object.distributions.values_list(
@@ -196,12 +203,14 @@ class BatchSummaryView(BaseOrderView, DetailView):
     """A popup modal for batch summary page."""
     template_name = 'orders/modals/batch_summary.html'
     model = Batch
+    access_roles = '__all__'
 
 
 class BillOfLoadingSummary(BaseOrderView, DetailView):
     """A popup modal for bill of loading summary page."""
     template_name = 'orders/modals/bill_of_loading_summary.html'
     model = DeliveryOrder
+    access_roles = '__all__'
 
 
 class OrderCreateView(BaseOrderView, CreateView):
@@ -210,6 +219,7 @@ class OrderCreateView(BaseOrderView, CreateView):
     form_class = DeliveryOrderForm
     model = DeliveryOrder
     object = None
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def get_context_data(self, **kwargs):
         kwargs.update({
@@ -233,6 +243,7 @@ class OrderUpdateView(BaseOrderView, UpdateView):
     template_name = 'orders/modals/order_form.html'
     form_class = DeliveryOrderForm
     model = DeliveryOrder
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def get_context_data(self, **kwargs):
         kwargs.update({
@@ -252,6 +263,7 @@ class OrderCloseView(BaseOrderView, UpdateView):
     template_name = 'orders/modals/order_close.html'
     model = DeliveryOrder
     fields = ('status', )
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def form_valid(self, form):
         redirect_url = super().form_valid(form)
@@ -264,6 +276,7 @@ class OrderReopenView(BaseOrderView, UpdateView):
     template_name = 'orders/modals/order_open.html'
     model = DeliveryOrder
     fields = ('status', )
+    access_roles = [ROLE_ADMIN]
 
     def form_valid(self, form):
         redirect_url = super().form_valid(form)
@@ -276,6 +289,7 @@ class OrderDeleteView(BaseOrderView, DeleteView):
     template_name = 'orders/modals/order_delete_form.html'
     model = DeliveryOrder
     success_url = reverse_lazy('orders:closed-orders-list')
+    access_roles = [ROLE_ADMIN]
 
 
 class AllocationCreateView(BaseOrderView, CreateView):
@@ -283,6 +297,7 @@ class AllocationCreateView(BaseOrderView, CreateView):
     template_name = 'orders/modals/allocation_form.html'
     model = Allocation
     form_class = AllocationForm
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def get_context_data(self, **kwargs):
         customers = Customer.objects.all()
@@ -315,6 +330,7 @@ class AllocationUpdateView(BaseOrderView, UpdateView):
     template_name = 'orders/modals/allocation_form.html'
     model = Allocation
     form_class = AllocationForm
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def get_context_data(self, **kwargs):
         customers = Customer.objects.all()
@@ -352,6 +368,7 @@ class AllocationDeleteView(BaseOrderView, DeleteView):
     """Deletes an allocation instance for delivery order."""
     template_name = 'orders/modals/allocation_delete_form.html'
     model = Allocation
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def get_success_url(self):
         page_section = self.request.GET.get('section')
@@ -374,6 +391,7 @@ class LetterFormView(BaseOrderView, FormView):
     """Form view to select a letter to download."""
     template_name = 'orders/modals/letter_form.html'
     form_class = LetterDownloadForm
+    access_roles = '__all__'
 
     def get_context_data(self, **kwargs):
         pk = self.kwargs.get('pk')
@@ -392,6 +410,7 @@ class LetterFormView(BaseOrderView, FormView):
 class AllocationLetterView(BaseOrderView, BaseDetailView):
     """Generates delivery order allocation letter."""
     model = DeliveryOrder
+    access_roles = '__all__'
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -408,6 +427,7 @@ class DistributionDetailView(BaseOrderView, DetailView):
     """Modal detail view for the distribution quantity calculation."""
     template_name = 'orders/modals/distribution_detail.html'
     model = Distribution
+    access_roles = '__all__'
 
 
 class DistributionCreateView(BaseOrderView, CreateView):
@@ -415,6 +435,7 @@ class DistributionCreateView(BaseOrderView, CreateView):
     template_name = 'orders/modals/distribution_form.html'
     model = Distribution
     form_class = DistributionForm
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def get_context_data(self, **kwargs):
         customers = Customer.objects.all()
@@ -449,6 +470,7 @@ class DistributionUpdateView(BaseOrderView, UpdateView):
     template_name = 'orders/modals/distribution_form.html'
     model = Distribution
     form_class = DistributionForm
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def get_context_data(self, **kwargs):
         customers = Customer.objects.all()
@@ -489,6 +511,7 @@ class DistributionDeleteView(BaseOrderView, DeleteView):
     """Deletes a distribution instance for delivery order."""
     template_name = 'orders/modals/distribution_delete_form.html'
     model = Distribution
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def get_context_data(self, **kwargs):
         page_section = self.request.GET.get('section')

@@ -51,7 +51,7 @@
         </div>
         <div class="d-flex mg-t-20 mg-sm-t-0">
           <div class="btn-group flex-fill">
-            {% if not object.is_fully_allocated and object.status == object.OPEN %}
+            {% if not object.is_fully_allocated and object.status == object.OPEN and perms.orders.add_allocation %}
               <a class="tx-12 link-03 btn-modal"
                 data-url="{% url 'orders:order-allocation-create' object.pk %}">
                   <i data-feather="plus" class="wd-15 ht-15"></i> Add allocation
@@ -86,14 +86,19 @@
                 <td class="text-right action">
                   <div class="mg-l-auto d-flex justify-content-end">
                     <nav class="nav nav-icon-only">
+                      {% if perms.orders.change_allocation %}
                       <a data-url="{% url 'orders:order-allocation-update' allocation.pk %}"
                         class="nav-link d-none d-sm-block btn-modal" title="Edit">
                         <i data-feather="edit-3"></i>
                       </a>
+                      {% endif %}
+
+                      {% if perms.orders.delete_allocation %}
                       <a data-url="{% url 'orders:allocation-delete' allocation.pk %}"
                         class="nav-link d-none d-sm-block btn-modal" title="Delete">
                         <i data-feather="trash"></i>
                       </a>
+                      {% endif %}
                     </nav>
                   </div>
                 </td>
@@ -101,7 +106,11 @@
               </tr>
               {% empty %}
               <tr class="empty-row">
+                {% if object.status == object.OPEN %}
+                <td colspan="6" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">No Allocation</td>
+                {% else %}
                 <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">No Allocation</td>
+                {% endif %}
               </tr>
               {% endfor %}
             </tbody>

@@ -76,27 +76,26 @@
                     <td class="text-right action">
                       <div class="mg-l-auto d-flex justify-content-end">
                         <nav class="nav nav-icon-only">
+
                           <a data-url="{% url 'users:user-update' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Edit user">
-                            <i class="wd-10 far fa-edit tx-16"></i>
+                            <i class="wd-10 far fa-edit tx-12 mg-r-5"></i> Edit
                           </a>
+
 
                           {% if user.status == user.PENDING %}
                           <a data-url="{% url 'users:user-activate' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Approve user">
-                            <i class="mg-l-10 wd-10 fas fa-user-check tx-16"></i>
+                            <i class="mg-l-10 wd-10 fas fa-user-check tx-12 mg-r-5"></i> Activate
                           </a>
                           {% elif user.status == user.ACTIVE %}
                           <a data-url="{% url 'users:user-deactivate' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Deactivate user">
-                            <i class="mg-l-10 wd-10 fas fa-user-times tx-16"></i>
+                            <i class="mg-l-10 wd-10 fas fa-user-times tx-12 mg-r-5"></i> Disable
                           </a>
                           {% else %}
                           <a data-url="{% url 'users:user-activate' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Re-activate user">
-                            <i class="mg-l-10 wd-10 fas fa-user-plus tx-16"></i>
+                            <i class="mg-l-10 wd-10 fas fa-user-plus tx-12 mg-r-5"></i> Re-activate
                           </a>
                           {% endif %}
 
-                          <a data-url="{% url 'users:user-delete' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Delete user">
-                            <i class="mg-l-10 wd-10 far fa-trash-alt tx-16"></i>
-                          </a>
                         </nav>
                       </div>
                     </td>

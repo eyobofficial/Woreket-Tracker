@@ -119,8 +119,3 @@ class UserDeactivateView(BaseUserEditView, UpdateView):
     template_name = 'users/modals/user_deactivate.html'
     fields = ('status', )
     success_url = reverse_lazy('users:user-list')
-
-
-class UserDeleteView(BaseUserEditView, DeleteView):
-    template_name = 'users/modals/user_delete_form.html'
-    success_url = reverse_lazy('users:user-list')

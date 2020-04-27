@@ -31,3 +31,16 @@ def decimal_part(value):
     num = str(value)
     _, decimal = num.split('.')
     return decimal
+
+
+@register.filter(name='type')
+def object_type(value):
+    """Returns the python object type of the value.
+
+    Args:
+        value (object): A python object
+
+    Returns:
+        type (str): The type of the object
+    """
+    return type(value)

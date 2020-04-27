@@ -107,11 +107,19 @@
             {% endif %}
           </div>
 
-          <!-- Management -->
+          <!-- Role -->
           <div class="form-group">
             <label for="role">Role</label>
-            <input id="role" class="form-control" value="{{ form.instance.role.name|default_if_none:'-' }}" disabled required>
+            <input id="role" class="form-control" value="{{ object.role.name|default_if_none:'-' }}" disabled required>
           </div>
+
+          {% if object.role.name == ROLE_SUPPLIER %}
+          <!-- Supplier -->
+          <div class="form-group">
+            <label for="supplier">Supplier</label>
+            <input id="supplier" class="form-control" value="{{ object.supplier.name }}" disabled required>
+          </div>
+          {% endif %}
 
           <button class="btn btn-brand-02 mg-t-10 pd-x-40">Save</button>
         </form>

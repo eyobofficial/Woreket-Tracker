@@ -35,3 +35,18 @@ class UserRegistrationForm(CustomUserCreationForm):
 
     class Meta(CustomUserCreationForm.Meta):
         fields = CustomUserCreationForm.Meta.fields + ('first_name', 'last_name')
+
+
+class ProfileUpdateForm(forms.ModelForm):
+    phone_number = PhoneNumberField(
+        required=False,
+        empty_value=None,
+        region='ET',
+        error_messages={
+            'invalid': 'Enter a valid mobile phone number (e.g. 0911427805)'
+        }
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = ('first_name', 'last_name', 'phone_number')

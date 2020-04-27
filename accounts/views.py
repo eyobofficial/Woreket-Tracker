@@ -5,7 +5,9 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView
 
-from .forms import UserRegistrationForm
+from shared.constants import ROLE_SUPPLIER
+
+from .forms import UserRegistrationForm, ProfileUpdateForm
 from .mixins import AccountMixin
 
 
@@ -32,10 +34,14 @@ class PasswordUpdateView(AccountMixin, SuccessMessageMixin, PasswordChangeView):
 class ProfileUpdateView(AccountMixin, SuccessMessageMixin, UpdateView):
     template_name = 'registration/profile_form.html'
     model = User
-    fields = ('first_name', 'last_name', 'phone_number')
+    form_class = ProfileUpdateForm
     success_url = reverse_lazy('accounts:profile-update')
     success_message = 'Your profile is updated successfully.'
     access_roles = '__all__'
 
     def get_object(self):
         return self.request.user
+
+    def get_context_data(self, **kwargs):
+        kwargs.update(ROLE_SUPPLIER=ROLE_SUPPLIER)
+        return super().get_context_data(**kwargs)
