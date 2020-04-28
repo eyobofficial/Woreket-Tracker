@@ -8,7 +8,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, \
     ROLE_SUPPLIER
-from shared.models import Supplier
+from purchases.models import Supplier
 
 from .managers import CustomUserManager
 

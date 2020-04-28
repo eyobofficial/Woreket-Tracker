@@ -78,7 +78,7 @@
           {% if user.is_authenticated %}
             <li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">Main Navigation</li>
 
-            {% if user.status == user.ACTIVE and perms.orders %}
+            {% if user.is_superuser or user.status == user.ACTIVE and perms.orders %}
               <li class="nav-item with-sub {% if page_name == 'delivery-orders' %}active{% endif %}">
                 <a href="" class="nav-link"><i data-feather="box"></i>Delivery Orders</a>
 
@@ -97,7 +97,7 @@
               </li>
             {% endif %}
 
-            {% if user.status == user.ACTIVE and perms.users %}
+            {% if user.is_superuser or user.status == user.ACTIVE and perms.users %}
             <li class="nav-item {% if page_name == 'users' %}active{% endif %}">
               <a href="{% url 'users:user-list' %}" class="nav-link"><i data-feather="box"></i>Users</a>
             </li>

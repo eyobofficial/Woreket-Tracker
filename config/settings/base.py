@@ -54,7 +54,9 @@ INSTALLED_APPS += [
     'accounts.apps.AccountsConfig',
     'shared.apps.SharedConfig',
     'orders.apps.OrdersConfig',
-    'users.apps.UsersConfig'
+    'users.apps.UsersConfig',
+    'purchases.apps.PurchasesConfig',
+    'customers.apps.CustomersConfig',
 ]
 
 MIDDLEWARE = [
@@ -196,4 +198,4 @@ PHONENUMBER_DB_FORMAT = 'NATIONAL'
 
 
 # Start-up fixtures
-FIXTURES = ['categories', 'customers', 'units', 'ports', 'roles']
+FIXTURES = ['categories', 'customers', 'units', 'ports']

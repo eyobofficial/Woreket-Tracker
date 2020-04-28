@@ -9,7 +9,8 @@ from django.views.generic.detail import BaseDetailView
 from django.urls import reverse_lazy, reverse
 
 from shared.constants import ROLE_SUPPLIER, ROLE_ADMIN, ROLE_STAFF
-from shared.models import Customer, Batch, Product
+from customers.models import Customer
+from purchases.models import Product, Batch
 
 from .forms import DeliveryOrderForm, AllocationForm, LetterDownloadForm, \
     DistributionForm

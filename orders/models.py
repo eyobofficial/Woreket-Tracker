@@ -2,6 +2,7 @@ import uuid
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -10,11 +11,12 @@ from django_countries import Countries
 from django_countries.fields import CountryField
 
 from shared.constants import ADVANCE, RETENTION
-from shared.models import Customer, Batch, Unit
+from shared.models import Unit
+from customers.models import Customer
+from purchases.models import Batch
 
 
-# Django User
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 
 
 class NeighbourCountry(Countries):

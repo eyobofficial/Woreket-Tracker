@@ -45,3 +45,15 @@ class BaseAccessMixin(LoginRequiredMixin, UserPassesTestMixin, BaseViewMixin):
             return 'Your account has been disabled.'
         else:
             return "You don't have the right permission to access this page."
+
+
+class BaseSettingsMixin(BaseAccessMixin):
+    """
+    Base view for all settings pages.
+    """
+    page_name = 'settings'
+    setting_name = None
+
+    def get_context_data(self, **kwargs):
+        kwargs.update(setting_name=self.setting_name)
+        return super().get_context_data(**kwargs)

@@ -8,7 +8,7 @@ from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 
 from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, \
     ROLE_SUPPLIER
-from shared.models import Supplier
+from purchases.models import Supplier
 
 from .forms import UserForm
 from .mixins import BaseUserEditView

@@ -1,39 +1,39 @@
-- model: shared.customer
+- model: customers.customer
   pk: 1
   fields:
     name: Amhara Region Agricultural Bureau
     region: Amhara
     code: AMH
 
-- model: shared.customer
+- model: customers.customer
   pk: 2
   fields:
     name: Oromia Cooperative Promotion Agency
     region: Oromia
     code: ORO
 
-- model: shared.customer
+- model: customers.customer
   pk: 3
   fields:
     name: SNNP Region Agricultural & Natural Resource Bureau
     region: SNNP
     code: SNNP
 
-- model: shared.customer
+- model: customers.customer
   pk: 4
   fields:
     name: Ethiopian Agricultural Businesses Corporation
     region: EABC
     code: EABC
 
-- model: shared.customer
+- model: customers.customer
   pk: 5
   fields:
     name: Benishangul Gumuz Agricultural Bureau
     region: Benishangul
     code: BEN
 
-- model: shared.customer
+- model: customers.customer
   pk: 6
   fields:
     name: Tigray
