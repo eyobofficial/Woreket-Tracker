@@ -1,5 +1,7 @@
+import operator
 import uuid
 from decimal import Decimal
+from functools import reduce
 
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -12,7 +14,8 @@ from django_countries.fields import CountryField
 
 from shared.constants import ADVANCE, RETENTION
 from shared.models import Unit
-from customers.models import Customer
+
+from customers.models import Customer, Union
 from purchases.models import Batch
 
 
@@ -340,21 +343,6 @@ class Distribution(models.Model):
         null=True,
         on_delete=models.SET_NULL
     )
-    quantity = models.DecimalField(
-        'received quantity',
-        max_digits=10, decimal_places=2,
-        help_text='Quantity received on the port in product unit.'
-    )
-    shortage = models.DecimalField(
-        'dispatch shortage',
-        max_digits=10, decimal_places=2, default=0,
-        help_text='Quantity deficit after transportation in product unit.'
-    )
-    over = models.DecimalField(
-        'over supplied quantity',
-        max_digits=10, decimal_places=2, default=0,
-        help_text='Over quantity supplied in product unit.'
-    )
     created_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -402,7 +390,8 @@ class Distribution(models.Model):
         Returns:
             quantity (Decimal): received quantity + shortage + over
         """
-        return self.quantity + self.shortage + self.over
+        union_distributions = self.union_distributions.all()
+        return reduce(operator.add, union_distributions, Decimal(0))
 
     def get_amount(self):
         """Returns the total amount for this distribution.
@@ -443,3 +432,37 @@ class Distribution(models.Model):
         percentage = self.get_distribution_percentage()
 
         return round(final_settlement * percentage, 2)
+
+
+class UnionDistribution(models.Model):
+    """Actual distribution data to the unions for the delivery order."""
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    distribution = models.ForeignKey(Distribution, on_delete=models.CASCADE)
+    union = models.ForeignKey(Union, on_delete=models.PROTECT)
+    quantity = models.DecimalField(
+        'received quantity',
+        max_digits=10, decimal_places=2,
+        help_text='Quantity received by the labour union in product unit.'
+    )
+    shortage = models.DecimalField(
+        'dispatch shortage',
+        max_digits=10, decimal_places=2, default=0,
+        help_text='Quantity deficit after transportation in product unit.'
+    )
+    over = models.DecimalField(
+        'over supplied quantity',
+        max_digits=10, decimal_places=2, default=0,
+        help_text='Over quantity supplied in product unit.'
+    )
+
+    class Meta:
+        order_with_respect_to = 'distribution'
+        default_related_name  = 'union_distributions'
+
+    def get_total_quantity(self):
+        """Returns the distribution quantity with shortage and over supply.
+
+        Returns:
+            quantity (Decimal): received quantity + shortage + over
+        """
+        return self.quantity + self.shortage + self.over

@@ -155,7 +155,9 @@ class OrderDetailView(BaseOrderView, DetailView):
     def get_queryset(self):
         qs = super().get_queryset()
         user = self.request.user
-        if user.role.name == ROLE_SUPPLIER and user.supplier:
+        if user.role is None and not user.is_superuser:
+            qs = DeliveryOrder.objects.none()
+        elif user.role is not None and user.role.name == ROLE_SUPPLIER:
             qs = qs.filter(batch__supplier=user.supplier)
         return qs
 

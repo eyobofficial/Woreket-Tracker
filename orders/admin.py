@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Port, DeliveryOrder, Allocation, Distribution
+from .models import Port, DeliveryOrder, Allocation, Distribution, \
+    UnionDistribution
 
 
 @admin.register(Port)
@@ -26,3 +27,14 @@ class DeliveryOrderAdmin(admin.ModelAdmin):
     list_filter = ('batch', 'created_at', 'status')
     search_fields = ('lc_number', 'vessel')
     inlines = (AllocationInline, DistributionInline)
+
+
+class UnionDistributionInline(admin.TabularInline):
+    model = UnionDistribution
+    extra = 0
+
+
+@admin.register(Distribution)
+class Distribution(admin.ModelAdmin):
+    list_display = ('delivery_order', 'buyer')
+    inlines = (UnionDistributionInline, )
