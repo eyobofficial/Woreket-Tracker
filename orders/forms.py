@@ -1,7 +1,9 @@
 from django import forms
+from django.forms import inlineformset_factory
 
-from .models import DeliveryOrder, Allocation, Distribution
+from customers.models import Union
 
+from .models import DeliveryOrder, Allocation, Distribution, UnionDistribution
 from .fields import MoneyField
 
 
@@ -28,21 +30,32 @@ class AllocationForm(forms.ModelForm):
 
 class DistributionForm(forms.ModelForm):
     """Model form for creating new delivery order distribution."""
-    quantity = MoneyField(max_digits=10, decimal_places=2)
-    shortage = MoneyField(
-        max_digits=10,
-        decimal_places=2,
-        required=False
-    )
-    over = MoneyField(
-        max_digits=10,
-        decimal_places=2,
-        required=False
-    )
 
     class Meta:
         model = Distribution
-        fields = ('delivery_order', 'buyer', 'quantity', 'shortage', 'over')
+        # fields = ('buyer', )
+        fields = '__all__'
+
+
+class UnionDistributionForm(forms.ModelForm):
+    """Model form for creating new union distribution instance."""
+    union = forms.ModelChoiceField(
+        queryset=Union.objects.all(),
+        empty_label=None,
+        required=True
+    )
+
+    class Meta:
+        model = UnionDistribution
+        fields = ('union', 'quantity', 'shortage', 'over')
+
+
+UnionDistributionFormSet = inlineformset_factory(
+    Distribution,
+    UnionDistribution,
+    form=UnionDistributionForm,
+    extra=1, min_num=1, validate_min=True, can_delete=True
+)
 
 
 class LetterDownloadForm(forms.Form):

@@ -391,7 +391,11 @@ class Distribution(models.Model):
             quantity (Decimal): received quantity + shortage + over
         """
         union_distributions = self.union_distributions.all()
-        return reduce(operator.add, union_distributions, Decimal(0))
+        return reduce(
+            lambda total, union: total + union.get_total_quantity(),
+            union_distributions,
+            Decimal(0)
+        )
 
     def get_amount(self):
         """Returns the total amount for this distribution.
@@ -446,18 +450,19 @@ class UnionDistribution(models.Model):
     )
     shortage = models.DecimalField(
         'dispatch shortage',
-        max_digits=10, decimal_places=2, default=0,
+        max_digits=10, decimal_places=2,
         help_text='Quantity deficit after transportation in product unit.'
     )
     over = models.DecimalField(
         'over supplied quantity',
-        max_digits=10, decimal_places=2, default=0,
+        max_digits=10, decimal_places=2,
         help_text='Over quantity supplied in product unit.'
     )
 
     class Meta:
         order_with_respect_to = 'distribution'
         default_related_name  = 'union_distributions'
+        unique_together = ('distribution', 'union')
 
     def get_total_quantity(self):
         """Returns the distribution quantity with shortage and over supply.

@@ -1,4 +1,4 @@
-<div class="modal-dialog wd-sm-650" role="document">
+<div class="modal-dialog modal-lg wd-sm-650" role="document">
   <div class="modal-content">
     <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
       <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
@@ -15,94 +15,156 @@
         </div>
       </div><!-- media -->
     </div><!-- modal-header -->
-
-    <!-- Distribution Form -->
-    <form action="{{ request.path }}?section={% if section %}{{ section }}{% else %}allocation-section{% endif %}" method="POST">
+    
+    <form id="distribution-form" action="{{ request.path }}?section={% if section %}{{ section }}{% else %}allocation-section{% endif %}" method="POST">
       {% csrf_token %}
-
-      <!-- Hidden fields -->
-      <input type="hidden" name="delivery_order" value="{{ order.pk }}">
-
+      {{ formset.management_form }}
       <div class="modal-body pd-sm-t-30 pd-sm-b-60 pd-sm-x-30">
         <div class="row">
-          <div class="col-sm-10">
+          <div class="col-sm-12">
+
             <!-- Buyers  -->
-            <div class="form-group mg-b-10">
-              <label for="buyer" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Customer</label>
+            <div class="form-group mg-b-20 wd-sm-300">
+              <label for="buyer" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Region</label>
               <select name="buyer" id="buyer" class="form-control custom-select" required>
                 {% if not form.instance.buyer %}
                 <option selected disabled value="">Choose Region</option>
                 {% endif %}
 
                 {% for choice in buyer_choices %}
-                <option value="{{ choice.pk }}" {% if form.instance.buyer == choice %}selected{% endif %}>{{ choice.region }}</option>
+                <option value="{{ choice.pk }}" {% if form.instance.buyer == choice %}selected{% endif %}>{{ choice.region }}
+                </option>
                 {% endfor %}
               </select>
             </div>
 
-            <!-- Recieved Quantity -->
-            <label for="quantity" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Received Quantity</label>
-            <div class="input-group mg-b-10">
-              <input
-                id="quantity" class="form-control"
-                name="quantity" value="{{ form.instance.quantity|default_if_none:'' }}"
-                placeholder="Enter quantity in {{ order.unit.name }}"
-                aria-label="Received quantity" aria-describedby="basic-addon2"
-                required
-              />
-              <div class="input-group-append">
-                <span class="input-group-text tx-medium" id="basic-addon2">{{ order.unit.code|upper }}</span>
-              </div>
-            </div>
+            <!-- Empty space to dynamically remove using JavaScript -->
+            <div class="empty-space mg-b-100"></div>
 
-            <!-- Dispatch Shortage -->
-            <label for="shortage" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Dispatch Shortage</label>
-            <div class="input-group mg-b-10">
-              <input id="shortage" class="form-control" name="shortage" value="{{ form.instance.shortage|default:'0.0' }}"
-                placeholder="Enter dispatch shortage quantity in {{ order.unit.name }}" aria-label="Dispatch shortage"
-                aria-describedby="basic-addon2" />
-              <div class="input-group-append">
-                <span class="input-group-text tx-medium" id="basic-addon2">{{ order.unit.code|upper }}</span>
-              </div>
-            </div>
+            <fieldset class="xform-fieldset d-none mg-t-50">
+              <!-- <legend>Union Distributions</legend> -->
+              <table id="distribution-formset-table" class="table table-sm table-formset">
+                <thead>
+                  <th class="tx-10 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Union</th>
+                  <th class="tx-10 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Quantity</th>
+                  <th class="tx-10 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Shortage</th>
+                  <th class="tx-10 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Over Supply</th>
+                  <th></th>
+                </thead>
+                <tbody>
+                  {% for form in formset.forms %}
+                  <tr id="{{ form.prefix }}-row">
+                    <td class="wd-150">
+                      {% for field in form.hidden_fields %}
+                      {{ field }}
+                      {% endfor %}
 
-            <!-- Over Supply -->
-            <label for="over" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Over Supply</label>
-            <div class="input-group mg-b-10">
-              <input id="over" class="form-control" name="over" value="{{ form.instance.over|default:'0.0' }}"
-                placeholder="Enter over supplied quantity in {{ order.unit.name }}" aria-label="Over supply"
-                aria-describedby="basic-addon2" />
-              <div class="input-group-append">
-                <span class="input-group-text tx-medium" id="basic-addon2">{{ order.unit.code|upper }}</span>
-              </div>
-            </div>
+                      {% if form.instance.pk %}
+                      <input type="hidden" name="formset-{{ forloop.counter0 }}-DELETE" id="id_formset-{{ forloop.counter0 }}-DELETE">
+                      {% endif %}
+
+                      <select name="formset-{{ forloop.counter0 }}-union" id="id_formset-{{ formloop.counter0 }}-union"
+                        class="form-control custom-select">
+                        {% if not form.union.value %}
+                        <option selected disabled value="">Choose Union</option>
+                        {% endif %}
+
+                        {% for union in union_choices %}
+                        <option value="{{ union.pk }}" {% if form.union.value == union.pk %}selected{% endif %}>{{ union.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        class="form-control" name="formset-{{ forloop.counter0 }}-quantity"
+                        value="{{ form.quantity.value|default_if_none:'' }}"
+                      />
+                    </td>
+
+                    <td>
+                      <input
+                        class="form-control" name="formset-{{ forloop.counter0 }}-shortage"
+                        value="{{ form.shortage.value|default_if_none:'' }}"
+                      />
+                    </td>
+
+                    <td>
+                      <input
+                        class="form-control" name="formset-{{ forloop.counter0 }}-over"
+                        value="{{ form.over.value|default_if_none:'' }}"
+                      />
+                    </td>
+                    <td class="text-center">
+                      <a href="javascript:void(0)" class="icon-link link-03 mg-l-10">
+                        <i data-feather="trash" class="wd-20 mg-t-5"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              <a href="javascript:void(0)" class="icon-link link-03">
+                <i data-feather="plus" class="wd-20"></i> Add more unions
+              </a>
+            </fieldset>
 
           </div><!-- /.col-sm-10 -->
         </div><!-- /.row -->
       </div><!-- /.modal-body -->
-      <div class="modal-footer pd-x-20 pd-y-15">
+      <div class="modal-footer pd-x-20 pd-y-15 d-none">
         <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
         <button type="submit" class="btn btn-primary">Save</button>
       </div>
     </form>
-  </div><!-- modal-content -->
-</div><!-- modal-dialog -->
 
 <script>
   $(function () {
-    var quantity = new Cleave('#quantity', {
-      numeral: true,
-      numeralThousandsGroupStyle: 'thousand'
+    feather.replace();
+    var $form = $('#distribution-form');
+
+    $('#buyer').on('change', function() {
+      var buyerID = $(this).val();
+      var url = `{{ request.path }}?buyer=${buyerID}`;
+
+      $.get(url, function(data) {
+        var $newFieldset = $(data).find('.xform-fieldset');
+        $('.xform-fieldset').replaceWith($newFieldset);
+        $('.xform-fieldset').removeClass('d-none');
+        $('.modal-footer').removeClass('d-none');
+        $('.empty-space').addClass('d-none');
+        feather.replace();
+      });
     });
 
-    var shortage = new Cleave('#shortage', {
-      numeral: true,
-      numeralThousandsGroupStyle: 'thousand'
+    $form.submit(function(e) {
+      e.preventDefault();
+
+      $.ajax({
+        method: 'POST',
+        url: $form.attr('action'),
+        data: $form.serialize(),
+        success: data => console.log('Success'),
+        error: error => console.log('Error', error)
+      });
+
+
     });
 
-    var over = new Cleave('#over', {
-      numeral: true,
-      numeralThousandsGroupStyle: 'thousand'
-    });
+    // var quantity = new Cleave('#quantity', {
+    //   numeral: true,
+    //   numeralThousandsGroupStyle: 'thousand'
+    // });
+
+    // var shortage = new Cleave('#shortage', {
+    //   numeral: true,
+    //   numeralThousandsGroupStyle: 'thousand'
+    // });
+
+    // var over = new Cleave('#over', {
+    //   numeral: true,
+    //   numeralThousandsGroupStyle: 'thousand'
+    // });
   });
 </script>
+

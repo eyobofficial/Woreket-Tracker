@@ -43,3 +43,18 @@ a.popup-link.btn-modal:hover span {
 .show-toggle:focus {
     color: #8392a5;
 }
+
+#distribution-form .form-fieldset {
+    margin-top: 24px;
+}
+
+.table-formset tr th {
+    text-transform: uppercase;
+    border: none;
+    padding: 0;
+}
+
+.table-formset tr td {
+    padding: 10px 10px 10px 0;
+    border: none;
+}
