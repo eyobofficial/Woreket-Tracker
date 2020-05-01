@@ -57,9 +57,6 @@
 
     <!-- Theme JavaScript -->
     <script src="{% static 'shared/js/dashforge.js' %}"></script>
-
-    <!-- Custom JavaScript -->
-    {% block custom-js %}{% endblock %}
   </head>
   <body class="page-profile">
     <!-- Header -->
@@ -153,6 +150,7 @@
 
         $('body').on('click', '.btn-modal', function () {
           var url = $(this).data('url');
+
           $.get(url, function (data) {
             $modal.html(data);
             $modal.modal('show');
@@ -160,5 +158,8 @@
         });
       });
     </script>
+
+    <!-- Custom JavaScript -->
+    {% block custom-js %}{% endblock %}
   </body>
 </html>

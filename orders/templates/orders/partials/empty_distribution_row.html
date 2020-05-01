@@ -1,0 +1,38 @@
+<!-- Empty Form -->
+<table id="empty-table" class="d-none">
+  <tr id="formset-__PREFIX__-row" class="formset-row">
+    <td class="d-flex flex-row align-items-center row-number">
+      <span class="tx-medium tx-color-03 pd-t-10 tx-14 tx-interui">2</span>
+    </td>
+    <td class="wd-150">
+      {% for field in form.hidden_fields %}
+      {{ field }}
+      {% endfor %}
+
+      <select name="formset-__PREFIX__-union" id="id_formset-{{ formloop.counter0 }}-union"
+        class="form-control custom-select" required>
+        <option selected disabled value="">Choose Union</option>
+
+        {% for union in union_choices %}
+        <option value="{{ union.pk }}">{{ union.name }}</option>
+        {% endfor %}
+      </select>
+    </td>
+    <td>
+      <input class="form-control" name="formset-__PREFIX__-quantity" required>
+    </td>
+
+    <td>
+      <input class="form-control" name="formset-__PREFIX__-shortage" required>
+    </td>
+
+    <td>
+      <input class="form-control" name="formset-__PREFIX__-over" required>
+    </td>
+    <td class="text-center wd-30">
+      <a href="javascript:void(0)" class="icon-link link-03 mg-l-10 delete-row">
+        <i data-feather="trash" class="wd-20 mg-t-5"></i>
+      </a>
+    </td>
+  </tr>
+</table>

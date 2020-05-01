@@ -2,7 +2,8 @@ from collections import Counter, namedtuple
 
 from django.db.models import Q
 from django.db import transaction
-from django.http import FileResponse, HttpResponse
+from django.forms import modelform_factory
+from django.http import FileResponse, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
     DetailView, FormView
@@ -436,10 +437,10 @@ class DistributionDetailView(BaseOrderView, DetailView):
 
 class DistributionCreateView(BaseOrderView, CreateView):
     """Creates a distribution repoort for delivery order."""
-    template_name = 'orders/modals/distribution_form.html'
+    template_name = 'orders/modals/distribution_create_form.html'
     model = Distribution
-    fields = ('buyer', )
-    formset_class = UnionDistributionFormSet
+    form_class = UnionDistributionFormSet
+    prefix = 'formset'
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def get_delivery_order(self):
@@ -459,13 +460,13 @@ class DistributionCreateView(BaseOrderView, CreateView):
         except TypeError:
             union_choices = Union.objects.all()
 
-        formset = self.formset_class(self.request.POST or None,
-                                     prefix='formset')
+        DistributionForm = modelform_factory(Distribution, fields=('buyer', ))
         kwargs.update({
             'buyer_choices': buyer_choices,
             'union_choices': union_choices,
             'order': order,
-            'formset': formset
+            'formset': self.get_form(),
+            'distribution_form': DistributionForm(self.request.POST or None)
         })
         return super().get_context_data(**kwargs)
 
@@ -477,24 +478,25 @@ class DistributionCreateView(BaseOrderView, CreateView):
             url = f'{url}#{page_section}'
         return url
 
-    @transaction.atomic
-    def form_valid(self, form):
+    def form_valid(self, formset):
         context = self.get_context_data()
-        formset = context['formset']
-
-        if formset.is_valid():
-            # Save the distribution instance
-            form.instance.created_by = self.request.user
-            form.instance.delivery_order = self.get_delivery_order()
-            self.object = form.save()
+        distribution_form = context['distribution_form']
+        if distribution_form.is_valid():
+            self.object = distribution_form.save(commit=False)
+            self.object.delivery_order = self.get_delivery_order()
+            self.object.created_by = self.request.user
+            self.object.save()
 
             formset.instance = self.object
-            formset.save()
-
             self.object.delivery_order.touch(updated_by=self.request.user)
-            return redirect(self.get_success_url())
-        return super().form_invalid(form)
+            return super().form_valid(formset)
+        return super().form_invalid(formset)
 
+    def form_invalid(self, formset):
+        print('\n\n', dir(formset), '\n\n')
+        response = super().form_invalid(formset)
+        response.status_code = 400
+        return response
 
 # class DistributionCreateView(BaseOrderView, CreateView):
 #     """Creates a distribution repoort for delivery order."""

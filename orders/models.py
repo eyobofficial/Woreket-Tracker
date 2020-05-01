@@ -366,7 +366,8 @@ class Distribution(models.Model):
         verbose_name_plural = 'Delivery Order Distributions'
 
     def __str__(self):
-        return f'{self.delivery_order} distribution'
+        # return f'{self.delivery_order} distribution'
+        return 'test distribution'
 
     def get_allocation(self):
         """Returns the respective allocation for this distribution.

@@ -6,13 +6,13 @@ a.btn-modal:not([href]) {
     color: #8392a5;
 }
 
-a.btn-modal:not([href]):hover,
-a.icon-link:not([href]):hover {
+a.btn-modal:not([href]):hover {
     color: #1b2e4b;
     cursor: pointer;
 }
 
-a.nav-link:hover {
+a.nav-link:hover,
+a.icon-link {
     cursor: pointer;
 }
 

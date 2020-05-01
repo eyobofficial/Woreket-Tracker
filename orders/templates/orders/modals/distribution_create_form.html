@@ -1,0 +1,236 @@
+<div class="modal-dialog modal-lg wd-sm-650" role="document">
+  <div class="modal-content">
+    <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
+      <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </a>
+      <div class="media align-items-center">
+        <div class="media-body">
+          <h4 class="tx-18 tx-sm-20 mg-b-2">Delivery Order Distribution</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Create delivery order distribution to regions.</p>
+        </div>
+      </div><!-- media -->
+    </div><!-- modal-header -->
+
+    <form id="distribution-form" action="{{ request.path }}?section={% if section %}{{ section }}{% else %}allocation-section{% endif %}" method="POST">
+      {% csrf_token %}
+      {{ formset.management_form }}
+      <div class="modal-body pd-sm-t-30 pd-sm-b-60 pd-sm-x-30">
+        <div class="row">
+          <div class="col-sm-12">
+
+            <!-- Buyers  -->
+            <div class="form-group mg-b-30 wd-sm-300">
+              <label for="buyer" class="tx-11 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Region</label>
+              <select name="buyer" id="buyer" class="form-control custom-select" required>
+                {% if not form.instance.buyer %}
+                <option selected disabled value="">Choose Region</option>
+                {% endif %}
+
+                {% for choice in buyer_choices %}
+                <option value="{{ choice.pk }}" {% if form.instance.buyer == choice %}selected{% endif %}>{{ choice.region }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Error Alerts -->
+            <p class="text-danger mg-t-10 d-none">
+              <i class="wd-15 mg-r-5" data-feather="alert-triangle"></i> At least 1 union distribution data is required.
+            </p>
+
+            <!-- Empty space to dynamically remove using JavaScript -->
+            <div class="empty-space mg-b-100"></div>
+
+            <fieldset class="d-none mg-t-0">
+              <table id="distribution-formset-table" class="table table-sm table-formset">
+                <thead>
+                  <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03 wd-30">#</th>
+                  <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Union</th>
+                  <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Quantity ({{ order.unit.code }})</th>
+                  <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Shortage ({{ order.unit.code }})</th>
+                  <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Over Supply ({{ order.unit.code }})</th>
+                  <th></th>
+                </thead>
+                <tbody>
+                  {% for form in formset.forms %}
+                  <tr id="{{ form.prefix }}-row" class="formset-row">
+                    <td class="d-flex flex-row align-items-center row-number">
+                      <span class="tx-medium tx-color-03 pd-t-10 tx-14 tx-interui">{{ forloop.counter }}</span>
+                    </td>
+                    <td class="wd-150">
+                      {% for field in form.hidden_fields %}
+                        {{ field }}
+                      {% endfor %}
+
+                      <select name="formset-{{ forloop.counter0 }}-union" id="id_formset-{{ formloop.counter0 }}-union"
+                        class="form-control custom-select" required>
+                        {% if not form.union.value %}
+                        <option selected disabled value="">Choose Union</option>
+                        {% endif %}
+
+                        {% for union in union_choices %}
+                        <option value="{{ union.pk }}" {% if form.union.value ==  union.pk|safe %}selected{% endif %}>{{ union.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        class="form-control" name="formset-{{ forloop.counter0 }}-quantity"
+                        value="{{ form.quantity.value|default_if_none:'' }}" required
+                      />
+                    </td>
+
+                    <td>
+                      <input
+                        class="form-control {% if form.shortage.errors %}parsley-error{% endif %}" name="formset-{{ forloop.counter0 }}-shortage"
+                        value="{{ form.shortage.value|default_if_none:'' }}" required
+                      />
+                      {% if form.shortage.errors %}
+                      <ul class="parsley-errors-list filled">
+                        {% for error in form.shortage.errors %}
+                        <li class="parsley-required">{{ error }}</li>
+                        {% endfor %}
+                      </ul>
+                      {% endif %}
+                    </td>
+
+                    <td>
+                      <input
+                        class="form-control" name="formset-{{ forloop.counter0 }}-over"
+                        value="{{ form.over.value|default_if_none:'' }}" required
+                      />
+                    </td>
+                    <td class="text-center wd-30">
+                      {% if forloop.counter > 1 %}
+                        <a href="javascript:void(0)" class="icon-link link-03 mg-l-10 delete-row">
+                          <i data-feather="trash" class="wd-20 mg-t-5"></i>
+                        </a>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              <a href="javascript:void(0)" class="icon-link add-union-btn link-03">
+                <i data-feather="plus" class="wd-20"></i> Add more unions
+              </a>
+            </fieldset>
+
+          </div><!-- /.col-sm-10 -->
+        </div><!-- /.row -->
+      </div><!-- /.modal-body -->
+      <div class="modal-footer pd-x-20 pd-y-15 d-none">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+
+<!-- Empty Table -->
+{% include 'orders/partials/empty_distribution_row.html' with union_choices=union_choices %}
+
+
+<script>
+  $(function () {
+    feather.replace();
+    var $form = $('#distribution-form');
+    var $modal = $form.closest('.modal');
+    var $table = $('#distribution-formset-table');
+    var $submitBtn = $form.find('button[type=submit]');
+    var $pageContainer = $('.order-detail-container');
+
+    $('#buyer').on('change', function() {
+      var buyerID = $(this).val();
+      var url = `{{ request.path }}?buyer=${buyerID}`;
+
+      $.get(url, function(data) {
+        var $newFieldset = $(data).find('fieldset');
+        var $newRow = $(data).find('#empty-table tr');
+
+        $('fieldset').replaceWith($newFieldset);
+        $('fieldset').removeClass('d-none');
+        $('.modal-footer').removeClass('d-none');
+        $('.empty-space').addClass('d-none');
+        $('#empty-table tr').replaceWith($newRow);
+        feather.replace();
+      });
+    });
+
+    $form.on('click', '.add-union-btn', function() {
+      var $table = $('#distribution-formset-table');
+      var $emptyRow = $('#empty-table tr');
+      $emptyRow.clone().appendTo($table).find('tbody');
+      updateformsetData();
+    });
+
+    $form.on('click', '.delete-row', function(e) {
+      var $rows = $form.find('.formset-row');
+      $(this).closest('tr').remove();
+      updateformsetData();
+    });
+
+    $form.submit(function(e) {
+      e.preventDefault();
+      $submitBtn.attr('disabled', true);
+
+      var buyerID = $('#buyer').val();
+      var url = `{{ request.path }}?buyer=${buyerID}`;
+
+      var request = $.ajax({
+        method: 'POST',
+        url: url,
+        data: $form.serialize(),
+        dataType: 'html'
+      });
+
+      request.done(function(data) {
+        var $container = $(data).find('.order-detail-container');
+        $pageContainer.replaceWith($container);
+        feather.replace();
+        $modal.modal('hide');
+      });
+
+      request.fail(function(jqXHR, textStatus) {
+        var $fieldset = $(jqXHR.responseText).find('fieldset');
+        $('fieldset').replaceWith($fieldset);
+        $('fieldset').removeClass('d-none');
+        feather.replace();
+        $submitBtn.removeAttr('disabled');
+      });
+    });
+
+    function updateformsetData() {
+      var $formsets = $form.find('.formset-row:visible');
+      $form.find('#id_formset-TOTAL_FORMS').val($formsets.length);
+
+      $formsets.each(function(idx) {
+        $(this).find('.row-number span').text(idx + 1);
+
+        var $inputs = $(this).find('[name]');
+        $inputs.each(function() {
+          var name = $(this).attr('name');
+
+          name = name.replace('__PREFIX__', idx);
+          $(this).attr('name', name);
+        });
+      });
+    }
+
+    // var quantity = new Cleave('#quantity', {
+    //   numeral: true,
+    //   numeralThousandsGroupStyle: 'thousand'
+    // });
+
+    // var shortage = new Cleave('#shortage', {
+    //   numeral: true,
+    //   numeralThousandsGroupStyle: 'thousand'
+    // });
+
+    // var over = new Cleave('#over', {
+    //   numeral: true,
+    //   numeralThousandsGroupStyle: 'thousand'
+    // });
+  });
+</script>
+

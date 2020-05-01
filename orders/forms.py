@@ -54,7 +54,7 @@ UnionDistributionFormSet = inlineformset_factory(
     Distribution,
     UnionDistribution,
     form=UnionDistributionForm,
-    extra=1, min_num=1, validate_min=True, can_delete=True
+    extra=0, min_num=1, validate_min=True, can_delete=True
 )
 
 
