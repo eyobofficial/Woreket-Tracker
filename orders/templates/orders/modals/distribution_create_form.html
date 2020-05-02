@@ -64,7 +64,7 @@
                       {% endfor %}
 
                       <select name="formset-{{ forloop.counter0 }}-union" id="id_formset-{{ formloop.counter0 }}-union"
-                        class="form-control custom-select" required>
+                        class="form-control custom-select" data-name="union" required>
                         {% if not form.union.value %}
                         <option selected disabled value="">Choose Union</option>
                         {% endif %}
@@ -77,14 +77,16 @@
                     <td>
                       <input
                         class="form-control" name="formset-{{ forloop.counter0 }}-quantity"
-                        value="{{ form.quantity.value|default_if_none:'' }}" required
+                        value="{{ form.quantity.value|default_if_none:'' }}"
+                        data-name="quantity" required
                       />
                     </td>
 
                     <td>
                       <input
                         class="form-control {% if form.shortage.errors %}parsley-error{% endif %}" name="formset-{{ forloop.counter0 }}-shortage"
-                        value="{{ form.shortage.value|default_if_none:'' }}" required
+                        value="{{ form.shortage.value|default_if_none:'' }}"
+                        data-name="shortage" required
                       />
                       {% if form.shortage.errors %}
                       <ul class="parsley-errors-list filled">
@@ -98,7 +100,8 @@
                     <td>
                       <input
                         class="form-control" name="formset-{{ forloop.counter0 }}-over"
-                        value="{{ form.over.value|default_if_none:'' }}" required
+                        value="{{ form.over.value|default_if_none:'' }}"
+                        data-name="over" required
                       />
                     </td>
                     <td class="text-center wd-30">
@@ -165,7 +168,6 @@
     });
 
     $form.on('click', '.delete-row', function(e) {
-      var $rows = $form.find('.formset-row');
       $(this).closest('tr').remove();
       updateformsetData();
     });
@@ -209,10 +211,8 @@
 
         var $inputs = $(this).find('[name]');
         $inputs.each(function() {
-          var name = $(this).attr('name');
-
-          name = name.replace('__PREFIX__', idx);
-          $(this).attr('name', name);
+          var name = $(this).data('name');
+          $(this).attr('name', `formset-${idx}-${name}`);
         });
       });
     }
