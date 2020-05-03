@@ -15,7 +15,7 @@ from django_countries.fields import CountryField
 from shared.constants import ADVANCE, RETENTION
 from shared.models import Unit
 
-from customers.models import Customer, Union
+from customers.models import Customer, Union, Location
 from purchases.models import Batch
 
 
@@ -444,6 +444,7 @@ class UnionDistribution(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     distribution = models.ForeignKey(Distribution, on_delete=models.CASCADE)
     union = models.ForeignKey(Union, on_delete=models.PROTECT)
+    location = models.ForeignKey(Location, on_delete=models.PROTECT)
     quantity = models.DecimalField(
         'received quantity',
         max_digits=10, decimal_places=2,
@@ -463,7 +464,6 @@ class UnionDistribution(models.Model):
     class Meta:
         order_with_respect_to = 'distribution'
         default_related_name  = 'union_distributions'
-        unique_together = ('distribution', 'union')
 
     def get_total_quantity(self):
         """Returns the distribution quantity with shortage and over supply.

@@ -1,15 +1,15 @@
 from django import forms
 from django.forms import inlineformset_factory
 
-from customers.models import Union
+from customers.models import Union, Location
 
 from .models import DeliveryOrder, Allocation, Distribution, UnionDistribution
-from .fields import MoneyField
+from .fields import FormattedNumberField
 
 
 class DeliveryOrderForm(forms.ModelForm):
     """Model form for creating new deliveries."""
-    quantity = MoneyField(max_digits=10, decimal_places=2)
+    quantity = FormattedNumberField(max_digits=10, decimal_places=2)
 
     class Meta:
         model = DeliveryOrder
@@ -21,7 +21,7 @@ class DeliveryOrderForm(forms.ModelForm):
 
 class AllocationForm(forms.ModelForm):
     """Model form for creating new delivery order allocation."""
-    quantity = MoneyField(max_digits=10, decimal_places=2)
+    quantity = FormattedNumberField(max_digits=10, decimal_places=2)
 
     class Meta:
         model = Allocation
@@ -44,10 +44,18 @@ class UnionDistributionForm(forms.ModelForm):
         empty_label=None,
         required=True
     )
+    location = forms.ModelChoiceField(
+        queryset=Location.objects.all(),
+        empty_label=None,
+        required=True
+    )
+    quantity = FormattedNumberField(max_digits=10, decimal_places=2)
+    shortage = FormattedNumberField(max_digits=6, decimal_places=2)
+    over = FormattedNumberField(max_digits=6, decimal_places=2)
 
     class Meta:
         model = UnionDistribution
-        fields = ('union', 'quantity', 'shortage', 'over')
+        fields = ('union', 'location', 'quantity', 'shortage', 'over')
 
 
 UnionDistributionFormSet = inlineformset_factory(

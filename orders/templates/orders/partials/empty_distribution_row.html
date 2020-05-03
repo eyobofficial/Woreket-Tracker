@@ -1,33 +1,61 @@
 <!-- Empty Form -->
 <table id="empty-table" class="d-none">
   <tr id="formset-__PREFIX__-row" class="formset-row">
+    <!-- Number index column -->
     <td class="d-flex flex-row align-items-center row-number">
-      <span class="tx-medium tx-color-03 pd-t-10 tx-14 tx-interui">2</span>
+      <span class="tx-medium tx-color-03 pd-t-10 tx-14 tx-interui"></span>
     </td>
+
+    <!-- Union select column -->
     <td class="wd-150">
       {% for field in form.hidden_fields %}
-      {{ field }}
+        {{ field }}
       {% endfor %}
 
       <select name="formset-__PREFIX__-union" id="id_formset-{{ formloop.counter0 }}-union"
-        class="form-control custom-select" data-name="union" required>
-        <option selected disabled value="">Choose Union</option>
+        class="form-control custom-select union-input" data-name="union" required>
+        <option selected disabled value="">Choose union</option>
 
         {% for union in union_choices %}
         <option value="{{ union.pk }}">{{ union.name }}</option>
         {% endfor %}
       </select>
     </td>
-    <td>
-      <input class="form-control" name="formset-__PREFIX__-quantity" data-name="quantity" required>
+
+    <!-- Location select column -->
+    <td class="wd-150">
+      <select name="formset-__PREFIX__-location" id="id_formset-{{ formloop.counter0 }}-location"
+        class="form-control custom-select location-input" data-name="location" required>
+        <option selected disabled value="">Choose location</option>
+
+        {% for location in location_choices %}
+        <option value="{{ location.pk }}">{{ location.name }}</option>
+        {% endfor %}
+      </select>
     </td>
 
+    <!-- Quantity column -->
     <td>
-      <input class="form-control" name="formset-__PREFIX__-shortage" data-name="shortage" required>
+      <input
+        class="form-control number-input quantity-input"
+        name="formset-__PREFIX__-quantity" data-name="quantity" required
+      />
     </td>
 
+    <!-- Shortage column -->
     <td>
-      <input class="form-control" name="formset-__PREFIX__-over" data-name="over" required>
+      <input
+        class="form-control number-input shortage-input"
+        name="formset-__PREFIX__-shortage" data-name="shortage" required
+      />
+    </td>
+
+    <!-- Over supply column -->
+    <td>
+      <input
+        class="form-control number-input over-input"
+        name="formset-__PREFIX__-over" data-name="over" required
+      />
     </td>
     <td class="text-center wd-30">
       <a href="javascript:void(0)" class="icon-link link-03 mg-l-10 delete-row">

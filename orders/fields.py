@@ -1,7 +1,7 @@
 from django import forms
 
 
-class MoneyField(forms.DecimalField):
+class FormattedNumberField(forms.DecimalField):
     """Comma separated decimal field."""
 
     def to_python(self, value):

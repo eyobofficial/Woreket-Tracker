@@ -11,7 +11,7 @@ from django.views.generic.detail import BaseDetailView
 from django.urls import reverse_lazy, reverse
 
 from shared.constants import ROLE_SUPPLIER, ROLE_ADMIN, ROLE_STAFF
-from customers.models import Customer, Union
+from customers.models import Customer, Union, Location
 from purchases.models import Product, Batch
 
 from .forms import DeliveryOrderForm, AllocationForm, LetterDownloadForm, \
@@ -457,13 +457,16 @@ class DistributionCreateView(BaseOrderView, CreateView):
         try:
             buyer_pk = int(self.request.GET.get('buyer'))
             union_choices = Union.objects.filter(customer__pk=buyer_pk)
+            location_choices = Location.objects.filter(customer__pk=buyer_pk)
         except TypeError:
             union_choices = Union.objects.all()
+            location_choices = Location.objects.all()
 
         DistributionForm = modelform_factory(Distribution, fields=('buyer', ))
         kwargs.update({
             'buyer_choices': buyer_choices,
             'union_choices': union_choices,
+            'location_choices': location_choices,
             'order': order,
             'formset': self.get_form(),
             'distribution_form': DistributionForm(self.request.POST or None)
@@ -492,11 +495,6 @@ class DistributionCreateView(BaseOrderView, CreateView):
             return super().form_valid(formset)
         return super().form_invalid(formset)
 
-    def form_invalid(self, formset):
-        print('\n\n', dir(formset), '\n\n')
-        response = super().form_invalid(formset)
-        response.status_code = 400
-        return response
 
 # class DistributionCreateView(BaseOrderView, CreateView):
 #     """Creates a distribution repoort for delivery order."""
