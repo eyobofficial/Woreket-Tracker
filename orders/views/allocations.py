@@ -156,7 +156,7 @@ class AllocationUpdateView(BaseOrderView, UpdateView):
 
 class AllocationDeleteView(BaseOrderView, DeleteView):
     """Deletes an allocation instance for delivery order."""
-    template_name = 'orders/modals/allocation_delete_form.html'
+    template_name = 'orders/modals/allocations/allocation_delete_form.html'
     model = Allocation
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
 

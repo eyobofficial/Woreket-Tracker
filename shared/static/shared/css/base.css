@@ -68,3 +68,8 @@ textarea[disabled] {
 .action .nav {
     flex-wrap: nowrap;
 }
+
+
+.wd-110 {
+    width: 110px;
+}
