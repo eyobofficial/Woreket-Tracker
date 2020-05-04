@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-lg wd-sm-850" role="document">
+<div class="modal-dialog modal-lg wd-sm-650" role="document">
   <div class="modal-content">
     <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
       <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
@@ -6,18 +6,18 @@
       </a>
       <div class="media align-items-center">
         <div class="media-body">
-          <h4 class="tx-18 tx-sm-20 mg-b-2">Delivery Order Distribution</h4>
-          <p class="tx-13 tx-color-03 mg-b-0">Create delivery order distribution to regions.</p>
+          <h4 class="tx-18 tx-sm-20 mg-b-2">Delivery Order Allocation</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Create delivery order allocation to regions.</p>
         </div>
       </div><!-- media -->
     </div><!-- modal-header -->
 
-    <form id="distribution-form" action="{{ request.path }}" method="POST">
+    <form id="allocation-form" action="{{ request.path }}" method="POST">
       {% csrf_token %}
       {{ formset.management_form }}
       <div class="modal-body pd-sm-t-30 pd-sm-b-60 pd-sm-x-30">
         <div class="row">
-          <div class="col-sm-12">
+          <div class="col-sm-11">
 
             <!-- Buyers  -->
             <div class="form-group mg-b-30 wd-sm-300">
@@ -43,26 +43,24 @@
             <div class="empty-space mg-b-100"></div>
 
             <fieldset class="d-none mg-t-0">
-              <table id="distribution-formset-table" class="table table-sm table-formset">
+              <table id="allocation-formset-table" class="table table-sm table-formset">
                 <thead>
                   <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03 wd-30">#</th>
                   <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Union</th>
                   <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Location</th>
                   <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Quantity ({{ order.unit.code }})</th>
-                  <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Shortage ({{ order.unit.code }})</th>
-                  <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Over Supply ({{ order.unit.code }})</th>
                   <th></th>
                 </thead>
                 <tbody>
                   {% for form in formset.forms %}
-                  <tr id="{{ formset.prefix }}-row" class="formset-row">
+                  <tr id="{{ formset.prefix }}-{{ forloop.counter0 }}-row" class="formset-row">
                     <!-- Index column -->
                     <td class="d-flex flex-row align-items-center row-number">
                       <span class="tx-medium tx-color-03 pd-t-10 tx-14 tx-interui">{{ forloop.counter }}</span>
                     </td>
 
                     <!-- Union select column -->
-                    <td class="wd-150">
+                    <td class="wd-200">
                       {% for field in form.hidden_fields %}
                         {{ field }}
                       {% endfor %}
@@ -80,7 +78,7 @@
                     </td>
 
                     <!-- Location select column -->
-                    <td class="wd-150">
+                    <td class="wd-200">
                       <select name="formset-{{ forloop.counter0 }}-location" id="id_formset-{{ formloop.counter0 }}-location"
                         class="form-control custom-select location-input" data-name="location" required>
                         {% if not form.location.value %}
@@ -95,7 +93,7 @@
                     </td>
 
                     <!-- Quantity column -->
-                    <td>
+                    <td class="wd-200">
                       <input
                         id="id_formset-{{ forloop.counter0 }}-quantity"
                         class="form-control number-input quantity-input {% if form.quantity.errors %}parsley-error{% endif %}"
@@ -106,42 +104,6 @@
                       {% if form.quantity.errors %}
                       <ul class="parsley-errors-list filled">
                         {% for error in form.quantity.errors %}
-                        <li class="parsley-required">{{ error }}</li>
-                        {% endfor %}
-                      </ul>
-                      {% endif %}
-                    </td>
-
-                    <!-- Shortage column -->
-                    <td>
-                      <input
-                        id="id_formset-{{ forloop.counter0 }}-shortage"
-                        class="form-control number-input shortage-input {% if form.shortage.errors %}parsley-error{% endif %}"
-                        name="formset-{{ forloop.counter0 }}-shortage"
-                        value="{{ form.shortage.value|default_if_none:'' }}"
-                        data-name="shortage" required
-                      />
-                      {% if form.shortage.errors %}
-                      <ul class="parsley-errors-list filled">
-                        {% for error in form.shortage.errors %}
-                        <li class="parsley-required">{{ error }}</li>
-                        {% endfor %}
-                      </ul>
-                      {% endif %}
-                    </td>
-
-                    <!-- Over supply column -->
-                    <td>
-                      <input
-                        id="id_formset-{{ forloop.counter0 }}-over"
-                        class="form-control number-input over-input {% if form.over.errors %}parsley-error{% endif %}"
-                        name="formset-{{ forloop.counter0 }}-over"
-                        value="{{ form.over.value|default_if_none:'' }}"
-                        data-name="over" required
-                      />
-                      {% if form.over.errors %}
-                      <ul class="parsley-errors-list filled">
-                        {% for error in form.over.errors %}
                         <li class="parsley-required">{{ error }}</li>
                         {% endfor %}
                       </ul>
@@ -176,11 +138,11 @@
     </form>
 
 <!-- Empty Table -->
-{% include 'orders/modals/distributions/empty_distribution_row.html' with union_choices=union_choices %}
+{% include 'orders/modals/allocations/empty_allocation_row.html' with union_choices=union_choices %}
 
 <script>
   $(function () {
-    const $form = $('#distribution-form');
+    const $form = $('#allocation-form');
     const $modal = $form.closest('.modal');
     const $submitBtn = $form.find('button[type=submit]');
 
@@ -191,10 +153,10 @@
 
       $.get(url, function(data) {
         $ajaxFieldset = $(data).find('fieldset');
-        $ajaxRow = $(data).find('#empty-distribution-table tr');
+        $ajaxRow = $(data).find('#empty-allocation-table tr');
 
         $('fieldset').replaceWith($ajaxFieldset);
-        $('#empty-distribution-table tr').replaceWith($ajaxRow);
+        $('#empty-allocation-table tr').replaceWith($ajaxRow);
         $('fieldset').removeClass('d-none');
         $('.modal-footer').removeClass('d-none');
         $('.empty-space').addClass('d-none');
@@ -205,11 +167,12 @@
 
     // Add union row
     $form.on('click', '.add-union-btn', function() {
-      const $table = $('#distribution-formset-table');
-      const $emptyRow = $('#empty-distribution-table tr');
+      const $table = $('#allocation-formset-table');
+      const $emptyRow = $('#empty-allocation-table tr');
       $emptyRow.clone().appendTo($table).find('tbody');
       updateIndices();
       formatNumbers();
+      updateRowNumber();
     });
 
     // Remove union row
@@ -217,6 +180,7 @@
       e.preventDefault();
       $(this).closest('tr').remove();
       updateIndices();
+      updateRowNumber();
     });
 
     // Submit form
@@ -252,6 +216,7 @@
         $('fieldset').replaceWith($fieldset);
         $('fieldset').removeClass('d-none');
         feather.replace();
+        updateRowNumber();
         $submitBtn.html('Save').removeAttr('disabled');
         $('#validation-alert').removeClass('d-none');
       });
@@ -259,13 +224,12 @@
 
     // Dynamically update input names, ids and hidden input fields
     function updateIndices() {
-      const $form = $('#distribution-form');
+      const $form = $('#allocation-form');
       const $formsets = $form.find('.formset-row');
 
       $form.find('#id_formset-TOTAL_FORMS').val($formsets.length);
       $formsets.each(function(idx) {
         const $inputs = $(this).find('[name]');
-        const rowNumber = idx + 1;
 
         $inputs.each(function() {
           const fieldName = $(this).data('name');
@@ -274,6 +238,14 @@
             $(this).attr('id', `id_formset-${idx}-${fieldName}`);
           }
         });
+      });
+    }
+
+    // Update the row count index
+    function updateRowNumber() {
+      const $rows = $('#allocation-form .formset-row').not('.d-none');
+      $rows.each(function (idx) {
+        const rowNumber = idx + 1;
         $(this).find('.row-number span').text(rowNumber);
       });
     }

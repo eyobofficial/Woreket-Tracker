@@ -185,7 +185,7 @@ class DeliveryOrder(models.Model):
         """
         quantity = Decimal('0')
         for allocation in self.allocations.all():
-            quantity += allocation.quantity
+            quantity += allocation.get_total_quantity()
         return quantity
 
     def get_delivered_quantity(self):
@@ -236,7 +236,7 @@ class DeliveryOrder(models.Model):
         Returns:
             amount (Decimal): the total allocated retention amount in USD
         """
-        retention = Decimal('0')
+        retention = Decimal(0)
         for allocation in self.allocations.all():
             retention += allocation.get_retention()
         return retention
@@ -284,12 +284,6 @@ class Allocation(models.Model):
         null=True,
         on_delete=models.SET_NULL
     )
-    quantity = models.DecimalField(
-        'allocated quantity',
-        max_digits=10,
-        decimal_places=2,
-        help_text='In product unit.'
-    )
     created_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -315,13 +309,26 @@ class Allocation(models.Model):
     def __str__(self):
         return f'{self.buyer.name} - {self.quantity}'
 
+    def get_total_quantity(self):
+        """Returns the total allocation quantity.
+
+        Returns:
+            quantity (Decimal): total allocated quantities of the unions
+        """
+        union_allocations = self.union_allocations.all()
+        return reduce(
+            lambda total, union: total + union.quantity,
+            union_allocations,
+            Decimal(0)
+        )
+
     def get_amount(self):
         """Returns the total amount for this allocation.
 
         Returns:
             amount (Decimal): Allocation amount in USD
         """
-        amount = self.quantity * self.delivery_order.batch.rate
+        amount = self.get_total_quantity() * self.delivery_order.batch.rate
         return round(amount, 2)
 
     def get_retention(self):
@@ -330,14 +337,36 @@ class Allocation(models.Model):
         Returns:
             retention (Decimal): 10% retention amount in USD
         """
-        amount = self.quantity * self.delivery_order.batch.rate * RETENTION
+        amount = self.get_total_quantity() \
+                * self.delivery_order.batch.rate \
+                * RETENTION
         return round(amount, 2)
+
+
+class UnionAllocation(models.Model):
+    """Allocation data to the unions for the delivery order."""
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    allocation = models.ForeignKey(Allocation, on_delete=models.CASCADE)
+    union = models.ForeignKey(Union, on_delete=models.PROTECT)
+    location = models.ForeignKey(Location, on_delete=models.PROTECT)
+    quantity = models.DecimalField(
+        'allocated quantity',
+        max_digits=10, decimal_places=2,
+        help_text='Quantity allocated to the union in product unit.'
+    )
+
+    class Meta:
+        order_with_respect_to = 'allocation'
+        default_related_name  = 'union_allocations'
+
+    def __str__(self):
+        return f'{self.union.name} allocation'
 
 
 class Distribution(models.Model):
     """Actual distribution data for the delivery order."""
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    delivery_order = models.ForeignKey(DeliveryOrder,on_delete=models.CASCADE)
+    delivery_order = models.ForeignKey(DeliveryOrder, on_delete=models.CASCADE)
     buyer = models.ForeignKey(
         Customer,
         null=True,
@@ -366,8 +395,7 @@ class Distribution(models.Model):
         verbose_name_plural = 'Delivery Order Distributions'
 
     def __str__(self):
-        # return f'{self.delivery_order} distribution'
-        return 'test distribution'
+        return f'{self.delivery_order} distribution'
 
     def get_allocation(self):
         """Returns the respective allocation for this distribution.
@@ -448,7 +476,7 @@ class UnionDistribution(models.Model):
     quantity = models.DecimalField(
         'received quantity',
         max_digits=10, decimal_places=2,
-        help_text='Quantity received by the labour union in product unit.'
+        help_text='Quantity received by the union in product unit.'
     )
     shortage = models.DecimalField(
         'dispatch shortage',
@@ -464,6 +492,9 @@ class UnionDistribution(models.Model):
     class Meta:
         order_with_respect_to = 'distribution'
         default_related_name  = 'union_distributions'
+
+    def __str__(self):
+        return f'{self.union.name} distribution'
 
     def get_total_quantity(self):
         """Returns the distribution quantity with shortage and over supply.

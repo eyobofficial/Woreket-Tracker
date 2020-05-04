@@ -3,7 +3,8 @@ from django.forms import inlineformset_factory, BaseInlineFormSet
 
 from customers.models import Union, Location
 
-from .models import DeliveryOrder, Allocation, Distribution, UnionDistribution
+from .models import DeliveryOrder, Allocation, Distribution, UnionDistribution,\
+    UnionAllocation
 from .fields import FormattedNumberField
 
 
@@ -25,7 +26,44 @@ class AllocationForm(forms.ModelForm):
 
     class Meta:
         model = Allocation
-        fields = ('delivery_order', 'buyer', 'quantity')
+        fields = ('buyer', )
+
+
+class UnionAllocationForm(forms.ModelForm):
+    """Model form for creating new union allocation instance."""
+    union = forms.ModelChoiceField(
+        queryset=Union.objects.all(),
+        empty_label=None,
+        required=True
+    )
+    location = forms.ModelChoiceField(
+        queryset=Location.objects.all(),
+        empty_label=None,
+        required=True
+    )
+    quantity = FormattedNumberField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        model = UnionAllocation
+        fields = ('union', 'location', 'quantity')
+
+
+class BaseUnionAllocationFormSet(BaseInlineFormSet):
+    def clean(self):
+        """Remove validation for forms to be deleted."""
+        for form in self.forms:
+            if self.can_delete and self._should_delete_form(form):
+                continue
+
+
+UnionAllocationFormSet = inlineformset_factory(
+    Allocation,
+    UnionAllocation,
+    form=UnionAllocationForm,
+    formset=BaseUnionAllocationFormSet,
+    extra=0, min_num=1,
+    validate_min=True, can_delete=True
+)
 
 
 class DistributionForm(forms.ModelForm):
@@ -33,8 +71,7 @@ class DistributionForm(forms.ModelForm):
 
     class Meta:
         model = Distribution
-        # fields = ('buyer', )
-        fields = '__all__'
+        fields = ('buyer', )
 
 
 class UnionDistributionForm(forms.ModelForm):

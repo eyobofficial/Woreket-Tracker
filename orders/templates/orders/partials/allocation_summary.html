@@ -78,7 +78,7 @@
               {% for allocation in object.allocations.all %}
               <tr>
                 <td class="tz-color-03 tx-normal">{{ allocation.buyer.region }}</td>
-                <td class="tz-color-03 tx-normal text-right allocation-quantity-col">{{ allocation.quantity|intcomma }}</td>
+                <td class="tz-color-03 tx-normal text-right allocation-quantity-col">{{ allocation.get_total_quantity|intcomma }}</td>
                 <td class="tz-color-03 tx-normal text-right">{{ object.batch.rate|intcomma }}</td>
                 <td class="text-right tx-normal text-right allocation-amount-col">{{ allocation.get_amount|intcomma }}</td>
                 <td class="tx-medium tx-medium text-right allocation-retention-col">{{ allocation.get_retention|intcomma }}</td>

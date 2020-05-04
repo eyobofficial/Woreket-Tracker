@@ -1,0 +1,50 @@
+<!-- Empty Form -->
+<table id="empty-allocation-table" class="d-none">
+  <tr id="formset-__PREFIX__-row" class="formset-row">
+    <!-- Number index column -->
+    <td class="d-flex flex-row align-items-center row-number">
+      <span class="tx-medium tx-color-03 pd-t-10 tx-14 tx-interui"></span>
+    </td>
+
+    <!-- Union select column -->
+    <td class="wd-150">
+      {% for field in form.hidden_fields %}
+        {{ field }}
+      {% endfor %}
+
+      <select name="formset-__PREFIX__-union" class="form-control custom-select union-input" data-name="union" required>
+        <option selected disabled value="">Choose union</option>
+
+        {% for union in union_choices %}
+        <option value="{{ union.pk }}">{{ union.name }}</option>
+        {% endfor %}
+      </select>
+    </td>
+
+    <!-- Location select column -->
+    <td class="wd-150">
+      <select name="formset-__PREFIX__-location" class="form-control custom-select location-input" data-name="location" required>
+        <option selected disabled value="">Choose location</option>
+
+        {% for location in location_choices %}
+        <option value="{{ location.pk }}">{{ location.name }}</option>
+        {% endfor %}
+      </select>
+    </td>
+
+    <!-- Quantity column -->
+    <td>
+      <input
+        class="form-control number-input quantity-input"
+        name="formset-__PREFIX__-quantity" data-name="quantity" required
+      />
+    </td>
+
+    <!-- Remove column -->
+    <td class="text-center wd-30">
+      <a href="javascript:void(0)" class="icon-link link-03 mg-l-10 remove-row">
+        <i data-feather="trash" class="wd-20 mg-t-5"></i>
+      </a>
+    </td>
+  </tr>
+</table>

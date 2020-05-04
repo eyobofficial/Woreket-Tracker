@@ -175,7 +175,7 @@
     </form>
 
 <!-- Empty Table -->
-{% include 'orders/partials/empty_distribution_row.html' with union_choices=union_choices %}
+{% include 'orders/modals/distributions/empty_distribution_row.html' with union_choices=union_choices %}
 
 <script>
   $(function () {
@@ -191,7 +191,7 @@
     $form.on('click', '.add-union-btn', function(e) {
       e.preventDefault();
       const $table = $('#distribution-formset-table');
-      const $emptyRow = $('#empty-table tr');
+      const $emptyRow = $('#empty-distribution-table tr');
 
       $emptyRow.clone().appendTo($table).find('tbody');
       updateIndices();

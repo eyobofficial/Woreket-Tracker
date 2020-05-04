@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import Port, DeliveryOrder, Allocation, Distribution, \
-    UnionDistribution
+from .models import Port, DeliveryOrder, Allocation, UnionAllocation, \
+    Distribution, UnionDistribution
 
 
 @admin.register(Port)
@@ -29,12 +29,23 @@ class DeliveryOrderAdmin(admin.ModelAdmin):
     inlines = (AllocationInline, DistributionInline)
 
 
+class UnionAllocationInline(admin.TabularInline):
+    model = UnionAllocation
+    extra = 0
+
+
+@admin.register(Allocation)
+class AllocationAdmin(admin.ModelAdmin):
+    list_display = ('delivery_order', 'buyer')
+    inlines = (UnionAllocationInline, )
+
+
 class UnionDistributionInline(admin.TabularInline):
     model = UnionDistribution
     extra = 0
 
 
 @admin.register(Distribution)
-class Distribution(admin.ModelAdmin):
+class DistributionAdmin(admin.ModelAdmin):
     list_display = ('delivery_order', 'buyer')
     inlines = (UnionDistributionInline, )

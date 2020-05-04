@@ -1,11 +1,12 @@
 from django.urls import path
 
-from .views import OpenOrderListView, OrderCreateView, OrderUpdateView, \
-    OrderCloseView, OrderDetailView, AllocationCreateView, \
-    AllocationUpdateView, AllocationDeleteView, LetterFormView, \
-    AllocationLetterView, DistributionCreateView, DistributionUpdateView, \
-    DistributionDeleteView, DistributionDetailView, ClosedOrderListView, \
+from .views.deliveryorders import OpenOrderListView, OrderCreateView, \
+    OrderUpdateView, OrderCloseView, OrderDetailView, ClosedOrderListView, \
     OrderReopenView, OrderDeleteView, BatchSummaryView, BillOfLoadingSummary
+from .views.allocations import AllocationCreateView, AllocationUpdateView, \
+    AllocationDeleteView, LetterFormView, AllocationLetterView
+from .views.distributions import DistributionCreateView, \
+    DistributionUpdateView, DistributionDeleteView, DistributionDetailView
 
 
 app_name = 'orders'
