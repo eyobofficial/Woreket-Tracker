@@ -58,3 +58,17 @@ a.popup-link.btn-modal:hover span {
     padding: 10px 10px 10px 0;
     border: none;
 }
+
+.table-modal th {
+    border-top: 0 !important;
+}
+
+.table-modal th,
+.table-modal td {
+    padding-left: 0 !important;
+}
+
+.table-modal th:last-of-type,
+.table-modal td:last-of-type {
+    padding-right: 0 !important;
+}

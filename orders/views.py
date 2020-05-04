@@ -430,14 +430,14 @@ class AllocationLetterView(BaseOrderView, BaseDetailView):
 
 class DistributionDetailView(BaseOrderView, DetailView):
     """Modal detail view for the distribution quantity calculation."""
-    template_name = 'orders/modals/distribution_detail.html'
+    template_name = 'orders/modals/distributions/distribution_detail.html'
     model = Distribution
     access_roles = '__all__'
 
 
 class DistributionCreateView(BaseOrderView, CreateView):
     """Creates a distribution repoort for delivery order."""
-    template_name = 'orders/modals/distribution_create_form.html'
+    template_name = 'orders/modals/distributions/distribution_create_form.html'
     model = Distribution
     form_class = UnionDistributionFormSet
     prefix = 'formset'
@@ -495,87 +495,62 @@ class DistributionCreateView(BaseOrderView, CreateView):
             return super().form_valid(formset)
         return super().form_invalid(formset)
 
-
-# class DistributionCreateView(BaseOrderView, CreateView):
-#     """Creates a distribution repoort for delivery order."""
-#     template_name = 'orders/modals/distribution_form.html'
-#     model = Distribution
-#     form_class = DistributionForm
-#     access_roles = [ROLE_ADMIN, ROLE_STAFF]
-
-#     def get_context_data(self, **kwargs):
-#         customers = Customer.objects.all()
-#         order_pk = self.kwargs.get('pk')
-#         order = get_object_or_404(DeliveryOrder,  pk=order_pk)
-#         distributed_buyers = order.distributions.values_list('buyer', flat=True)
-#         buyer_choices = [c for c in customers if c.pk not in distributed_buyers]
-#         kwargs.update({
-#             'buyer_choices': buyer_choices,
-#             'order': order
-#         })
-#         return super().get_context_data(**kwargs)
-
-#     def get_success_url(self):
-#         order_pk = self.kwargs.get('pk')
-#         page_section = self.request.GET.get('section')
-#         url = reverse('orders:order-detail', args=[order_pk])
-#         if page_section is not None:
-#             url = f'{url}#{page_section}'
-#         return url
-
-#     def form_valid(self, form):
-#         self.object = form.save(commit=False)
-#         self.object.created_by = self.request.user
-#         self.object.save()
-#         self.object.delivery_order.touch(updated_by=self.request.user)
-#         return redirect(self.get_success_url())
+    def form_invalid(self, formset):
+        response = super().form_invalid(formset)
+        response.status_code = 400
+        return response
 
 
 class DistributionUpdateView(BaseOrderView, UpdateView):
     """Updates a distribution for delivery order."""
-    template_name = 'orders/modals/distribution_form.html'
+    template_name = 'orders/modals/distributions/distribution_update_form.html'
     model = Distribution
-    form_class = DistributionForm
+    form_class = UnionDistributionFormSet
+    prefix = 'formset'
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
-    def get_context_data(self, **kwargs):
-        customers = Customer.objects.all()
+    def get_delivery_order(self):
         order_pk = self.kwargs.get('pk')
-        order = self.object.delivery_order
-        distributed_buyers = order.distributions.values_list('buyer', flat=True)
-        buyer_choices = []
-        for c in customers:
-            if c.pk not in distributed_buyers or c == self.object.buyer:
-                buyer_choices.append(c)
-        page_section = self.request.GET.get('section')
+        order = get_object_or_404(DeliveryOrder,  pk=order_pk)
+        return order
+
+    def get_context_data(self, **kwargs):
+        union_choices = Union.objects.filter(customer=self.object.buyer)
+        location_choices = Location.objects.filter(customer=self.object.buyer)
+        DistributionForm = modelform_factory(Distribution, fields=('buyer', ))
         kwargs.update({
-            'buyer_choices': buyer_choices,
-            'order': order,
-            'section': page_section
+            'union_choices': union_choices,
+            'location_choices': location_choices,
+            'order': self.object.delivery_order,
+            'formset': self.get_form(),
+            'distribution_form': DistributionForm(
+                self.request.POST or None,
+                instance=self.object.buyer
+            )
         })
         return super().get_context_data(**kwargs)
 
     def get_success_url(self):
-        page_section = self.request.GET.get('section')
-        url = reverse(
-            'orders:order-detail',
-            args=[self.object.delivery_order.pk]
-        )
-        if page_section is not None:
-            url = f'{url}#{page_section}'
-        return url
+        distribution_pk = self.kwargs.get('pk')
+        distribution = get_object_or_404(Distribution, pk=distribution_pk)
+        order_pk = distribution.delivery_order.pk
+        return reverse('orders:order-detail', args=[order_pk])
 
-    def form_valid(self, form):
-        self.object = form.save(commit=True)
-        self.object.updated_by = self.request.user
-        self.object.save()
+    def form_valid(self, formset):
+        redirect_url = super().form_valid(formset)
+        self.object = formset.instance
         self.object.delivery_order.touch(updated_by=self.request.user)
-        return redirect(self.get_success_url())
+        return redirect_url
+
+    def form_invalid(self, formset):
+        response = super().form_invalid(formset)
+        response.status_code = 400
+        return response
 
 
 class DistributionDeleteView(BaseOrderView, DeleteView):
     """Deletes a distribution instance for delivery order."""
-    template_name = 'orders/modals/distribution_delete_form.html'
+    template_name = 'orders/modals/distributions/distribution_delete_form.html'
     model = Distribution
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
 

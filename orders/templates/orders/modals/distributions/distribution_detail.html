@@ -1,6 +1,6 @@
 {% load humanize %}
 
-<div class="modal-dialog wd-sm-650" role="document">
+<div class="modal-dialog modal-xl wd-sm-800" role="document">
   <div class="modal-content">
     <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
       <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
@@ -14,7 +14,46 @@
       </div><!-- media -->
     </div><!-- modal-header -->
 
-    <div class="modal-body pd-sm-x-30">
+    <div class="modal-body pd-x-30 ht-250 mg-t-15">
+      <div class="table-responsive">
+        <table class="table table-dashboard table-card table-modal mg-b-0" id="distribution-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Union</th>
+              <th>Location</th>
+              <th class="text-right">Quantity ({{ object.delivery_order.unit.code }})</th>
+              <th class="text-right">Shortage ({{ object.delivery_order.unit.code }})</th>
+              <th class="text-right">Over Supply ({{ object.delivery_order.unit.code }})</th>
+              <th class="text-right">Total Quantity ({{ object.delivery_order.unit.code }})</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for distribution in object.union_distributions.all %}
+            <tr>
+              <td class="tz-color-03 tx-normal">{{ forloop.counter }}</td>
+              <td class="tz-color-03 tx-normal">{{ distribution.union.name }}</td>
+              <td class="tz-color-03 tx-normal">{{ distribution.location.name }}</td>
+              <td class="tz-color-03 tx-normal text-right">{{ distribution.quantity|intcomma }}</td>
+              <td class="tz-color-03 tx-normal text-right">{{ distribution.shortage|intcomma }}</td>
+              <td class="tz-color-03 tx-normal text-right">{{ distribution.over|intcomma }}</td>
+              <td class="tz-color-03 tx-normal text-right">{{ distribution.get_total_quantity|intcomma }}</td>
+            </tr>
+            {% endfor %}
+
+            <tr>
+              <td class="tx-medium tx-16 text-right pd-t-30" colspan="6">TOTAL</td>
+              <td class="tx-medium tx-16 text-right pd-t-30">{{ object.get_total_quantity|intcomma }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+
+
+
+      {% comment %}
       <ul class="list-group list-group-flush mg-b-20 mg-t-10 tx-13">
         <li class="list-group-item pd-x-0 d-flex justify-content-between">
           <span class="tx-normal"> Region/Buyer</span>
@@ -47,6 +86,9 @@
           </span>
         </li>
       </ul>
+      {% endcomment %}
+
+
     </div><!-- /.modal-body -->
 
     <div class="modal-footer pd-x-20 pd-y-15">

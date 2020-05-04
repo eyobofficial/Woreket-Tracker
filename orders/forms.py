@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import inlineformset_factory
+from django.forms import inlineformset_factory, BaseInlineFormSet
 
 from customers.models import Union, Location
 
@@ -50,19 +50,29 @@ class UnionDistributionForm(forms.ModelForm):
         required=True
     )
     quantity = FormattedNumberField(max_digits=10, decimal_places=2)
-    shortage = FormattedNumberField(max_digits=6, decimal_places=2)
-    over = FormattedNumberField(max_digits=6, decimal_places=2)
+    shortage = FormattedNumberField(max_digits=10, decimal_places=2)
+    over = FormattedNumberField(max_digits=10, decimal_places=2)
 
     class Meta:
         model = UnionDistribution
         fields = ('union', 'location', 'quantity', 'shortage', 'over')
 
 
+class BaseUnionDistributionFormSet(BaseInlineFormSet):
+    def clean(self):
+        """Remove validation for forms to be deleted."""
+        for form in self.forms:
+            if self.can_delete and self._should_delete_form(form):
+                continue
+
+
 UnionDistributionFormSet = inlineformset_factory(
     Distribution,
     UnionDistribution,
     form=UnionDistributionForm,
-    extra=0, min_num=1, validate_min=True, can_delete=True
+    formset=BaseUnionDistributionFormSet,
+    extra=0, min_num=1,
+    validate_min=True, can_delete=True
 )
 
 

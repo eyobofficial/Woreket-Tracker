@@ -59,6 +59,12 @@ label.disabled {
     width: 100%;
 }
 
-input[disabled] {
+input[disabled],
+select[disabled],
+textarea[disabled] {
     cursor: not-allowed;
+}
+
+.action .nav {
+    flex-wrap: nowrap;
 }
