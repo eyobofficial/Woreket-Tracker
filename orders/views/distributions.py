@@ -18,13 +18,22 @@ class DistributionDetailView(BaseOrderView, DetailView):
     access_roles = '__all__'
 
 
-class DistributionCreateView(BaseOrderView, CreateView):
-    """Creates a distribution report for delivery order."""
-    template_name = 'orders/modals/distributions/distribution_create_form.html'
+class BaseDistributionEditView(BaseOrderView):
+    """Base abstract class for Distribution Create & Update views."""
     model = Distribution
     form_class = UnionDistributionFormSet
     prefix = 'formset'
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
+
+    def form_invalid(self, formset):
+        response = super().form_invalid(formset)
+        response.status_code = 400
+        return response
+
+
+class DistributionCreateView(BaseDistributionEditView, CreateView):
+    """Creates a distribution report for delivery order."""
+    template_name = 'orders/modals/distributions/distribution_create_form.html'
 
     def get_delivery_order(self):
         order_pk = self.kwargs.get('pk')
@@ -59,10 +68,7 @@ class DistributionCreateView(BaseOrderView, CreateView):
     def get_success_url(self):
         order_pk = self.kwargs.get('pk')
         page_section = self.request.GET.get('section')
-        url = reverse('orders:order-detail', args=[order_pk])
-        if page_section is not None:
-            url = f'{url}#{page_section}'
-        return url
+        return reverse('orders:order-detail', args=[order_pk])
 
     def form_valid(self, formset):
         context = self.get_context_data()
@@ -78,24 +84,10 @@ class DistributionCreateView(BaseOrderView, CreateView):
             return super().form_valid(formset)
         return super().form_invalid(formset)
 
-    def form_invalid(self, formset):
-        response = super().form_invalid(formset)
-        response.status_code = 400
-        return response
 
-
-class DistributionUpdateView(BaseOrderView, UpdateView):
+class DistributionUpdateView(BaseDistributionEditView, UpdateView):
     """Updates a distribution for delivery order."""
     template_name = 'orders/modals/distributions/distribution_update_form.html'
-    model = Distribution
-    form_class = UnionDistributionFormSet
-    prefix = 'formset'
-    access_roles = [ROLE_ADMIN, ROLE_STAFF]
-
-    def get_delivery_order(self):
-        order_pk = self.kwargs.get('pk')
-        order = get_object_or_404(DeliveryOrder,  pk=order_pk)
-        return order
 
     def get_context_data(self, **kwargs):
         union_choices = Union.objects.filter(customer=self.object.buyer)
@@ -125,11 +117,6 @@ class DistributionUpdateView(BaseOrderView, UpdateView):
         self.object.delivery_order.touch(updated_by=self.request.user)
         return redirect_url
 
-    def form_invalid(self, formset):
-        response = super().form_invalid(formset)
-        response.status_code = 400
-        return response
-
 
 class DistributionDeleteView(BaseOrderView, DeleteView):
     """Deletes a distribution instance for delivery order."""
@@ -148,8 +135,6 @@ class DistributionDeleteView(BaseOrderView, DeleteView):
             'orders:order-detail',
             args=[self.object.delivery_order.pk]
         )
-        if page_section is not None:
-            url = f'{url}#{page_section}'
         return url
 
     def delete(self, request, *args, **kwargs):

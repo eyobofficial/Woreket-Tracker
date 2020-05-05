@@ -4,7 +4,8 @@ from .views.deliveryorders import OpenOrderListView, OrderCreateView, \
     OrderUpdateView, OrderCloseView, OrderDetailView, ClosedOrderListView, \
     OrderReopenView, OrderDeleteView, BatchSummaryView, BillOfLoadingSummary
 from .views.allocations import AllocationCreateView, AllocationUpdateView, \
-    AllocationDeleteView, LetterFormView, AllocationLetterView
+    AllocationDeleteView, LetterFormView, AllocationLetterView, \
+    AllocationDetailView
 from .views.distributions import DistributionCreateView, \
     DistributionUpdateView, DistributionDeleteView, DistributionDetailView
 
@@ -56,6 +57,11 @@ urlpatterns = [
         '<uuid:pk>/allocation-letter/',
         AllocationLetterView.as_view(),
         name='order-allocation-letter'
+    ),
+    path(
+        'allocations/<uuid:pk>/',
+        AllocationDetailView.as_view(),
+        name='order-allocation-detail'
     ),
     path(
         '<uuid:pk>/allocations/create/',

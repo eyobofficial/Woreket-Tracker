@@ -16,13 +16,29 @@ from orders.models import DeliveryOrder, Allocation
 from orders.letters.allocationletter import AllocationLetter
 
 
-class AllocationCreateView(BaseOrderView, CreateView):
-    """Creates an allocation for delivery order."""
-    template_name = 'orders/modals/allocations/allocation_create_form.html'
+class AllocationDetailView(BaseOrderView, DetailView):
+    """Modal detail view for the allocation quantity calculation."""
+    template_name = 'orders/modals/allocations/allocation_detail.html'
+    model = Allocation
+    access_roles = '__all__'
+
+
+class BaseAllocationEditView(BaseOrderView):
+    """Abstract base class for allocation create & update people."""
     model = Allocation
     form_class = UnionAllocationFormSet
     prefix = 'formset'
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
+
+    def form_invalid(self, formset):
+        response = super().form_invalid(formset)
+        response.status_code = 400
+        return response
+
+
+class AllocationCreateView(BaseAllocationEditView, CreateView):
+    """Creates an allocation for delivery order."""
+    template_name = 'orders/modals/allocations/allocation_create_form.html'
 
     def get_delivery_order(self):
         order_pk = self.kwargs.get('pk')
@@ -72,86 +88,38 @@ class AllocationCreateView(BaseOrderView, CreateView):
             return super().form_valid(formset)
         return super().form_invalid(formset)
 
-    def form_invalid(self, formset):
-        response = super().form_invalid(formset)
-        response.status_code = 400
-        return response
 
+class AllocationUpdateView(BaseAllocationEditView, UpdateView):
+    """Updates an allocation for delivery order."""
+    template_name = 'orders/modals/allocations/allocation_update_form.html'
 
-# class AllocationCreateView(BaseOrderView, CreateView):
-#     """Creates an allocation for delivery order."""
-#     template_name = 'orders/modals/allocation_form.html'
-#     model = Allocation
-#     form_class = AllocationForm
-#     access_roles = [ROLE_ADMIN, ROLE_STAFF]
+    def get_context_data(self, **kwargs):
+        union_choices = Union.objects.filter(customer=self.object.buyer)
+        location_choices = Location.objects.filter(customer=self.object.buyer)
+        AllocationForm = modelform_factory(Allocation, fields=('buyer', ))
+        kwargs.update({
+            'union_choices': union_choices,
+            'location_choices': location_choices,
+            'order': self.object.delivery_order,
+            'formset': self.get_form(),
+            'allocation_form': AllocationForm(
+                self.request.POST or None,
+                instance=self.object.buyer
+            )
+        })
+        return super().get_context_data(**kwargs)
 
-#     def get_context_data(self, **kwargs):
-#         customers = Customer.objects.all()
-#         order_pk = self.kwargs.get('pk')
-#         order = get_object_or_404(DeliveryOrder,  pk=order_pk)
-#         allocated_buyers = order.allocations.values_list('buyer', flat=True)
-#         buyer_choices = [c for c in customers if c.pk not in allocated_buyers]
-#         kwargs.update({
-#             'buyer_choices': buyer_choices,
-#             'order': order
-#         })
-#         return super().get_context_data(**kwargs)
+    def get_success_url(self):
+        allocation_pk = self.kwargs.get('pk')
+        allocation = get_object_or_404(Allocation, pk=allocation_pk)
+        order_pk = allocation.delivery_order.pk
+        return reverse('orders:order-detail', args=[order_pk])
 
-#     def get_success_url(self):
-#         order_pk = self.kwargs.get('pk')
-#         page_section = self.request.GET.get('section')
-#         url = reverse('orders:order-detail', args=[order_pk])
-#         if page_section is not None:
-#             url = f'{url}#{page_section}'
-#         return url
-
-#     def form_valid(self, form):
-#         redirect_url = super().form_valid(form)
-#         self.object.delivery_order.touch(updated_by=self.request.user)
-#         return redirect_url
-
-
-class AllocationUpdateView(BaseOrderView, UpdateView):
-    model = Allocation
-
-
-# class AllocationUpdateView(BaseOrderView, UpdateView):
-#     """Updates an allocation for delivery order."""
-#     template_name = 'orders/modals/allocation_form.html'
-#     model = Allocation
-#     form_class = AllocationForm
-#     access_roles = [ROLE_ADMIN, ROLE_STAFF]
-
-#     def get_context_data(self, **kwargs):
-#         customers = Customer.objects.all()
-#         order_pk = self.kwargs.get('pk')
-#         order = self.object.delivery_order
-#         allocated_buyers = order.allocations.values_list('buyer', flat=True)
-#         buyer_choices = []
-#         for c in customers:
-#             if c.pk not in allocated_buyers or c == self.object.buyer:
-#                 buyer_choices.append(c)
-
-#         kwargs.update({
-#             'buyer_choices': buyer_choices,
-#             'order': self.object.delivery_order
-#         })
-#         return super().get_context_data(**kwargs)
-
-#     def get_success_url(self):
-#         page_section = self.request.GET.get('section')
-#         url = reverse(
-#             'orders:order-detail',
-#             args=[self.object.delivery_order.pk]
-#         )
-#         if page_section:
-#             url = f'{url}#{page_section}'
-#         return url
-
-#     def form_valid(self, form):
-#         redirect_url = super().form_valid(form)
-#         self.object.delivery_order.touch(updated_by=self.request.user)
-#         return redirect_url
+    def form_valid(self, formset):
+        redirect_url = super().form_valid(formset)
+        self.object = formset.instance
+        self.object.delivery_order.touch(updated_by=self.request.user)
+        return redirect_url
 
 
 class AllocationDeleteView(BaseOrderView, DeleteView):

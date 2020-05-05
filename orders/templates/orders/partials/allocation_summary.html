@@ -78,7 +78,12 @@
               {% for allocation in object.allocations.all %}
               <tr>
                 <td class="tz-color-03 tx-normal">{{ allocation.buyer.region }}</td>
-                <td class="tz-color-03 tx-normal text-right allocation-quantity-col">{{ allocation.get_total_quantity|intcomma }}</td>
+                <td class="tz-color-03 tx-normal text-right allocation-quantity-col">
+                  <a data-url="{% url 'orders:order-allocation-detail' allocation.pk %}" class="popup-link btn-modal">
+                    <span class="tx-medium">{{ allocation.get_total_quantity|intcomma }}</span>
+                    &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
+                  </a>
+                </td>
                 <td class="tz-color-03 tx-normal text-right">{{ object.batch.rate|intcomma }}</td>
                 <td class="text-right tx-normal text-right allocation-amount-col">{{ allocation.get_amount|intcomma }}</td>
                 <td class="tx-medium tx-medium text-right allocation-retention-col">{{ allocation.get_retention|intcomma }}</td>
@@ -107,9 +112,9 @@
               {% empty %}
               <tr class="empty-row">
                 {% if object.status == object.OPEN %}
-                <td colspan="6" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">No Allocation Data</td>
+                <td colspan="6" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">NO ALLOCATION DATA</td>
                 {% else %}
-                <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">No Allocation Data</td>
+                <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">NO ALLOCATION DATA</td>
                 {% endif %}
               </tr>
               {% endfor %}

@@ -21,6 +21,17 @@ a.popup-link.btn-modal:hover span {
     padding-left: 8px !important;
 }
 
+#allocation-table tr.empty-row,
+#distribution-table tr.empty-row {
+    background-color: #ffffff;
+}
+
+#allocation-table tr.empty-row td,
+#distribution-table tr.empty-row td {
+    color: lightgray;
+    text-transform: uppercase;
+}
+
 #orders-table-card .search-form .form-control {
     width: 70%;
     height: calc(1.3em + 0.8375rem + 2px);
@@ -71,4 +82,9 @@ a.popup-link.btn-modal:hover span {
 .table-modal th:last-of-type,
 .table-modal td:last-of-type {
     padding-right: 0 !important;
+}
+
+.add-union-btn:hover {
+    color: #0148ae;
+    transition: 0.3s all;
 }

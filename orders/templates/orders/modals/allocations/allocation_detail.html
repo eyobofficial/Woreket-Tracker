@@ -1,6 +1,6 @@
 {% load humanize %}
 
-<div class="modal-dialog modal-xl wd-sm-800" role="document">
+<div class="modal-dialog modal-lg wd-sm-650" role="document">
   <div class="modal-content">
     <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
       <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
@@ -8,8 +8,8 @@
       </a>
       <div class="media align-items-center">
         <div class="media-body">
-          <h4 class="tx-18 tx-sm-20 mg-b-2">Distributed Quantity</h4>
-          <p class="tx-13 tx-color-03 mg-b-0">Summary of the distributed quantity for {{ object.buyer.region }}.</p>
+          <h4 class="tx-18 tx-sm-20 mg-b-2">Allocation Quantity</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Summary of the allocated quantity for {{ object.buyer.region }}.</p>
         </div>
       </div><!-- media -->
     </div><!-- modal-header -->
@@ -23,26 +23,19 @@
               <th>Union</th>
               <th>Location</th>
               <th class="text-right">Quantity ({{ object.delivery_order.unit.code }})</th>
-              <th class="text-right">Shortage ({{ object.delivery_order.unit.code }})</th>
-              <th class="text-right">Over Supply ({{ object.delivery_order.unit.code }})</th>
-              <th class="text-right">Total Quantity ({{ object.delivery_order.unit.code }})</th>
             </tr>
           </thead>
           <tbody>
-            {% for distribution in object.union_distributions.all %}
+            {% for allocation in object.union_allocations.all %}
             <tr>
               <td class="tz-color-03 tx-normal">{{ forloop.counter }}</td>
-              <td class="tz-color-03 tx-normal">{{ distribution.union.name }}</td>
-              <td class="tz-color-03 tx-normal">{{ distribution.location.name }}</td>
-              <td class="tz-color-03 tx-normal text-right">{{ distribution.quantity|intcomma }}</td>
-              <td class="tz-color-03 tx-normal text-right">{{ distribution.shortage|intcomma }}</td>
-              <td class="tz-color-03 tx-normal text-right">{{ distribution.over|intcomma }}</td>
-              <td class="tz-color-03 tx-normal text-right">{{ distribution.get_total_quantity|intcomma }}</td>
+              <td class="tz-color-03 tx-normal">{{ allocation.union.name }}</td>
+              <td class="tz-color-03 tx-normal">{{ allocation.location.name }}</td>
+              <td class="tz-color-03 tx-normal text-right">{{ allocation.quantity|intcomma }}</td>
             </tr>
             {% endfor %}
-
             <tr>
-              <td class="tx-medium tx-16 text-right pd-t-30" colspan="6">TOTAL</td>
+              <td class="tx-medium tx-16 text-right pd-t-30" colspan="3">TOTAL</td>
               <td class="tx-medium tx-16 text-right pd-t-30">{{ object.get_total_quantity|intcomma }}</td>
             </tr>
           </tbody>
