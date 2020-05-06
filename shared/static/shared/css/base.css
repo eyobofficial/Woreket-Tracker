@@ -69,7 +69,17 @@ textarea[disabled] {
     flex-wrap: nowrap;
 }
 
-
 .wd-110 {
     width: 110px;
+}
+
+.table tr.empty-row,
+.table tr.empty-row {
+    background-color: #ffffff;
+}
+
+.table tr.empty-row td,
+.table tr.empty-row td {
+    color: lightgray;
+    text-transform: uppercase;
 }
