@@ -1,0 +1,69 @@
+{% load humanize %}
+
+<div class="modal-dialog modal-lg wd-sm-650" role="document">
+  <div class="modal-content">
+    <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
+      <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </a>
+      <div class="media align-items-center">
+        <div class="media-body">
+          <h4 class="tx-18 tx-sm-20 mg-b-2">Purchasing Batch Lot</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">A list of related delivery orders for {{ object.name }}.</p>
+        </div>
+      </div><!-- media -->
+    </div><!-- modal-header -->
+
+    <div class="modal-body pd-x-30 ht-250 mg-t-15">
+      <div class="table-responsive">
+        <table class="table table-dashboard table-hover table-card table-modal mg-b-0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Opened Date</th>
+              <th>Vessel</th>
+              <th title="Bill of Loading Document Number">B/L Document No.</th>
+              <th>Last Updated</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for delivery_order in object.delivery_orders.all %}
+            <tr>
+              <td class="tx-color-03 tx-normal">{{ forloop.counter }}</td>
+              <td class="tx-color-03 tx-normal">{{ delivery_order.created_at|date:'d-m-Y' }}</td>
+              <td class="tz-color-03 tx-medium">
+                <a href="{% url 'orders:order-detail' delivery_order.pk %}" target="_blank">{{ delivery_order.vessel }}
+                  &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
+                </a>
+              </td>
+              <td class="tz-color-03 tx-normal">{{ delivery_order.bill_of_loading }}</td>
+              <td class="tx-color-03 tx-normal">{{ delivery_order.updated_at|date:'d-m-Y' }}</td>
+              <td class="tz-color-03 tx-normal">
+                {% if delivery_order.status == delivery_order.OPEN %}
+                <span class="badge badge-success">{{ delivery_order.get_status_display }}</span>
+                {% else %}
+                <span class="badge badge-secondary">{{ delivery_order.get_status_display }}</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr class="empty-row">
+              <td colspan="6" class="text-center pd-t-50 tx-14 tx-medium text-upper">No Delivery Order Yet</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /.modal-body -->
+    <div class="modal-footer pd-x-20 pd-y-15">
+      <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+    </div>
+  </div><!-- modal-content -->
+</div><!-- modal-dialog -->
+
+<script>
+  $(function() {
+    feather.replace();
+  });
+</script>

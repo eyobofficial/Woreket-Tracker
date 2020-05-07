@@ -1,0 +1,66 @@
+.summary-list-group li:hover {
+    cursor: pointer;
+}
+
+.table-detail .table thead th.action:last-child,
+.table-detail .table tbody td.action:last-child {
+    padding-right: 8px !important;
+    padding-left: 8px !important;
+}
+
+#orders-table-card .search-form .form-control {
+    width: 70%;
+    height: calc(1.3em + 0.8375rem + 2px);
+}
+
+#orders-table-card .search-form button {
+    z-index: 100;
+}
+
+.show-toggle {
+    line-height: 1.4;
+}
+
+.show-toggle:hover {
+    color: #0168fa;
+    text-decoration: underline;
+    transition: 0.3s all;
+}
+
+.show-toggle:focus {
+    color: #8392a5;
+}
+
+#distribution-form .form-fieldset {
+    margin-top: 24px;
+}
+
+.table-formset tr th {
+    text-transform: uppercase;
+    border: none;
+    padding: 0;
+}
+
+.table-formset tr td {
+    padding: 10px 10px 10px 0;
+    border: none;
+}
+
+.table-modal th {
+    border-top: 0 !important;
+}
+
+.table-modal th,
+.table-modal td {
+    padding-left: 0 !important;
+}
+
+.table-modal th:last-of-type,
+.table-modal td:last-of-type {
+    padding-right: 0 !important;
+}
+
+.add-union-btn:hover {
+    color: #0148ae;
+    transition: 0.3s all;
+}

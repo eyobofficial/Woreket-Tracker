@@ -1,0 +1,76 @@
+{% load static %}
+
+<div class="modal-dialog wd-sm-650" role="document">
+  <div class="modal-content">
+    <div class="modal-body pd-sm-t-50 pd-sm-b-10 pd-sm-x-30">
+      <div class="row">
+        <div class="col-sm-5">
+          <div id="contactAvatar">
+            <div class="avatar avatar-xl">
+              <span class="avatar-initial rounded-circle bg-gray-700 tx-normal">{{ object.first_name|slice:':1'|first }}</span>
+            </div>
+          </div>
+
+          <h5 id="contactName" class="tx-18 tx-xl-20 mg-b-5 mg-t-20">{{ object.get_full_name }}</h5>
+          <p class="tx-13 tx-lg-12 tx-xl-14 tx-color-03 mg-b-30">
+            {% if object.status == object.PENDING %}
+            <span class="badge badge-warning tx-12">pending</span>
+            {% elif object.status == object.ACTIVE %}
+            <span class="badge badge-success pd-x-10 tx-12">active</span>
+            {% else %}
+            <span class="badge badge-secondary tx-12">disabled</span>
+            {% endif %}
+          </p>
+
+          <label class="tx-sans tx-10 tx-semibold tx-uppercase tx-color-01 tx-spacing-1 mg-b-15">Contact Information</label>
+          <ul class="list-unstyled profile-info-list">
+            {% if object.phone_number is not None %}
+            <li><i data-feather="phone" class="wd-10"></i> <a href="#">{{ object.phone_number.as_national|cut:' ' }}</a></li>
+            {% endif %}
+            <li><i data-feather="mail" class="wd-10"></i> <a href="#">{{ object.email }}</a></li>
+          </ul>
+        </div><!-- /.col-sm-4 -->
+        <div class="col-sm-7 pd-l-30 mg-lg-t-0">
+          <div class="mg-b-10">
+            <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-5">First Name</label>
+            <input type="text" class="form-control disabled tx-medium tx-14" value="{{ object.first_name }}" disabled>
+          </div><!-- col -->
+
+          <div class="mg-b-10">
+            <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-5">Last Name</label>
+            <input type="text" class="form-control disabled tx-medium tx-14" value="{{ object.last_name }}" disabled>
+          </div><!-- col -->
+
+          <div class="mg-b-10">
+            <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-5">Role</label>
+            <input type="text" class="form-control disabled tx-medium tx-14" value="{{ object.role|default_if_none:'-' }}" disabled>
+          </div><!-- col -->
+
+          {% if object.role and object.role.name == ROLE_SUPPLIER %}
+          <div class="mg-b-10">
+            <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-5">Supplier</label>
+            <input type="text" class="form-control disabled tx-medium tx-14" value="{{ object.supplier.name }}"
+              disabled>
+          </div><!-- col -->
+          {% endif %}
+
+          <div class="mg-b-30">
+            <label class="tx-10 tx-medium tx-spacing-1 tx-color-03 tx-uppercase tx-sans mg-b-5">Registered Date</label>
+            <input type="text" class="form-control disabled tx-medium tx-14" value="{{ object.date_joined|date:'M d, Y' }}" disabled>
+          </div><!-- col -->
+        </div>
+      </div><!-- /.row -->
+    </div><!-- /.modal-body -->
+
+    <!-- Modal Footer -->
+    <div class="modal-footer pd-x-20 pd-y-15">
+      <button class="btn btn-primary" data-dismiss="modal">Close</button>
+    </div>
+  </div><!-- modal-content -->
+</div><!-- modal-dialog -->
+
+<script>
+  $(function() {
+    feather.replace();
+  });
+</script>

@@ -29,6 +29,10 @@ django-celery-results = "*"
 python-docx = "*"
 pendulum = "*"
 celery = "==4.4.2"
+pyyaml = "*"
+django-countries = "*"
+ipython = "*"
+django-phonenumber-field = {extras = ["phonenumbers"],version = "*"}
 
 [requires]
 python_version = "3.6"

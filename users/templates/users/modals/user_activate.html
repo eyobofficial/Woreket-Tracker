@@ -1,0 +1,52 @@
+<div class="modal-dialog wd-sm-650" role="document">
+  <div class="modal-content">
+    <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
+      <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </a>
+      <div class="media align-items-center">
+      {% if object.status == object.PENDING %}
+        <div class="media-body">
+          <h4 class="tx-18 tx-sm-20 mg-b-2">Activate User</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Change the status of the new user to approved.</p>
+        </div>
+      {% elif object.status == object.DISABLED %}
+        <div class="media-body">
+          <h4 class="tx-18 tx-sm-20 mg-b-2">Re-activate User</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Change the status of the new user back to approved.</p>
+        </div>
+      {% endif %}
+      </div><!-- media -->
+    </div><!-- modal-header -->
+
+    <!-- LC Form -->
+    <form action="{% url 'users:user-activate' object.pk %}" method="POST">
+      {% csrf_token %}
+
+      <!-- Hidden fields -->
+      <input type="hidden" name="status" value="{{ object.ACTIVE }}">
+
+      <div class="modal-body pd-sm-t-50 pd-sm-b-80 pd-sm-x-30">
+        {% if object.status == object.PENDING %}
+        <h5 class="tz-color-03 tx-normal">Are you sure you want to <span class="text-danger tx-medium">activate</span> this
+          user? Once activated, the user will have access to the system.
+        </h5>
+        {% elif object.status == object.DISABLED %}
+        <h5 class="tz-color-03 tx-normal">Are you sure you want to <span class="text-danger tx-medium">re-activate</span> this
+          user? Once re-activated, the user will have access to the system.
+        </h5>
+        {% endif %}
+      </div><!-- /.modal-body -->
+
+      <div class="modal-footer pd-x-20 pd-y-15">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
+
+        {% if object.status == object.PENDING %}
+        <button type="submit" class="btn btn-primary">Yes, activate</button>
+        {% elif object.status == object.DISABLED %}
+        <button type="submit" class="btn btn-primary">Yes, re-activate</button>
+        {% endif %}
+      </div>
+    </form>
+  </div><!-- modal-content -->
+</div><!-- modal-dialog -->

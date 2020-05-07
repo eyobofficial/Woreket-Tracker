@@ -4,47 +4,53 @@
 {% block title %}Sign In | Payment Tracker {% endblock %}
 
 {% block navbar-right %}
-  <a href="#" class="btn btn-buy"><i data-feather="user-plus"></i> <span>Register</span></a>
+  <a href="{% url 'accounts:register' %}" class="btn btn-buy"><i data-feather="user-plus"></i> <span>Register</span></a>
 {% endblock %}
 
 {% block content %}
   <div class="media align-items-stretch justify-content-center ht-100p pos-relative">
     <div class="media-body align-items-center d-none d-lg-flex">
-      <div class="mx-wd-600">
+      <div class="mx-wd-600 mg-t-20">
         <img src="{% static 'shared/img/img15.png' %}" class="img-fluid" alt="">
-      </div>
-      <div class="pos-absolute b-0 l-0 tx-12 tx-center">
-        Workspace design vector is created by <a href="https://www.freepik.com/pikisuperstar"
-          target="_blank">pikisuperstar (freepik.com)</a>
       </div>
     </div><!-- media-body -->
     <div class="sign-wrapper mg-lg-l-50 mg-xl-l-60">
       <div class="wd-100p">
-        <h3 class="tx-color-01 mg-b-5 mt-5">Sign In</h3>
+        <h3 class="tx-color-01 mg-b-5 mt-4">Sign In</h3>
 
         {% if form.errors %}
-        <p class="text-danger tx-16 mg-b-40"><i data-feather="alert-triangle"></i>&nbsp; Wrong username or password.</p>
+          <p class="text-danger tx-16 mg-b-30"><i data-feather="alert-triangle"></i>&nbsp; Wrong username or password.</p>
         {% else %}
-        <p class="tx-color-03 tx-16 mg-b-40">Welcome back! Please signin to continue.</p>
+          {% if next and user.is_authenticated %}
+            <p class="text-danger tx-16 mg-b-30"><i data-feather="alert-triangle"></i>&nbsp;
+              You don't have access to this page. Please login with an account that has access.
+            </p>
+          {% else %}
+            <p class="tx-color-03 tx-16 mg-b-30">Welcome back! Please signin to continue.</p>
+          {% endif %}
         {% endif %}
 
         <form method="POST">
           {% csrf_token %}
+
+          <!-- Redirect URL -->
+          <input type="hidden" name="next" value="{{ next }}">
+
           <div class="form-group">
-            <label>Username or Email</label>
-            <input name="username" class="form-control" placeholder="yourname@yourmail.com">
+            <label>Email or Phone Number</label>
+            <input name="username" class="form-control" placeholder="yourname@yourmail.com" value="{{ form.username.value|default_if_none:'' }}" required>
           </div>
           <div class="form-group">
             <div class="d-flex justify-content-between mg-b-5">
               <label class="mg-b-0-f">Password</label>
               <a href="" class="tx-13">Forgot password?</a>
             </div>
-            <input type="password" name="password" class="form-control" placeholder="Enter your password">
+            <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
           </div>
           <button type="submit" class="btn btn-brand-02 btn-block">Sign In</button>
         </form>
 
-        <div class="tx-13 mg-t-20 tx-center">Don't have an account? <a href="page-signup.html">Create an Account</a>
+        <div class="tx-13 mg-t-20 tx-center">Don't have an account? <a href="{% url 'accounts:register' %}">Create an Account</a>
         </div>
       </div>
     </div><!-- sign-wrapper -->

@@ -1,0 +1,136 @@
+<div class="modal-dialog modal-lg wd-sm-650" role="document">
+  <div class="modal-content">
+    <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
+      <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </a>
+      <div class="media align-items-center">
+        <div class="media-body">
+          {% if object %}
+            <h4 class="tx-18 tx-sm-20 mg-b-2">Edit Delivery Order</h4>
+            <p class="tx-13 tx-color-03 mg-b-0">Update a delivery order record.</p>
+          {% else %}
+            <h4 class="tx-18 tx-sm-20 mg-b-2">New Delivery Order</h4>
+            <p class="tx-13 tx-color-03 mg-b-0">Create a new delivery order record.</p>
+          {% endif %}
+        </div>
+      </div><!-- media -->
+    </div><!-- modal-header -->
+
+    <!-- LC Form -->
+    <form action="{{ request.path }}" method="POST" id="delivery-order-form">
+      {% csrf_token %}
+
+      <!-- Hidden Fields -->
+      <input type="hidden" id="altArrivalDate" name="arrival_date" value="{{ form.instance.arrival_date|date:'Y-m-d'|default_if_none:'' }}">
+
+      <div class="modal-body pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
+        <div class="row">
+          <div class="col-sm-9">
+            <!-- LC Document Number -->
+            <div class="form-group">
+              <label for="lc-number" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">L/C Document
+                Number</label>
+              <input
+                id="lc-number" class="form-control"
+                name="lc_number" value="{{ form.instance.lc_number|default_if_none:'' }}"
+                placeholder="Enter the L/C document number"
+                required />
+            </div>
+
+            <!-- Batch -->
+            <div class="form-group">
+              <label for="batch" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Batch</label>
+              <select name="batch" id="batch" class="form-control custom-select" required>
+                {% if form.instance.batch is None %}
+                <option selected disabled value="">Choose batch</option>
+                {% endif %}
+                {% for batch in batch_list %}
+                <option value="{{ batch.pk }}" {% if form.instance.batch == batch %}selected{% endif %}>{{ batch }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Quantity -->
+            <div class="form-group">
+              <label for="quantity" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Quantity</label>
+              <input id="quantity" class="form-control" name="quantity" value="{{ form.instance.quantity|default_if_none:'' }}"
+                placeholder="Enter agreement quantity" required />
+            </div>
+
+            <!-- Bill of loading -->
+            <div class="form-group">
+              <label for="bill-of-loading" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Bill of
+                Loading</label>
+              <input id="bill-of-loading" class="form-control" name="bill_of_loading"
+                value="{{ form.instance.bill_of_loading|default_if_none:'' }}" placeholder="Enter the B/L number" required />
+            </div>
+
+            <!-- Port -->
+            <div class="form-group">
+              <label for="port" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Port</label>
+              <select name="port" id="port" class="form-control custom-select" required>
+                {% if form.instance.port is None %}
+                {% for port in port_list %}
+                <option value="{{ port.pk }}" {% if port.is_default %}selected{% endif %}>
+                  {{ port.name }} ({{ port.country.name }})
+                </option>
+                {% endfor %}
+                {% else %}
+                {% for port in port_list %}
+                <option value="{{ port.pk }}" {% if form.instance.port == port %}selected{% endif %}>
+                  {{ port.name }} ({{ port.country.name }})
+                </option>
+                {% endfor %}
+                {% endif %}
+              </select>
+            </div>
+
+            <!-- Vessel Name -->
+            <div class="form-group">
+              <label for="vessel" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Vessel Name</label>
+              <input id="vessel" class="form-control" name="vessel" value="{{ form.instance.vessel|default_if_none:'' }}"
+                placeholder="Enter the vessel name" required />
+            </div>
+
+            <!-- Arrival Date -->
+            <label for="arrival-date" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Vessel Arrival Date</label>
+            <div class="input-group mg-b-10">
+              <div class="input-group-prepend">
+                <span class="input-group-text tx-medium" id="basic-addon2">
+                  <i class="far fa-calendar-plus"></i>
+                </span>
+              </div>
+              <input
+                type="text"
+                id="arrivalDate"
+                class="form-control"
+                autocomplete="off"
+                value="{{ form.instance.arrival_date|date:'d/m/Y'|default_if_none:'' }}"
+                placeholder="Select vessel arrival date"
+              />
+            </div>
+          </div><!-- modal-body -->
+        </div><!-- /.row -->
+      </div><!-- /.modal-body -->
+      <div class="modal-footer pd-x-20 pd-y-15">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div><!-- modal-content -->
+</div><!-- modal-dialog -->
+
+<script>
+  $(function () {
+    var cleave = new Cleave('#quantity', {
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand'
+    });
+
+    $('#arrivalDate').datepicker({
+      altField: '#altArrivalDate',
+      altFormat: 'yy-mm-dd'
+    });
+  });
+</script>

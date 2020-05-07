@@ -1,0 +1,239 @@
+{% load humanize %}
+
+<div class="row row-xs row-flex mg-b-10">
+  <div class="col-sm-8">
+    <div class="card ht-100p" id="delivery-order-section">
+      <div
+        class="card-header bd-b-0 pd-t-20 pd-lg-t-25 pd-l-20 pd-lg-l-25 d-flex flex-column flex-sm-row align-items-sm-start justify-content-sm-between">
+        <div>
+          <h6 class="mg-b-5">Delivery Order Metrics</h6>
+          <p class="tx-12 tx-color-03 mg-b-0">Allocated vs actual distributed quantity to regions.</p>
+        </div>
+        <div class="btn-group mg-t-20 mg-sm-t-0">
+          <ul class="list-inline tx-uppercase tx-10 tx-medium tx-spacing-1 tx-color-03 mg-b-0 text-right">
+            <li class="list-inline-item mg-l-10">
+              <span class="d-inline-block wd-7 ht-7 bg-teal rounded-circle mg-r-5"></span>
+              Allocated Quantity ({{ object.unit.code|upper }})
+              </span>
+            </li>
+            <li class="list-inline-item mg-l-10">
+              <span class="d-inline-block wd-7 ht-7 bg-primary rounded-circle mg-r-5"></span>
+              Delivered Quantity ({{ object.unit.code|upper }})
+            </li>
+          </ul>
+        </div><!-- btn-group -->
+      </div><!-- card-header -->
+      <div class="card-body pd-lg-25">
+        <div class="row align-items-sm-end">
+          <div class="col-lg-12 col-xl-12">
+            <div class="chart-six"><canvas id="deliveryOrderChart"></canvas></div>
+          </div>
+        </div>
+      </div><!-- card-body -->
+    </div><!-- card -->
+  </div>
+
+  <div class="col-sm-4">
+    <div class="card ht-100p">
+      <div class="card-header d-flex justify-content-between">
+        <h6 class="lh-5 mg-b-0">Delivery Order Summary</h6>
+      </div><!-- card-header -->
+      <div class="card-body pd-x-20">
+        <ul class="list-group list-group-flush mg-b-0 tx-13 summary-list-group">
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">L/C Document No.</span>
+            <span class="tx-medium">{{ object.lc_number }}</span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Batch</span>
+            <span class="tx-medium">
+              <a data-url="{% url 'orders:batch-summary' object.batch.pk %}" class="popup-link btn-modal">
+                <span class="tx-medium">{{ object.batch.name }}</span>
+                &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
+              </a>
+            </span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">B/L Document No.</span>
+            <span class="tx-medium">
+              <a data-url="{% url 'orders:bill-of-loading' object.pk %}" class="popup-link btn-modal">
+                <span class="tx-medium">{{ object.bill_of_loading }}</span>
+                &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
+              </a>
+            </span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Agreement Quantity</span>
+            <span class="tx-medium">{{ object.quantity|intcomma }}
+              <span class="tx-medium">{{ object.unit.code|upper }}</span>
+            </span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Rate</span>
+            <span class="tx-medium">${{ object.batch.rate|intcomma }}</span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Total Amount</span>
+            <span class="tx-medium">${{ object.get_agreement_amount|intcomma }}</span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Advance Amount (90%)</span>
+            <span class="tx-medium">${{ object.get_advance_amount|intcomma }}</span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">10% Amount</span>
+            <span class="tx-medium">${{ object.get_agreement_retention|intcomma }}</span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-medium">Final Settlement</span>
+            {% if object.get_final_settlement %}
+            <span class="tx-medium">${{ object.get_final_settlement|intcomma }}</span>
+            {% else %}
+            <span class="tx-medium">-</span>
+            {% endif %}
+          </li>
+        </ul>
+      </div><!-- card-body -->
+    </div><!-- card -->
+  </div><!-- col -->
+</div>
+
+<!-- Card sidenotes -->
+<div class="row row-xs row-flex mg-b-20">
+  <div class="col-lg-4 col-md-6 mg-t-10">
+    <div class="card ht-100p">
+      <div class="card-body pd-y-20 pd-x-25">
+        <div class="row row-sm">
+          <div class="col-8">
+            <h3 class="tx-normal tx-rubik tx-spacing--1 mg-b-5">{{ object.batch.product.name }}</h3>
+            <h6 class="tx-12 tx-semibold tx-uppercase tx-spacing-1 tx-primary mg-b-5">Product</h6>
+            <p class="tx-11 tx-color-03 mg-b-0">Purchased product by this delivery order.</p>
+          </div>
+          <div class="col-4 d-flex flex-row">
+            <div class="avatar d-none d-sm-block mg-l-35 mg-t-15 pd-30">
+              <span class="avatar-initial rounded-circle bg-primary op-5">
+                <i class="fas fa-seedling tx-30"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div><!-- card-body -->
+    </div><!-- card -->
+  </div><!-- col -->
+  <div class="col-lg-4 col-md-6 mg-t-10">
+    <div class="card ht-100p">
+      <div class="card-body pd-y-20 pd-x-25">
+        <div class="row row-sm">
+          <div class="col-8">
+            <h3 class="tx-normal tx-rubik tx-spacing--1 mg-b-5">{{ object.vessel }}</h3>
+            <h6 class="tx-12 tx-semibold tx-uppercase tx-spacing-1 tx-teal mg-b-5">Vessel</h6>
+            <p class="tx-11 tx-color-03 mg-b-0">Name of the vessel used to transport this delivery order.</p>
+          </div>
+          <div class="col-4 d-flex flex-row">
+            <div class="avatar d-none d-sm-block mg-l-35 mg-t-15 pd-30">
+              <span class="avatar-initial rounded-circle bg-teal op-5">
+                <i class="fas fa-anchor tx-30"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div><!-- card-body -->
+    </div><!-- card -->
+  </div><!-- col -->
+  <div class="col-lg-4 col-md-6 mg-t-10">
+    <div class="card ht-100p">
+      <div class="card-body pd-y-20 pd-x-25">
+        <div class="row row-sm">
+          <div class="col-8">
+            <h3 class="tx-normal tx-rubik tx-spacing--1 mg-b-5">${{ object.get_final_settlement|intcomma }}</h3>
+            <h6 class="tx-12 tx-semibold tx-uppercase tx-spacing-1 tx-pink mg-b-5">Final Settlement</h6>
+            <p class="tx-11 tx-color-03 mg-b-0">The 10% final settlement to be released to the supplier.</p>
+          </div>
+          <div class="col-4 d-flex flex-row">
+            <div class="avatar d-none d-sm-block mg-l-35 mg-t-15 pd-30">
+              <span class="avatar-initial rounded-circle bg-pink op-5">
+                <i class="fas fa-coins tx-30"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div><!-- card-body -->
+    </div><!-- card -->
+  </div><!-- col -->
+</div>
+
+<script>
+  $(function() {
+    // Chart
+    var ctx1 = document.getElementById('deliveryOrderChart').getContext('2d');
+    var ctxChart1 = new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: [
+          '{{ graph.regions.0 }}',
+          '{{ graph.regions.1 }}',
+          '{{ graph.regions.2 }}',
+          '{{ graph.regions.3 }}',
+          '{{ graph.regions.4 }}',
+          '{{ graph.regions.5 }}'
+        ],
+        datasets: [{
+          label: 'Allocated ({{ object.unit.code|upper }})',
+          data: [
+            '{{ graph.allocations.0 }}',
+            '{{ graph.allocations.1 }}',
+            '{{ graph.allocations.2 }}',
+            '{{ graph.allocations.3 }}',
+            '{{ graph.allocations.4 }}',
+            '{{ graph.allocations.5 }}'
+          ],
+          backgroundColor: '#65e0e0'
+        }, {
+          label: 'Delivered ({{ object.unit.code|upper }})',
+          data: [
+            '{{ graph.distributions.0 }}',
+            '{{ graph.distributions.1 }}',
+            '{{ graph.distributions.2 }}',
+            '{{ graph.distributions.3 }}',
+            '{{ graph.distributions.4 }}',
+            '{{ graph.distributions.5 }}'
+          ],
+          backgroundColor: '#66a4fb'
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        legend: {
+          display: false,
+          labels: {
+            display: true
+          }
+        },
+        scales: {
+          xAxes: [{
+            display: true,
+            barPercentage: 0.9
+          }],
+          yAxes: [{
+            display: true,
+            gridLines: {
+              color: '#ebeef3'
+            },
+            afterDataLimits: function (axis) {
+              axis.max += 1;
+            },
+            ticks: {
+              fontColor: '#8392a5',
+              fontSize: 10,
+              fontColor: '#182b49',
+              min: 0,
+              callback: function (value, index, values) {
+                return value < 1000 ? value : (value / 1000) + ' k';
+              }
+            }
+          }]
+        }
+      }
+    });
+  });
+</script>

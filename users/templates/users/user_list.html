@@ -1,0 +1,201 @@
+{% extends 'orders/base.html' %}
+{% load humanize %}
+
+{% block title %}Users | Payment Tracker{% endblock %}
+
+{% block content %}
+<div class="content content-fixed bd-b">
+  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb breadcrumb-style1 mg-b-10">
+            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Users</li>
+          </ol>
+        </nav>
+        <h4 class="mg-b-0">All Users</h4>
+      </div>
+    </div>
+  </div><!-- container -->
+</div><!-- content -->
+
+<div class="content">
+  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+    <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+      <div class="row">
+        <div class="col-md-9 col-sm-12">
+          <div class="card mg-b-20 mg-t-10" id="orders-table-card">
+            <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-0">
+              <div>
+                <h6 class="mg-b-3 pb-0">Users</h6>
+                <p class="tx-13 tx-color-03 mg-b-15">All registered users in the system.</p>
+              </div>
+              <div class="d-flex mg-t-20 mg-sm-t-0">
+                <form>
+                  <div class="search-form mg-l-15 d-none d-sm-flex justify-content-end">
+                    <input type="search" name="search" class="form-control" placeholder="Search"
+                      value="{{ search_query }}">
+                    <button class="btn" type="submit"><i data-feather="search"></i></button>
+                  </div>
+                </form>
+              </div>
+            </div><!-- card-header -->
+            <div class="table-responsive">
+              <table class="table table-dashboard mg-b-0" id="user-table">
+                <thead>
+                  <tr>
+                    <th>Created Date</th>
+                    <th>Full Name</th>
+                    <th>Phone Number</th>
+                    <th>Role</th>
+                    <th class="text-center">Status</th>
+                    <th class="action"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for user in object_list %}
+                  <tr>
+                    <td class="tx-color-03 tx-normal">{{ user.date_joined|date:'d/m/Y' }}</td>
+                    <td class="tz-color-03 tx-medium">
+                      <a data-url="{% url 'users:user-detail' user.pk %}" class="popup-link btn-modal">
+                        {{ user.get_full_name }} &nbsp;<i class="fas fa-external-link-alt tx-color-03 tx-10"></i>
+                      </a>
+                    </td>
+                    <td class="tz-color-03 tx-normal">{{ user.phone_number|default_if_none:'-' }}</td>
+                    <td class="tz-color-03 tx-normal">{{ user.role|default_if_none:'-' }}</td>
+
+                    {% if user.status == user.PENDING %}
+                    <td class="text-center"><span class="badge badge-warning">pending</span></td>
+                    {% elif user.status == user.ACTIVE %}
+                    <td class="text-center"><span class="badge badge-success">active</span></td>
+                    {% else %}
+                    <td class="text-center"><span class="badge badge-secondary">disabled</span></td>
+                    {% endif %}
+
+                    <td class="text-right action">
+                      <div class="mg-l-auto d-flex justify-content-end">
+                        <nav class="nav nav-icon-only">
+
+                          <a data-url="{% url 'users:user-update' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Edit user">
+                            <i class="wd-10 far fa-edit tx-12 mg-r-5"></i> Edit
+                          </a>
+
+
+                          {% if user.status == user.PENDING %}
+                          <a data-url="{% url 'users:user-activate' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Approve user">
+                            <i class="mg-l-10 wd-10 fas fa-user-check tx-12 mg-r-5"></i> Activate
+                          </a>
+                          {% elif user.status == user.ACTIVE %}
+                          <a data-url="{% url 'users:user-deactivate' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Deactivate user">
+                            <i class="mg-l-10 wd-10 fas fa-user-times tx-12 mg-r-5"></i> Disable
+                          </a>
+                          {% else %}
+                          <a data-url="{% url 'users:user-activate' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Re-activate user">
+                            <i class="mg-l-10 wd-10 fas fa-user-plus tx-12 mg-r-5"></i> Re-activate
+                          </a>
+                          {% endif %}
+
+                        </nav>
+                      </div>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr class="empty-row">
+                    {% if search_query %}
+                    <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Result Found</td>
+                    {% elif selected_status %}
+                      {% if selected_status|add:'0' == 1 %}
+                        <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Pending User Found</td>
+                      {% elif selected_status|add:'0' == 2 %}
+                        <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Active User Found</td>
+                      {% else %}
+                        <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Deactivated User Found</td>
+                      {% endif %}
+                    {% elif selected_role %}
+                      {% if selected_role == ROLE_ADMIN %}
+                        <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Admin User Found</td>
+                      {% elif selected_role == ROLE_MANAGEMENT %}
+                        <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Management User Found</td>
+                      {% elif selected_role == ROLE_STAFF %}
+                        <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Staff User Found</td>
+                      {% else %}
+                        <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Supplier User Found</td>
+                      {% endif %}
+                    {% else %}
+                      <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No User Found</td>
+                    {% endif %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div><!-- table-responsive -->
+          </div><!-- card -->
+
+          <!-- Pagination -->
+          <nav aria-label="Page navigation example" id="pagination-nav">
+            {% if is_paginated %}
+            <ul class="pagination pagination-circle justify-content-end mg-b-0">
+              {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a class="page-link page-link-icon" href="?page={{ page_obj.previous_page_number }}">
+                  <i class="fas fa-chevron-left"></i>
+                </a>
+              </li>
+              {% else %}
+              <li class="page-item disabled">
+                <a class="page-link page-link-icon" href="#">
+                  <i class="fas fa-chevron-left"></i>
+                </a>
+              </li>
+              {% endif %}
+
+              {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+              {% endfor %}
+
+              {% if page_obj.has_next %}
+              <li class="page-item">
+                <a class="page-link page-link-icon" href="?page={{ page_obj.next_page_number }}"><i
+                    class="fas fa-chevron-right"></i></a>
+              </li>
+              {% else %}
+              <li class="page-item disabled">
+                <a class="page-link page-link-icon" href="#">
+                  <i class="fas fa-chevron-right"></i>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+            {% endif %}
+          </nav>
+        </div><!-- col -->
+
+        <!-- Aside filter links -->
+        {% include 'users/partials/links_aside.html' %}
+      </div><!-- row -->
+    </div><!-- container -->
+  </div><!-- container -->
+</div><!-- content -->
+
+<script>
+  $(function () {
+    $('input[name=search]').on('keyup change', function () {
+      var query = $(this).val();
+      var url = '{{ request.path }}?search=' + query;
+
+      $.get(url, function (data) {
+        var $table = $('#user-table');
+        var $pagination = $('#pagination-nav');
+
+        $table.replaceWith($(data).find('#user-table'));
+        $pagination.replaceWith($(data).find('#pagination-nav'));
+      });
+    });
+  });
+</script>
+{% endblock %}

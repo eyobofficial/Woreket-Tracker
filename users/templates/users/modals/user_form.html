@@ -1,0 +1,99 @@
+<div class="modal-dialog wd-sm-650" role="document">
+  <div class="modal-content">
+    <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
+      <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </a>
+      <div class="media align-items-center">
+        <div class="media-body">
+          <h4 class="tx-18 tx-sm-20 mg-b-2">Edit User</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Update the user details.</p>
+        </div>
+      </div><!-- media -->
+    </div><!-- modal-header -->
+
+    <!-- LC Form -->
+    <form action="{{ request.path }}" method="POST">
+      {% csrf_token %}
+
+      <div class="modal-body pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
+        <div class="row">
+          <div class="col-sm-9">
+            <!-- First Name -->
+            <div class="form-group">
+              <label for="first-name" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">First Name</label>
+              <input
+                id="first-name" class="form-control" name="first_name"
+                value="{{ form.first_name.value|default_if_none:'' }}" placeholder="Enter first name" required
+              />
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+              <label for="last-name" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Last Name</label>
+              <input
+                id="last-name" class="form-control"
+                name="last_name" value="{{ form.last_name.value|default_if_none:'' }}"
+                placeholder="Enter last name" required
+              />
+            </div>
+
+            <!-- Role -->
+            <div class="form-group">
+              <label for="role" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Role</label>
+              <select name="role" id="role" class="form-control custom-select" required>
+                {% if not form.instance.role %}
+                <option selected disabled value="">Choose Role</option>
+                {% endif %}
+
+                {% for choice in form.fields.role.choices %}
+                <option value="{{ choice.0 }}" {% if form.instance.role.pk == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Supplier -->
+            <div class="form-group {% if form.instance.role.pk != role_supplier.pk %}d-none{% endif %}">
+              <label for="supplier" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Supplier</label>
+              <select name="supplier" id="supplier" class="form-control custom-select" {% if form.instance.role.pk == role_supplier.pk %}required{% endif %}>
+                {% if not form.supplier.value %}
+                <option selected disabled value="">Choose A Supplier</option>
+                {% endif %}
+
+                {% for choice in form.fields.supplier.choices %}
+                <option value="{{ choice.0 }}" {% if form.instance.supplier.pk == choice.0 %}selected{% endif %}>
+                  {{ choice.1 }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+          </div><!-- modal-body -->
+        </div><!-- /.row -->
+      </div><!-- /.modal-body -->
+
+      <div class="modal-footer pd-x-20 pd-y-15">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div><!-- modal-content -->
+</div><!-- modal-dialog -->
+
+
+<script>
+  $(function() {
+    $('[name=role]').change(function() {
+      var role = $(this).val();
+      var $supplier = $('[name=supplier');
+
+      if (role === '{{ role_supplier.pk }}') {
+        $supplier.closest('.form-group').removeClass('d-none');
+        $supplier.attr('required', true);
+      } else {
+        $supplier.closest('.form-group').addClass('d-none');
+        $supplier.removeAttr('required');
+      }
+    });
+  });
+</script>
