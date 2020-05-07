@@ -1,10 +1,14 @@
-import datetime
+import pendulum
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django_countries.fields import CountryField
 
 from shared.models import Unit
+from orders.models import DeliveryOrder
+
+from .managers import BatchManager
 
 
 class Supplier(models.Model):
@@ -52,8 +56,14 @@ class Product(models.Model):
 
 class Batch(models.Model):
     """Product purchasing batches."""
-    current_year = datetime.date.today().year
-    YEAR_CHOICES = [(y, y) for y in range(current_year - 2, current_year + 4)]
+    today = pendulum.today(tz=settings.TIME_ZONE)
+    choice_duration = 5
+    ethiopian_year = today.year - 7
+
+    YEAR_CHOICES = [
+        (y, f'{y}/{y + 1}')
+        for y in range(ethiopian_year - choice_duration, ethiopian_year)
+    ]
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     name = models.CharField(max_length=120)
@@ -69,28 +79,25 @@ class Batch(models.Model):
         decimal_places=2,
         help_text='Price is in USD.'
     )
-    batch_round = models.PositiveSmallIntegerField(
-        default=1,
-        help_text='Batch round for the year.'
-    )
     year = models.PositiveIntegerField(
         choices=YEAR_CHOICES,
-        default=current_year
     )
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
+    is_deleted = models.BooleanField('deleted', default=False)
+
+    # Custom manager
+    objects = BatchManager()
 
     class Meta:
         default_related_name='batches'
         verbose_name = 'Purchasing Batch'
         verbose_name_plural = 'Purchasing Batches'
-        unique_together = ('name', 'product', 'batch_round', 'year')
         ordering = ('-created_at', )
 
     def __str__(self):
-        return '{name}/Product: {product}/Year: {year}({batch_round})'.format(
-            name=self.name,
-            product=self.product.name,
-            year=self.year,
-            batch_round=self.batch_round
-        )
+        return f'{self.name} ({self.product}) - {self.year}'
+
+    def get_amount(self):
+        """Returns the total amount for the batch."""
+        return round(self.quantity * self.rate, 2)

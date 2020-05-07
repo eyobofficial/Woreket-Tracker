@@ -1,11 +1,11 @@
 from django import forms
 from django.forms import inlineformset_factory, BaseInlineFormSet
 
+from shared.fields import FormattedNumberField
 from customers.models import Union, Location
 
 from .models import DeliveryOrder, Allocation, Distribution, UnionDistribution,\
     UnionAllocation
-from .fields import FormattedNumberField
 
 
 class DeliveryOrderForm(forms.ModelForm):

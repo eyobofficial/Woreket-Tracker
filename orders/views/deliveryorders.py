@@ -23,6 +23,7 @@ class BaseOrderListView(BaseOrderView, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
+        qs = qs.exclude(batch__is_deleted=True)
 
         user = self.request.user
         lc_number = self.request.GET.get('lc')
@@ -142,10 +143,19 @@ class ClosedOrderListView(BaseOrderListView):
     access_roles = '__all__'
 
 
-class OrderDetailView(BaseOrderView, DetailView):
+class BaseOrderDetailView(BaseOrderView):
+    """Base class for all delivery order detail views."""
+    model = DeliveryOrder
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.exclude(batch__is_deleted=True)
+        return qs
+
+
+class OrderDetailView(BaseOrderDetailView, DetailView):
     """Displays a detail of a single delivery order."""
     template_name = 'orders/order_detail.html'
-    model = DeliveryOrder
     access_roles = '__all__'
 
     def get_queryset(self):
@@ -204,12 +214,22 @@ class BatchSummaryView(BaseOrderView, DetailView):
     model = Batch
     access_roles = '__all__'
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.exclude(is_deleted=True)
+        return qs
+
 
 class BillOfLoadingSummary(BaseOrderView, DetailView):
     """A popup modal for bill of loading summary page."""
     template_name = 'orders/modals/bill_of_loading_summary.html'
     model = DeliveryOrder
     access_roles = '__all__'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.exclude(is_deleted=True)
+        return qs
 
 
 class OrderCreateView(BaseOrderView, CreateView):
@@ -237,11 +257,10 @@ class OrderCreateView(BaseOrderView, CreateView):
         return redirect(self.get_success_url())
 
 
-class OrderUpdateView(BaseOrderView, UpdateView):
+class OrderUpdateView(BaseOrderDetailView, UpdateView):
     """Updates the a dilvery order instance."""
     template_name = 'orders/modals/order_form.html'
     form_class = DeliveryOrderForm
-    model = DeliveryOrder
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def get_context_data(self, **kwargs):
@@ -257,10 +276,9 @@ class OrderUpdateView(BaseOrderView, UpdateView):
         return redirect_url
 
 
-class OrderCloseView(BaseOrderView, UpdateView):
+class OrderCloseView(BaseOrderDetailView, UpdateView):
     """Closes a delivery order instance."""
     template_name = 'orders/modals/order_close.html'
-    model = DeliveryOrder
     fields = ('status', )
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
@@ -270,10 +288,9 @@ class OrderCloseView(BaseOrderView, UpdateView):
         return redirect_url
 
 
-class OrderReopenView(BaseOrderView, UpdateView):
+class OrderReopenView(BaseOrderDetailView, UpdateView):
     """Opens a delivery order instance."""
     template_name = 'orders/modals/order_open.html'
-    model = DeliveryOrder
     fields = ('status', )
     access_roles = [ROLE_ADMIN]
 
@@ -283,9 +300,8 @@ class OrderReopenView(BaseOrderView, UpdateView):
         return redirect_url
 
 
-class OrderDeleteView(BaseOrderView, DeleteView):
+class OrderDeleteView(BaseOrderDetailView, DeleteView):
     """Deletes a deliver order instance."""
     template_name = 'orders/modals/order_delete_form.html'
-    model = DeliveryOrder
     success_url = reverse_lazy('orders:closed-orders-list')
     access_roles = [ROLE_ADMIN]

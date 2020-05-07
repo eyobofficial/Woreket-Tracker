@@ -16,6 +16,20 @@ a.icon-link {
     cursor: pointer;
 }
 
+a.popup-link.btn-modal {
+    cursor: pointer;
+    color: #0168fa;
+}
+
+a.popup-link.btn-modal:hover {
+    color: #0148ae;
+}
+
+a.popup-link.btn-modal:hover span {
+    text-decoration: underline;
+}
+
+
 .row-flex {
     display: flex;
     flex-wrap: wrap;
@@ -36,7 +50,7 @@ label.disabled {
     cursor: not-allowed;
 }
 
-.feather {
+.modal .feather {
     z-index: 99999;
 }
 

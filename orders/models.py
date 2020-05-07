@@ -16,7 +16,6 @@ from shared.constants import ADVANCE, RETENTION
 from shared.models import Unit
 
 from customers.models import Customer, Union, Location
-from purchases.models import Batch
 
 
 User = settings.AUTH_USER_MODEL
@@ -57,7 +56,7 @@ class DeliveryOrder(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     lc_number = models.CharField('letter of credit number', max_length=30)
     vessel = models.CharField(max_length=120, help_text='Shipment vessel name.')
-    batch = models.ForeignKey(Batch, null=True, on_delete=models.SET_NULL)
+    batch = models.ForeignKey('purchases.Batch', null=True, on_delete=models.SET_NULL)
     quantity = models.DecimalField(
         'agreement quantity',
         max_digits=10, decimal_places=2
@@ -307,7 +306,7 @@ class Allocation(models.Model):
         verbose_name_plural = 'Delivery Order Allocations'
 
     def __str__(self):
-        return f'{self.buyer.name} - {self.quantity}'
+        return f'{self.buyer.name} - {self.get_total_quantity()}'
 
     def get_total_quantity(self):
         """Returns the total allocation quantity.

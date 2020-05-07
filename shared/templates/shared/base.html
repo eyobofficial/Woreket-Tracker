@@ -50,7 +50,7 @@
     <script src="{% static 'shared/lib/prismjs/prism.js' %}"></script>
     <script src="{% static 'shared/lib/cleave.js/cleave.min.js' %}"></script>
     <script src="{% static 'shared/lib/select2/js/select2.min.js' %}"></script>
-    <script src="{% static 'shared/lib/django-dynamic-formset/jquery.formset.js' %}"></script>
+    <script src="{% static 'shared/lib/jqueryui/jquery-ui.min.js' %}"></script>
 
     <!-- Extra Vendor JavaScript -->
     {% block vendor-js %}{% endblock %}
@@ -76,28 +76,39 @@
             <li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">Main Navigation</li>
 
             {% if user.is_superuser or user.status == user.ACTIVE and perms.orders %}
-              <li class="nav-item with-sub {% if page_name == 'delivery-orders' %}active{% endif %}">
-                <a href="" class="nav-link"><i data-feather="box"></i>Delivery Orders</a>
+              <!-- Delivery Order -->
+              {% if perms.orders %}
+                <li class="nav-item with-sub {% if page_name == 'delivery-orders' %}active{% endif %}">
+                  <a href="" class="nav-link"><i data-feather="box"></i>Delivery Orders</a>
 
-                <ul class="navbar-menu-sub">
-                  <li class="nav-sub-item">
-                    <a href="{% url 'orders:open-orders-list' %}" class="nav-sub-link">
-                      <i data-feather="activity"></i>Open Delivery Orders
-                    </a>
-                  </li>
-                  <li class="nav-sub-item">
-                    <a href="{% url 'orders:closed-orders-list' %}" class="nav-sub-link">
-                      <i data-feather="archive"></i>Closed Delivery Orders
-                    </a>
-                  </li>
-                </ul>
-              </li>
+                  <ul class="navbar-menu-sub">
+                    <li class="nav-sub-item">
+                      <a href="{% url 'orders:open-orders-list' %}" class="nav-sub-link">
+                        <i data-feather="activity"></i>Open Delivery Orders
+                      </a>
+                    </li>
+                    <li class="nav-sub-item">
+                      <a href="{% url 'orders:closed-orders-list' %}" class="nav-sub-link">
+                        <i data-feather="archive"></i>Closed Delivery Orders
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+              {% endif %}
+
+              <!-- Batch -->
+              {% if perms.purchases.batch %}
+                <li class="nav-item {% if page_name == 'batches' %}active{% endif %}">
+                  <a href="{% url 'purchases:batch-list' %}" class="nav-link"><i data-feather="box"></i>Lots</a>
+                </li>
+              {% endif %}
             {% endif %}
 
             {% if user.is_superuser or user.status == user.ACTIVE and perms.users %}
-            <li class="nav-item {% if page_name == 'users' %}active{% endif %}">
-              <a href="{% url 'users:user-list' %}" class="nav-link"><i data-feather="box"></i>Users</a>
-            </li>
+              <!-- Users -->
+              <li class="nav-item {% if page_name == 'users' %}active{% endif %}">
+                <a href="{% url 'users:user-list' %}" class="nav-link"><i data-feather="box"></i>Users</a>
+              </li>
             {% endif %}
           {% endif %}
         </ul>
