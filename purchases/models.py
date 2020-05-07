@@ -96,7 +96,7 @@ class Batch(models.Model):
         ordering = ('-created_at', )
 
     def __str__(self):
-        return f'{self.name} ({self.product}) - {self.year}'
+        return f'{self.name} ({self.product}) - {self.get_year_display()}'
 
     def get_amount(self):
         """Returns the total amount for the batch."""

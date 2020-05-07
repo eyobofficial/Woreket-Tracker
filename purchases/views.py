@@ -3,7 +3,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
+    DetailView
 
 from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF
 
@@ -50,6 +51,18 @@ class BatchListView(BasePurchasesView, ListView):
             Q(supplier__name__icontains=query)
         )
         return search_qs
+
+
+class BatchDetailView(BasePurchasesView, DetailView):
+    """Detail view for a purchasing batch instance."""
+    template_name = 'purchases/modals/batches/batch_detail.html'
+    model = Batch
+    access_roles = [ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.exclude(is_deleted=True)
+        return qs
 
 
 class BatchCreateView(BasePurchasesView, SuccessMessageMixin, CreateView):
