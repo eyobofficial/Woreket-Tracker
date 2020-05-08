@@ -164,7 +164,24 @@
       </div><!-- col -->
 
       <!-- Aside filter links -->
-      {% include 'purchases/partials/batch_links_aside.html' %}
+      <aside class="col-md-3 col-sm-12 mg-t-10 mg-lg-t-0 pd-sm-l-40">
+        <!-- Product Menu -->
+        {% if product_list.count > 0 %}
+        <h6 class="tx-uppercase tx-semibold mg-t-30 mg-b-15">Products</h6>
+        <nav class="nav nav-classic tx-13 mg-lg-b-20">
+          <a href="{% url 'purchases:batch-list' %}" class="nav-link {% if selected_product is None %}active{% endif %}">
+            <span>All</span> <span class="badge">{{ batch_count }}</span>
+          </a>
+          {% for product in product_list %}
+          <a href="{{ request.path }}?product={{ product.pk }}"
+            class="nav-link {% if selected_product|safe == product.pk|safe %}active{% endif %}">
+            <span>{{ product.name }}</span> <span class="badge">{{ product.batches.count }}</span>
+          </a>
+          {% endfor %}
+        </nav>
+        {% endif %}
+      </aside>
+
     </div><!-- row -->
   </div><!-- container -->
 </div><!-- content -->
