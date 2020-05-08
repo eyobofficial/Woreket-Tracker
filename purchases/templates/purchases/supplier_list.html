@@ -20,7 +20,7 @@
       <div class="d-none d-md-block mg-t-20 mg-sm-t-0">
         {% if perms.purchases.add_supplier %}
         <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
-          data-url="">
+          data-url="{% url 'purchases:supplier-create' %}">
           <i data-feather="plus" class="wd-10 mg-r-5"></i>Add New Supplier
         </button>
         {% endif %}
@@ -77,7 +77,7 @@
                     <div class="mg-l-auto d-flex justify-content-end">
                       <nav class="nav nav-icon-only">
                         {% if perms.purchases.change_supplier %}
-                        <a data-url="" class="nav-link d-none d-sm-block btn-modal" title="Edit">
+                        <a data-url="{% url 'purchases:supplier-update' supplier.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Edit">
                           <i data-feather="edit-3"></i>
                         </a>
                         {% endif %}

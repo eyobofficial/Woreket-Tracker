@@ -11,7 +11,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
 from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF
 from shared.models import Unit
 
-from .forms import BatchForm
+from .forms import BatchForm, SupplierForm
 from .mixins import BasePurchasesView
 from .models import Batch, ProductCategory, Product, Supplier
 
@@ -280,3 +280,35 @@ class SupplierListView(BasePurchasesView, ListView):
             Q(city__icontains=query)
         )
         return search_qs
+
+
+class SupplierCreateView(BasePurchasesView, SuccessMessageMixin, CreateView):
+    """Create view for creating new supplier."""
+    template_name = 'purchases/modals/suppliers/supplier_form.html'
+    model = Supplier
+    form_class = SupplierForm
+    success_url = reverse_lazy('purchases:supplier-list')
+    success_message = 'A new supplier is successfully created.'
+    page_name = 'suppliers'
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        response.status_code = 400
+        return response
+
+
+class SupplierUpdateView(BasePurchasesView, SuccessMessageMixin, UpdateView):
+    """Update view for editing existing supplier."""
+    template_name = 'purchases/modals/suppliers/supplier_form.html'
+    model = Supplier
+    form_class = SupplierForm
+    success_url = reverse_lazy('purchases:supplier-list')
+    success_message = 'The selected supplier is successfully updated.'
+    page_name = 'suppliers'
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        response.status_code = 400
+        return response
