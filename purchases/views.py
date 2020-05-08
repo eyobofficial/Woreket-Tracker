@@ -7,6 +7,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
     DetailView
 
 from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF
+from shared.models import Unit
 
 from .forms import BatchForm
 from .mixins import BasePurchasesView
@@ -170,3 +171,26 @@ class ProductListView(BasePurchasesView, ListView):
             Q(category__name__icontains=query)
         )
         return search_qs
+
+
+class ProductCreateView(BasePurchasesView, SuccessMessageMixin, CreateView):
+    """Create view for creating product."""
+    template_name = 'purchases/modals/products/product_form.html'
+    model = Product
+    fields = ('name', 'category', 'unit')
+    success_url = reverse_lazy('purchases:product-list')
+    success_message = 'A new product is successfully created.'
+    page_name = 'products'
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
+
+    def get_context_data(self, **kwargs):
+        kwargs.update({
+            'category_list': ProductCategory.objects.all(),
+            'unit_list': Unit.objects.all()
+        })
+        return super().get_context_data(**kwargs)
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        response.status_code = 400
+        return response

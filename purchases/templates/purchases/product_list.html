@@ -20,7 +20,7 @@
       <div class="d-none d-md-block mg-t-20 mg-sm-t-0">
         {% if perms.purchases.add_product %}
         <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
-          data-url="">
+          data-url="{% url 'purchases:product-create' %}">
           <i data-feather="plus" class="wd-10 mg-r-5"></i>Add New Product
         </button>
         {% endif %}

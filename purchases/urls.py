@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import BatchListView, BatchCreateView, BatchUpdateView, \
-    BatchDeleteView, BatchDetailView, ProductListView
+    BatchDeleteView, BatchDetailView, ProductListView, ProductCreateView
 
 
 app_name = 'purchases'
@@ -20,5 +20,10 @@ urlpatterns = [
         BatchDeleteView.as_view(),
         name='batch-delete'
     ),
-    path('products/', ProductListView.as_view(), name='product-list')
+    path('products/', ProductListView.as_view(), name='product-list'),
+    path(
+        'products/create/',
+        ProductCreateView.as_view(),
+        name='product-create'
+    ),
 ]
