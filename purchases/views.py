@@ -312,3 +312,21 @@ class SupplierUpdateView(BasePurchasesView, SuccessMessageMixin, UpdateView):
         response = super().form_invalid(form)
         response.status_code = 400
         return response
+
+
+class SupplierDeleteView(BasePurchasesView, SuccessMessageMixin, DeleteView):
+    """Delete view to delete a supplier."""
+    template_name = 'purchases/modals/suppliers/supplier_delete_form.html'
+    model = Supplier
+    success_url = reverse_lazy('purchases:supplier-list')
+    success_message = 'The selected supplier is successfully deleted.'
+    page_name = 'suppliers'
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
+
+    def delete(self, request, *args, **kwargs):
+        """Overwrites delete method to send success message."""
+        self.object = self.get_object()
+        self.object.delete()
+        success_url = self.get_success_url()
+        messages.success(request, self.success_message)
+        return redirect(success_url)

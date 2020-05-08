@@ -3,7 +3,7 @@ from django.urls import path
 from .views import BatchListView, BatchCreateView, BatchUpdateView, \
     BatchDeleteView, BatchDetailView, ProductListView, ProductCreateView, \
     ProductUpdateView, ProductDeleteView, SupplierListView, SupplierCreateView,\
-    SupplierUpdateView
+    SupplierUpdateView, SupplierDeleteView
 
 
 app_name = 'purchases'
@@ -48,5 +48,10 @@ urlpatterns = [
         'suppliers/<uuid:pk>/update/',
         SupplierUpdateView.as_view(),
         name='supplier-update'
+    ),
+    path(
+        'suppliers/<uuid:pk>/delete/',
+        SupplierDeleteView.as_view(),
+        name='supplier-delete'
     ),
 ]

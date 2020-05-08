@@ -6,28 +6,28 @@
       </a>
       <div class="media align-items-center">
         <div class="media-body">
-          <h4 class="tx-18 tx-sm-20 mg-b-2">Delete Delivery Order</h4>
-          <p class="tx-13 tx-color-03 mg-b-0">Permanently remove this delivery order.</p>
+          <h4 class="tx-18 tx-sm-20 mg-b-2">Delete Supplier</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Permanently remove this supplier record.</p>
         </div>
       </div><!-- media -->
     </div><!-- modal-header -->
 
     <!-- Order Delete Form -->
-    <form action="{{ request.path }}" method="POST" id="order-delete-form">
+    <form action="{{ request.path }}" method="POST" id="supplier-delete-form">
       {% csrf_token %}
 
-      <div class="modal-body pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
+      <div class="modal-body pd-sm-t-50 pd-sm-b-40 pd-sm-x-30">
         <h5 class="tz-color-03 tx-normal">
-          Are you sure you want to <span class="text-danger tx-medium">permanently delete</span> this delivery order?
-          This action cannot be undone.
+          This action cannot be undone. You will <span class="text-danger tx-medium">permanently delete</span>
+          the {{ object.name }} supplier and all related purchasing batch lots.
         </h5>
 
         <h5 class="tz-color-03 tx-normal mg-t-20">
-          Please type <span class="text-danger tx-medium">{{ object.vessel }}</span> to confirm.
+          Please type <span class="text-danger tx-medium">{{ object.name }}</span> to confirm.
         </h5>
 
         <div class="form-group">
-          <input type="text" id="vessel-name" class="form-control" autocomplete="off" required>
+          <input type="text" id="supplier-name" class="form-control" autocomplete="off" required>
         </div>
       </div><!-- /.modal-body -->
 
@@ -40,15 +40,15 @@
 </div><!-- modal-dialog -->
 
 <script>
-  $(function () {
-    const $form = $('#order-delete-form');
-    const $nameInput = $form.find('#vessel-name');
+  $(function() {
+    const $form = $('#supplier-delete-form');
+    const $nameInput = $form.find('#supplier-name');
     const $submitBtn = $form.find('button[type=submit]');
 
-    $nameInput.on('keyup', function () {
+    $nameInput.on('keyup', function() {
       const value = $(this).val();
 
-      if (value === '{{ object.vessel }}') {
+      if (value === '{{ object.name }}') {
         $submitBtn.removeAttr('disabled');
       } else {
         $submitBtn.attr('disabled', true);
@@ -56,4 +56,3 @@
     });
   });
 </script>
-
