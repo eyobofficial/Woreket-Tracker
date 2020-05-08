@@ -1,7 +1,7 @@
 {% extends 'purchases/base.html' %}
 {% load humanize %}
 
-{% block title %}Batch Lots | Payment Tracker{% endblock %}
+{% block title %}Supplier | Payment Tracker{% endblock %}
 
 {% block content %}
 <div class="content content-fixed bd-b">
@@ -11,17 +11,17 @@
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb breadcrumb-style1 mg-b-10">
             <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Products</li>
+            <li class="breadcrumb-item active" aria-current="page">Suppliers</li>
           </ol>
         </nav>
-        <h4 class="mg-b-0">All Products</h4>
+        <h4 class="mg-b-0">All Suppliers</h4>
       </div>
 
       <div class="d-none d-md-block mg-t-20 mg-sm-t-0">
-        {% if perms.purchases.add_product %}
+        {% if perms.purchases.add_supplier %}
         <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
-          data-url="{% url 'purchases:product-create' %}">
-          <i data-feather="plus" class="wd-10 mg-r-5"></i>Add New Product
+          data-url="">
+          <i data-feather="plus" class="wd-10 mg-r-5"></i>Add New Supplier
         </button>
         {% endif %}
       </div>
@@ -30,7 +30,7 @@
 </div><!-- content -->
 
 <div class="content">
-  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0" id="product-list-container">
+  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0" id="supplier-list-container">
     <div class="row">
       <div class="col-md-9 col-sm-12">
 
@@ -43,8 +43,8 @@
         <div class="card mg-b-20 mg-t-10" id="products-table-card">
           <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-0">
             <div>
-              <h6 class="mg-b-3 pb-0">Products</h6>
-              <p class="tx-13 tx-color-03 mg-b-15">All products registered in the system.</p>
+              <h6 class="mg-b-3 pb-0">Suppliers</h6>
+              <p class="tx-13 tx-color-03 mg-b-15">All fertilizer suppliers registered in the system.</p>
             </div>
             <div class="d-flex mg-t-20 mg-sm-t-0">
               <form>
@@ -56,34 +56,34 @@
             </div>
           </div><!-- card-header -->
           <div class="table-responsive">
-            <table class="table table-dashboard mg-b-0" id="product-table">
+            <table class="table table-dashboard mg-b-0" id="supplier-table">
               <thead>
                 <tr>
                   <th class="wd-80">#</th>
                   <th>Name</th>
-                  <th>Unit</th>
-                  <th>Category</th>
+                  <th>City</th>
+                  <th>Country</th>
                   <th class="action"></th>
                 </tr>
               </thead>
               <tbody>
-                {% for product in object_list %}
+                {% for supplier in object_list %}
                 <tr>
                   <td class="tx-color-03 tx-normal">{{ forloop.counter }}</td>
-                  <td class="tz-color-03 tx-medium">{{ product.name }}</td>
-                  <td class="tx-color-03 tx-normal">{{ product.unit.name|upper }}</td>
-                  <td class="tx-color-03 tx-normal">{{ product.category.name }}</td>
+                  <td class="tz-color-03 tx-medium">{{ supplier.name }}</td>
+                  <td class="tx-color-03 tx-normal">{{ supplier.city }}</td>
+                  <td class="tx-color-03 tx-normal">{{ supplier.country.name }}</td>
                   <td class="text-right action">
                     <div class="mg-l-auto d-flex justify-content-end">
                       <nav class="nav nav-icon-only">
-                        {% if perms.purchases.change_product %}
-                        <a data-url="{% url 'purchases:product-update' product.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Edit">
+                        {% if perms.purchases.change_supplier %}
+                        <a data-url="" class="nav-link d-none d-sm-block btn-modal" title="Edit">
                           <i data-feather="edit-3"></i>
                         </a>
                         {% endif %}
 
-                        {% if perms.purchases.delete_product %}
-                        <a data-url="{% url 'purchases:product-delete' product.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Delete">
+                        {% if perms.purchases.delete_supplier %}
+                        <a data-url="" class="nav-link d-none d-sm-block btn-modal" title="Delete">
                           <i data-feather="trash"></i>
                         </a>
                         {% endif %}
@@ -94,11 +94,11 @@
                 {% empty %}
                 <tr class="empty-row">
                   {% if search_query %}
-                  <td colspan="{% if perms.purchases.change_product %}5{% else %}4{% endif %}"
+                  <td colspan="{% if perms.purchases.change_supplier %}5{% else %}4{% endif %}"
                     class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO RESULT FOUND</td>
                   {% else %}
-                  <td colspan="{% if perms.purchases.change_product %}5{% else %}4{% endif %}"
-                    class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO PRODUCT YET</td>
+                  <td colspan="{% if perms.purchases.change_supplier %}5{% else %}4{% endif %}"
+                    class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO SUPPLIER YET</td>
                   {% endif %}
                 </tr>
                 {% endfor %}
@@ -151,7 +151,22 @@
       </div><!-- col -->
 
       <!-- Aside filter links -->
-      {% include 'purchases/partials/product_links_aside.html' %}
+      <aside class="col-md-3 col-sm-12 mg-t-10 mg-lg-t-0 pd-sm-l-40">
+        {% if country_list %}
+        <h6 class="tx-uppercase tx-semibold mg-t-30 mg-b-15">Country</h6>
+        <nav class="nav nav-classic tx-13 mg-lg-b-20">
+          <a href="{% url 'purchases:supplier-list' %}" class="nav-link {% if selected_country is None %}active{% endif %}">
+            <span>All</span> <span class="badge">{{ suppliers_count }}</span>
+          </a>
+          {% for country in country_list %}
+          <a href="{{ request.path }}?country={{ country.code }}"
+            class="nav-link {% if selected_country == country.code %}active{% endif %}">
+            <span>{{ country.name }}</span> <span class="badge">{{ country.count }}</span>
+          </a>
+          {% endfor %}
+        </nav>
+        {% endif %}
+      </aside>
     </div><!-- row -->
   </div><!-- container -->
 </div><!-- content -->
@@ -163,10 +178,10 @@
       var url = '{{ request.path }}?search=' + query;
 
       $.get(url, function (data) {
-        var $table = $('#product-table');
+        var $table = $('#supplier-table');
         var $pagination = $('#pagination-nav');
 
-        $table.replaceWith($(data).find('#product-table'));
+        $table.replaceWith($(data).find('#supplier-table'));
         $pagination.replaceWith($(data).find('#pagination-nav'));
         feather.replace();
       });

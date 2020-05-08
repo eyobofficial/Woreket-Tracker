@@ -1,3 +1,5 @@
+from collections import namedtuple, Counter
+
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
@@ -235,3 +237,46 @@ class ProductDeleteView(BasePurchasesView, SuccessMessageMixin, DeleteView):
         success_url = self.get_success_url()
         messages.success(request, self.success_message)
         return redirect(success_url)
+
+
+class SupplierListView(BasePurchasesView, ListView):
+    """List view of fertilier products."""
+    template_name = 'purchases/supplier_list.html'
+    model = Supplier
+    paginate_by = 10
+    page_name = 'suppliers'
+    queryset = Supplier.objects.all()
+    access_roles = [ROLE_STAFF, ROLE_MANAGEMENT, ROLE_ADMIN]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        country = self.request.GET.get('country')
+
+        if country is not None:
+            qs = qs.filter(country=country)
+
+        search_query = self.request.GET.get('search')
+        if search_query is not None:
+            qs = self.get_search_result(search_query)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        supplier_countries = [s.country for s in Supplier.objects.all()]
+        countries_count = Counter(supplier_countries)
+        Country = namedtuple('Country', ['name', 'code', 'count'])
+        kwargs['country_list'] = [
+            Country(name=c.name, code=c.code, count=count)
+            for c, count in countries_count.items()
+        ]
+        kwargs['selected_country'] = self.request.GET.get('country')
+        kwargs['suppliers_count'] = self.queryset.count()
+        kwargs['search_query'] = self.request.GET.get('search', '').strip()
+        return super().get_context_data(**kwargs)
+
+    def get_search_result(self, query):
+        """Returns a batches using search query."""
+        search_qs = self.queryset.filter(
+            Q(name__icontains=query) |
+            Q(city__icontains=query)
+        )
+        return search_qs
