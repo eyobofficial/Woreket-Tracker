@@ -59,7 +59,8 @@
                     <td class="tx-color-03 tx-normal">{{ user.date_joined|date:'d/m/Y' }}</td>
                     <td class="tz-color-03 tx-medium">
                       <a data-url="{% url 'users:user-detail' user.pk %}" class="popup-link btn-modal">
-                        {{ user.get_full_name }} &nbsp;<i class="fas fa-external-link-alt tx-color-03 tx-10"></i>
+                        <span class="tx-medium">{{ user.get_full_name }}</span>
+                        &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
                       </a>
                     </td>
                     <td class="tz-color-03 tx-normal">{{ user.phone_number|default_if_none:'-' }}</td>

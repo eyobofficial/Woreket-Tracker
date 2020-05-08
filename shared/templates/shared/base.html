@@ -102,6 +102,13 @@
                   <a href="{% url 'purchases:batch-list' %}" class="nav-link"><i data-feather="box"></i>Purchased LOTS</a>
                 </li>
               {% endif %}
+
+              <!-- Products -->
+              {% if perms.purchases.product %}
+                <li class="nav-item {% if page_name == 'products' %}active{% endif %}">
+                  <a href="{% url 'purchases:product-list' %}" class="nav-link"><i data-feather="box"></i>Products</a>
+                </li>
+              {% endif %}
             {% endif %}
 
             {% if user.is_superuser or user.status == user.ACTIVE and perms.users %}

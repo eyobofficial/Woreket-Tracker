@@ -11,8 +11,7 @@
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb breadcrumb-style1 mg-b-10">
             <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="#">Purchases</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Batches</li>
+            <li class="breadcrumb-item active" aria-current="page">Purchased Batches</li>
           </ol>
         </nav>
         <h4 class="mg-b-0">All Purchased Lots</h4>
@@ -33,7 +32,7 @@
 <div class="content">
   <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0" id="batch-list-container">
     <div class="row">
-      <div class="col-md-10 col-sm-12">
+      <div class="col-md-9 col-sm-12">
 
         {% for message in messages %}
         <div class="alert alert-outline alert-success d-flex align-items-center mg-b-20" role="alert">
@@ -57,7 +56,7 @@
             </div>
           </div><!-- card-header -->
           <div class="table-responsive">
-            <table class="table table-dashboard table-striped mg-b-0" id="batch-table">
+            <table class="table table-dashboard table-hovered mg-b-0" id="batch-table">
               <thead>
                 <tr>
                   <th>Period</th>

@@ -10,12 +10,12 @@ from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF
 
 from .forms import BatchForm
 from .mixins import BasePurchasesView
-from .models import Batch, Product, Supplier
+from .models import Batch, ProductCategory, Product, Supplier
 
 
 class BatchListView(BasePurchasesView, ListView):
     """List view of purchasing batches (lots)."""
-    template_name = 'purchases/batches/batch_list.html'
+    template_name = 'purchases/batch_list.html'
     model = Batch
     paginate_by = 10
     page_name = 'batches'
@@ -57,6 +57,7 @@ class BatchDetailView(BasePurchasesView, DetailView):
     """Detail view for a purchasing batch instance."""
     template_name = 'purchases/modals/batches/batch_detail.html'
     model = Batch
+    page_name = 'batches'
     access_roles = [ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF]
 
     def get_queryset(self):
@@ -72,6 +73,7 @@ class BatchCreateView(BasePurchasesView, SuccessMessageMixin, CreateView):
     model = Batch
     success_url = reverse_lazy('purchases:batch-list')
     success_message = 'A new LOT record is successfully created.'
+    page_name = 'batches'
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def get_context_data(self, **kwargs):
@@ -95,6 +97,7 @@ class BatchUpdateView(BasePurchasesView, SuccessMessageMixin, UpdateView):
     model = Batch
     success_url = reverse_lazy('purchases:batch-list')
     success_message = 'The LOT data is successfully updated.'
+    page_name = 'batches'
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def get_context_data(self, **kwargs):
@@ -117,6 +120,7 @@ class BatchDeleteView(BasePurchasesView, SuccessMessageMixin, DeleteView):
     model = Batch
     success_url = reverse_lazy('purchases:batch-list')
     success_message = 'The selected LOT is successfully deleted.'
+    page_name = 'batches'
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def delete(self, request, *args, **kwargs):
@@ -127,3 +131,42 @@ class BatchDeleteView(BasePurchasesView, SuccessMessageMixin, DeleteView):
         success_url = self.get_success_url()
         messages.success(request, self.success_message)
         return redirect(success_url)
+
+
+class ProductListView(BasePurchasesView, ListView):
+    """List view of fertilier products."""
+    template_name = 'purchases/product_list.html'
+    model = Product
+    paginate_by = 10
+    page_name = 'products'
+    queryset = Product.objects.all()
+    access_roles = [ROLE_STAFF, ROLE_MANAGEMENT, ROLE_ADMIN]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        category_pk = self.request.GET.get('category')
+        search_query = self.request.GET.get('search')
+
+        if category_pk is not None:
+            qs = qs.filter(category__pk=category_pk)
+
+        if search_query is not None:
+            qs = self.get_search_result(search_query)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        kwargs['category_list'] = ProductCategory.objects.all()
+        kwargs['selected_category'] = self.request.GET.get('category')
+        kwargs['product_count'] = self.queryset.count()
+        kwargs['search_query'] = self.request.GET.get('search', '').strip()
+        return super().get_context_data(**kwargs)
+
+    def get_search_result(self, query):
+        """Returns a batches using search query."""
+        search_qs = self.queryset.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query) |
+            Q(category__name__icontains=query)
+        )
+        return search_qs
