@@ -194,3 +194,26 @@ class ProductCreateView(BasePurchasesView, SuccessMessageMixin, CreateView):
         response = super().form_invalid(form)
         response.status_code = 400
         return response
+
+
+class ProductUpdateView(BasePurchasesView, SuccessMessageMixin, UpdateView):
+    """Update view for editing existing product."""
+    template_name = 'purchases/modals/products/product_form.html'
+    model = Product
+    fields = ('name', 'category', 'unit')
+    success_url = reverse_lazy('purchases:product-list')
+    success_message = 'The selected product is successfully updated.'
+    page_name = 'products'
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
+
+    def get_context_data(self, **kwargs):
+        kwargs.update({
+            'category_list': ProductCategory.objects.all(),
+            'unit_list': Unit.objects.all()
+        })
+        return super().get_context_data(**kwargs)
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        response.status_code = 400
+        return response
