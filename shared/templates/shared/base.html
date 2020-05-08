@@ -99,7 +99,7 @@
               <!-- Batch -->
               {% if perms.purchases.batch %}
                 <li class="nav-item {% if page_name == 'batches' %}active{% endif %}">
-                  <a href="{% url 'purchases:batch-list' %}" class="nav-link"><i data-feather="box"></i>Lots</a>
+                  <a href="{% url 'purchases:batch-list' %}" class="nav-link"><i data-feather="box"></i>Purchased LOTS</a>
                 </li>
               {% endif %}
             {% endif %}
