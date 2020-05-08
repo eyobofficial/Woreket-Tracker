@@ -17,7 +17,7 @@
       </div><!-- media -->
     </div><!-- modal-header -->
 
-    <!-- LC Form -->
+    <!-- Delivery Order Form -->
     <form action="{{ request.path }}" method="POST" id="delivery-order-form">
       {% csrf_token %}
 
@@ -35,7 +35,7 @@
                 id="lc-number" class="form-control"
                 name="lc_number" value="{{ form.instance.lc_number|default_if_none:'' }}"
                 placeholder="Enter the L/C document number"
-                required />
+                autocomplete="off" required />
             </div>
 
             <!-- Batch -->
@@ -55,15 +55,18 @@
             <div class="form-group">
               <label for="quantity" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Quantity</label>
               <input id="quantity" class="form-control" name="quantity" value="{{ form.instance.quantity|default_if_none:'' }}"
-                placeholder="Enter agreement quantity" required />
+                placeholder="Enter agreement quantity" autocomplete="off" required />
             </div>
 
             <!-- Bill of loading -->
             <div class="form-group">
               <label for="bill-of-loading" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Bill of
                 Loading</label>
-              <input id="bill-of-loading" class="form-control" name="bill_of_loading"
-                value="{{ form.instance.bill_of_loading|default_if_none:'' }}" placeholder="Enter the B/L number" required />
+              <input
+                id="bill-of-loading" class="form-control"
+                name="bill_of_loading" value="{{ form.instance.bill_of_loading|default_if_none:'' }}"
+                placeholder="Enter the B/L number" autocomplete="off" required
+              />
             </div>
 
             <!-- Port -->
@@ -90,7 +93,7 @@
             <div class="form-group">
               <label for="vessel" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Vessel Name</label>
               <input id="vessel" class="form-control" name="vessel" value="{{ form.instance.vessel|default_if_none:'' }}"
-                placeholder="Enter the vessel name" required />
+                placeholder="Enter the vessel name" autocomplete="off" required />
             </div>
 
             <!-- Arrival Date -->
