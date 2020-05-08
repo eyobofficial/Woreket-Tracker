@@ -217,3 +217,21 @@ class ProductUpdateView(BasePurchasesView, SuccessMessageMixin, UpdateView):
         response = super().form_invalid(form)
         response.status_code = 400
         return response
+
+
+class ProductDeleteView(BasePurchasesView, SuccessMessageMixin, DeleteView):
+    """Delete view to delete a product."""
+    template_name = 'purchases/modals/products/product_delete_form.html'
+    model = Product
+    success_url = reverse_lazy('purchases:product-list')
+    success_message = 'The selected product is successfully deleted.'
+    page_name = 'products'
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
+
+    def delete(self, request, *args, **kwargs):
+        """Overwrites delete method to send success message."""
+        self.object = self.get_object()
+        self.object.delete()
+        success_url = self.get_success_url()
+        messages.success(request, self.success_message)
+        return redirect(success_url)

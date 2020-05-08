@@ -83,7 +83,7 @@
                         {% endif %}
 
                         {% if perms.purchases.delete_product %}
-                        <a data-url="" class="nav-link d-none d-sm-block btn-modal" title="Delete">
+                        <a data-url="{% url 'purchases:product-delete' product.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Delete">
                           <i data-feather="trash"></i>
                         </a>
                         {% endif %}
