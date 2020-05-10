@@ -242,7 +242,7 @@ deploy_key
 
 # Custom
 /media
-/staticfiles
+/static
 /logs
 celerybeat.pid
 *.db
