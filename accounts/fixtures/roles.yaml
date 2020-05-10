@@ -1,0 +1,422 @@
+- model: auth.group
+  pk: 1
+  fields:
+    name: Admin
+    permissions:
+    - - add_customuser
+      - accounts
+      - customuser
+    - - change_customuser
+      - accounts
+      - customuser
+    - - delete_customuser
+      - accounts
+      - customuser
+    - - view_customuser
+      - accounts
+      - customuser
+    - - add_customer
+      - customers
+      - customer
+    - - change_customer
+      - customers
+      - customer
+    - - delete_customer
+      - customers
+      - customer
+    - - view_customer
+      - customers
+      - customer
+    - - add_location
+      - customers
+      - location
+    - - change_location
+      - customers
+      - location
+    - - delete_location
+      - customers
+      - location
+    - - view_location
+      - customers
+      - location
+    - - add_union
+      - customers
+      - union
+    - - change_union
+      - customers
+      - union
+    - - delete_union
+      - customers
+      - union
+    - - view_union
+      - customers
+      - union
+    - - add_allocation
+      - orders
+      - allocation
+    - - change_allocation
+      - orders
+      - allocation
+    - - delete_allocation
+      - orders
+      - allocation
+    - - view_allocation
+      - orders
+      - allocation
+    - - add_deliveryorder
+      - orders
+      - deliveryorder
+    - - change_deliveryorder
+      - orders
+      - deliveryorder
+    - - close_deliveryorder
+      - orders
+      - deliveryorder
+    - - delete_deliveryorder
+      - orders
+      - deliveryorder
+    - - reopen_deliveryorder
+      - orders
+      - deliveryorder
+    - - view_deliveryorder
+      - orders
+      - deliveryorder
+    - - add_distribution
+      - orders
+      - distribution
+    - - change_distribution
+      - orders
+      - distribution
+    - - delete_distribution
+      - orders
+      - distribution
+    - - view_distribution
+      - orders
+      - distribution
+    - - add_port
+      - orders
+      - port
+    - - change_port
+      - orders
+      - port
+    - - delete_port
+      - orders
+      - port
+    - - view_port
+      - orders
+      - port
+    - - add_unionallocation
+      - orders
+      - unionallocation
+    - - change_unionallocation
+      - orders
+      - unionallocation
+    - - delete_unionallocation
+      - orders
+      - unionallocation
+    - - view_unionallocation
+      - orders
+      - unionallocation
+    - - add_uniondistribution
+      - orders
+      - uniondistribution
+    - - change_uniondistribution
+      - orders
+      - uniondistribution
+    - - delete_uniondistribution
+      - orders
+      - uniondistribution
+    - - view_uniondistribution
+      - orders
+      - uniondistribution
+    - - add_batch
+      - purchases
+      - batch
+    - - change_batch
+      - purchases
+      - batch
+    - - delete_batch
+      - purchases
+      - batch
+    - - view_batch
+      - purchases
+      - batch
+    - - add_product
+      - purchases
+      - product
+    - - change_product
+      - purchases
+      - product
+    - - delete_product
+      - purchases
+      - product
+    - - view_product
+      - purchases
+      - product
+    - - add_productcategory
+      - purchases
+      - productcategory
+    - - change_productcategory
+      - purchases
+      - productcategory
+    - - delete_productcategory
+      - purchases
+      - productcategory
+    - - view_productcategory
+      - purchases
+      - productcategory
+    - - add_supplier
+      - purchases
+      - supplier
+    - - change_supplier
+      - purchases
+      - supplier
+    - - delete_supplier
+      - purchases
+      - supplier
+    - - view_supplier
+      - purchases
+      - supplier
+    - - add_unit
+      - shared
+      - unit
+    - - change_unit
+      - shared
+      - unit
+    - - delete_unit
+      - shared
+      - unit
+    - - view_unit
+      - shared
+      - unit
+- model: auth.group
+  pk: 2
+  fields:
+    name: Management
+    permissions:
+    - - view_customer
+      - customers
+      - customer
+    - - view_location
+      - customers
+      - location
+    - - view_union
+      - customers
+      - union
+    - - view_allocation
+      - orders
+      - allocation
+    - - view_deliveryorder
+      - orders
+      - deliveryorder
+    - - view_distribution
+      - orders
+      - distribution
+    - - view_port
+      - orders
+      - port
+    - - view_unionallocation
+      - orders
+      - unionallocation
+    - - view_batch
+      - purchases
+      - batch
+    - - view_product
+      - purchases
+      - product
+    - - view_productcategory
+      - purchases
+      - productcategory
+    - - view_supplier
+      - purchases
+      - supplier
+    - - view_unit
+      - shared
+      - unit
+- model: auth.group
+  pk: 3
+  fields:
+    name: Staff
+    permissions:
+    - - add_customer
+      - customers
+      - customer
+    - - change_customer
+      - customers
+      - customer
+    - - delete_customer
+      - customers
+      - customer
+    - - view_customer
+      - customers
+      - customer
+    - - add_location
+      - customers
+      - location
+    - - change_location
+      - customers
+      - location
+    - - delete_location
+      - customers
+      - location
+    - - view_location
+      - customers
+      - location
+    - - add_union
+      - customers
+      - union
+    - - change_union
+      - customers
+      - union
+    - - delete_union
+      - customers
+      - union
+    - - view_union
+      - customers
+      - union
+    - - add_allocation
+      - orders
+      - allocation
+    - - change_allocation
+      - orders
+      - allocation
+    - - delete_allocation
+      - orders
+      - allocation
+    - - view_allocation
+      - orders
+      - allocation
+    - - add_deliveryorder
+      - orders
+      - deliveryorder
+    - - change_deliveryorder
+      - orders
+      - deliveryorder
+    - - close_deliveryorder
+      - orders
+      - deliveryorder
+    - - reopen_deliveryorder
+      - orders
+      - deliveryorder
+    - - view_deliveryorder
+      - orders
+      - deliveryorder
+    - - add_distribution
+      - orders
+      - distribution
+    - - change_distribution
+      - orders
+      - distribution
+    - - delete_distribution
+      - orders
+      - distribution
+    - - view_distribution
+      - orders
+      - distribution
+    - - add_port
+      - orders
+      - port
+    - - change_port
+      - orders
+      - port
+    - - delete_port
+      - orders
+      - port
+    - - view_port
+      - orders
+      - port
+    - - add_unionallocation
+      - orders
+      - unionallocation
+    - - change_unionallocation
+      - orders
+      - unionallocation
+    - - delete_unionallocation
+      - orders
+      - unionallocation
+    - - view_unionallocation
+      - orders
+      - unionallocation
+    - - add_uniondistribution
+      - orders
+      - uniondistribution
+    - - change_uniondistribution
+      - orders
+      - uniondistribution
+    - - delete_uniondistribution
+      - orders
+      - uniondistribution
+    - - view_uniondistribution
+      - orders
+      - uniondistribution
+    - - add_batch
+      - purchases
+      - batch
+    - - change_batch
+      - purchases
+      - batch
+    - - delete_batch
+      - purchases
+      - batch
+    - - view_batch
+      - purchases
+      - batch
+    - - add_product
+      - purchases
+      - product
+    - - change_product
+      - purchases
+      - product
+    - - delete_product
+      - purchases
+      - product
+    - - view_product
+      - purchases
+      - product
+    - - add_productcategory
+      - purchases
+      - productcategory
+    - - change_productcategory
+      - purchases
+      - productcategory
+    - - delete_productcategory
+      - purchases
+      - productcategory
+    - - view_productcategory
+      - purchases
+      - productcategory
+    - - add_supplier
+      - purchases
+      - supplier
+    - - change_supplier
+      - purchases
+      - supplier
+    - - delete_supplier
+      - purchases
+      - supplier
+    - - view_supplier
+      - purchases
+      - supplier
+    - - view_unit
+      - shared
+      - unit
+- model: auth.group
+  pk: 4
+  fields:
+    name: Supplier
+    permissions:
+    - - view_allocation
+      - orders
+      - allocation
+    - - view_deliveryorder
+      - orders
+      - deliveryorder
+    - - view_distribution
+      - orders
+      - distribution
+    - - view_unionallocation
+      - orders
+      - unionallocation
+    - - view_uniondistribution
+      - orders
+      - uniondistribution

@@ -198,4 +198,4 @@ PHONENUMBER_DB_FORMAT = 'NATIONAL'
 
 
 # Start-up fixtures
-FIXTURES = ['categories', 'customers', 'units', 'ports']
+FIXTURES = ['categories', 'customers', 'units', 'ports', 'roles']
