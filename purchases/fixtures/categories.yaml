@@ -7,8 +7,3 @@
   pk: 2
   fields:
     name: Packaging
-
-- model: purchases.productcategory
-  pk: 3
-  fields:
-    name: Chemicals
