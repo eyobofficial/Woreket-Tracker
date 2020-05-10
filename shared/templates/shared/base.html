@@ -97,21 +97,21 @@
               {% endif %}
 
               <!-- Batch -->
-              {% if perms.purchases.batch %}
+              {% if perms.purchases.view_batch %}
                 <li class="nav-item {% if page_name == 'batches' %}active{% endif %}">
                   <a href="{% url 'purchases:batch-list' %}" class="nav-link"><i data-feather="box"></i>Purchased LOTS</a>
                 </li>
               {% endif %}
 
               <!-- Products -->
-              {% if perms.purchases.product %}
+              {% if perms.purchases.view_product %}
                 <li class="nav-item {% if page_name == 'products' %}active{% endif %}">
                   <a href="{% url 'purchases:product-list' %}" class="nav-link"><i data-feather="box"></i>Products</a>
                 </li>
               {% endif %}
 
               <!-- Suppliers -->
-              {% if perms.purchases.supplier %}
+              {% if perms.purchases.view_supplier %}
                 <li class="nav-item {% if page_name == 'suppliers' %}active{% endif %}">
                   <a href="{% url 'purchases:supplier-list' %}" class="nav-link"><i data-feather="box"></i>Suppliers</a>
                 </li>

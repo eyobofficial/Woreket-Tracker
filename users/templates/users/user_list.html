@@ -64,7 +64,10 @@
                       </a>
                     </td>
                     <td class="tz-color-03 tx-normal">{{ user.phone_number|default_if_none:'-' }}</td>
-                    <td class="tz-color-03 tx-normal">{{ user.role|default_if_none:'-' }}</td>
+                    <td class="tz-color-03 tx-normal">
+                     {% if not user.role %}<i class="fas fa-exclamation-triangle text-danger tx-11"></i> {% endif %}
+                      {{ user.role|default_if_none:'-' }}
+                    </td>
 
                     {% if user.status == user.PENDING %}
                     <td class="text-center"><span class="badge badge-warning">pending</span></td>
