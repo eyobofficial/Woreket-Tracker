@@ -1,17 +1,32 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.views import PasswordChangeView, LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, TemplateView, UpdateView
 
 from shared.constants import ROLE_SUPPLIER
 
 from .forms import UserRegistrationForm, ProfileUpdateForm
 from .mixins import AccountMixin
+from .models import CustomUser
 
 
 User = get_user_model()
+
+
+class CustomLoginView(LoginView):
+
+    def get_success_url(self):
+        """
+        Returns the user profile url if the user has not activated,
+        else return the default success url.
+        """
+        success_url = super().get_success_url()
+        user = self.request.user
+        if user.status == CustomUser.PENDING or user.role is None:
+            return reverse('accounts:profile-update')
+        return success_url
 
 
 class UserRegistrationView(CreateView):
