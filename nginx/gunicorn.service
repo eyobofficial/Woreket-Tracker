@@ -1,0 +1,20 @@
+# Should be place at: /etc/systemd/system/gunicorn.service
+
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=eyob
+Group=www-data
+WorkingDirectory=/home/eyob/Payment-Tracker
+ExecStart=/home/eyob/.local/share/virtualenvs/Payment-Tracker-mJwgPrdZ/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          config.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+
