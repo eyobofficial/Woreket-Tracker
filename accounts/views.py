@@ -24,19 +24,21 @@ class RegistrationSuccessView(TemplateView):
     template_name = 'registration/success.html'
 
 
-class PasswordUpdateView(AccountMixin, SuccessMessageMixin, PasswordChangeView):
+class PasswordUpdateView(SuccessMessageMixin, PasswordChangeView):
     template_name='registration/password_form.html'
     success_url = reverse_lazy('accounts:password-change')
     success_message = 'Password changed successfully.'
+    page_name = 'accounts'
     access_roles = '__all__'
 
 
-class ProfileUpdateView(AccountMixin, SuccessMessageMixin, UpdateView):
+class ProfileUpdateView(SuccessMessageMixin, UpdateView):
     template_name = 'registration/profile_form.html'
     model = User
     form_class = ProfileUpdateForm
     success_url = reverse_lazy('accounts:profile-update')
     success_message = 'Your profile is updated successfully.'
+    page_name = 'accounts'
     access_roles = '__all__'
 
     def get_object(self):
