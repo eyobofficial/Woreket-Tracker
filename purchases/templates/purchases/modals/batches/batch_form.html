@@ -1,0 +1,200 @@
+<div class="modal-dialog modal-lg wd-sm-600" role="document">
+  <div class="modal-content">
+    <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
+      <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </a>
+      <div class="media align-items-center">
+        <div class="media-body">
+          {% if object %}
+            <h4 class="tx-18 tx-sm-20 mg-b-2">Edit Lot</h4>
+            <p class="tx-13 tx-color-03 mg-b-0">Update an existing purchasing batch lot record.</p>
+          {% else %}
+            <h4 class="tx-18 tx-sm-20 mg-b-2">New Lot</h4>
+            <p class="tx-13 tx-color-03 mg-b-0">Create a new purchasing batch lot.</p>
+          {% endif %}
+        </div>
+      </div><!-- media -->
+    </div><!-- modal-header -->
+
+    <!-- Batch Form -->
+    <form action="{{ request.path }}" method="POST" id="batch-form">
+      {% csrf_token %}
+
+      <div class="modal-body pd-sm-t-10 pd-sm-b-10 pd-sm-x-30">
+        <div class="row">
+          <div class="col-sm-9">
+            <!-- Name -->
+            <div class="form-group">
+              <label for="name" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Name</label>
+              <input
+                id="name" class="form-control {% if form.name.errors %}parsley-error{% endif %}"
+                name="name" value="{{ form.name.value|default:'' }}"
+                placeholder="Enter batch name: Example: Lot-1"
+                required
+              />
+              {% if form.name.errors %}
+              <ul class="parsley-errors-list filled">
+                {% for error in form.name.errors %}
+                <li class="parsley-required">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
+
+            <!-- Supplier -->
+            <div class="form-group">
+              <label for="supplier" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Supplier</label>
+              <select name="supplier" id="supplier" class="form-control custom-select {% if form.supplier.errors %}parsley-error{% endif %}" required>
+                {% if form.instance.supplier is None %}
+                <option selected disabled value="">Choose supplier</option>
+                {% endif %}
+                {% for supplier in supplier_list %}
+                <option value="{{ supplier.pk }}" {% if form.supplier.value|safe == supplier.pk|safe %}selected{% endif %}>
+                  {{ supplier.name }}</option>
+                {% endfor %}
+              </select>
+              {% if form.supplier.errors %}
+                <ul class="parsley-errors-list filled">
+                  {% for error in form.supplier.errors %}
+                    <li class="parsley-required">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+
+            <!-- Product -->
+            <div class="form-group">
+              <label for="product" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Product</label>
+              <select name="product" id="product" class="form-control custom-select {% if form.product.errors %}parsley-error{% endif %}" required>
+                {% if form.instance.batch is None %}
+                <option selected disabled value="">Choose product</option>
+                {% endif %}
+                {% for product in product_list %}
+                <option value="{{ product.pk }}" {% if form.product.value|safe == product.pk|safe %}selected{% endif %}>{{ product.name }}</option>
+                {% endfor %}
+              </select>
+              {% if form.product.errors %}
+                <ul class="parsley-errors-list filled">
+                  {% for error in form.product.errors %}
+                    <li class="parsley-required">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+
+            <!-- Quantity -->
+            <div class="form-group">
+              <label for="quantity" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Quantity</label>
+              <input
+                id="quantity" class="form-control {% if form.quantity.errors %}parsley-error{% endif %}"
+                name="quantity" value="{{ form.instance.quantity|default_if_none:'' }}"
+                placeholder="Enter agreement quantity" required
+              />
+              {% if form.quantity.errors %}
+                <ul class="parsley-errors-list filled">
+                  {% for error in form.quantity.errors %}
+                    <li class="parsley-required">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+
+            <!-- Rate -->
+            <div class="mg-b-20">
+              <label for="rate" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Rate</label>
+              <div class="input-group mg-b-10">
+                <input
+                  id="rate" class="form-control {% if form.rate.errors %}parsley-error{% endif %}"
+                  autocomplete="off" name="rate"
+                  value="{{ form.rate.value|default_if_none:'' }}"
+                  placeholder="Enter rate in USD" required
+                />
+                <div class="input-group-append">
+                  <span class="input-group-text tx-medium" id="basic-addon2">USD</span>
+                </div>
+              </div>
+              {% if form.rate.errors %}
+                <ul class="parsley-errors-list filled">
+                  {% for error in form.rate.errors %}
+                    <li class="parsley-required">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+
+            <!-- Year/Period -->
+            <div class="form-group">
+              <label for="year" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Year</label>
+              <select name="year" id="year" class="form-control custom-select {% if form.year.errors %}parsley-error{% endif %}" required>
+                {% if form.instance.year is None %}
+                <option selected disabled value="">Choose crop year</option>
+                {% endif %}
+                {% for value, label in year_choice_list %}
+                <option value="{{ value }}" {% if form.year.value == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+              {% if form.year.errors %}
+                <ul class="parsley-errors-list filled">
+                  {% for error in form.year.errors %}
+                    <li class="parsley-required">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+          </div><!-- modal-body -->
+        </div><!-- /.row -->
+      </div><!-- /.modal-body -->
+      <div class="modal-footer pd-x-20 pd-y-15">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary wd-80">Save</button>
+      </div>
+    </form>
+  </div><!-- modal-content -->
+</div><!-- modal-dialog -->
+
+<script>
+  $(function () {
+    new Cleave('#quantity', {
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand'
+    });
+
+    new Cleave('#rate', {
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand'
+    });
+
+    $('#modal-widget').on('submit', '#batch-form', function(e) {
+      e.preventDefault();
+
+      const $submitBtn = $('#batch-form button[type=submit]');
+      const $spinner = $('<i>', { 'class': 'fas fa-spin fa-circle-notch' });
+
+      $submitBtn.attr('disabled', true).html($spinner);
+
+      const url = $(this).attr('action');
+      const formData = $(this).serialize();
+      const request = $.ajax({
+        method: 'POST',
+        url: url,
+        data: formData,
+        dataType: 'html'
+      });
+
+      request.done(data => {
+        const $updatedPage = $(data).find('#batch-list-container');
+        $('#batch-list-container').replaceWith($updatedPage);
+        $('#modal-widget').modal('hide');
+        feather.replace();
+      });
+
+      request.fail(jqXHR => {
+        const $form = $('#batch-form');
+        const $responseForm = $(jqXHR.responseText).find('#batch-form');
+        $form.replaceWith($responseForm);
+        $form.find('button[type=submit]').text('Save').removeAttr('disabled');
+      });
+    });
+  });
+</script>

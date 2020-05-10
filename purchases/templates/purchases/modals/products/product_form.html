@@ -1,0 +1,132 @@
+<div class="modal-dialog modal-lg wd-sm-500" role="document">
+  <div class="modal-content">
+    <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
+      <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </a>
+      <div class="media align-items-center">
+        <div class="media-body">
+          {% if object %}
+            <h4 class="tx-18 tx-sm-20 mg-b-2">Edit Product</h4>
+            <p class="tx-13 tx-color-03 mg-b-0">Update an existing product.</p>
+          {% else %}
+            <h4 class="tx-18 tx-sm-20 mg-b-2">New Product</h4>
+            <p class="tx-13 tx-color-03 mg-b-0">Create and add a new product to the system.</p>
+          {% endif %}
+        </div>
+      </div><!-- media -->
+    </div><!-- modal-header -->
+
+    <!-- Product Form -->
+    <form action="{{ request.path }}" method="POST" id="product-form">
+      {% csrf_token %}
+
+      <div class="modal-body pd-sm-t-10 pd-sm-b-30 pd-sm-x-30">
+        <div class="row">
+          <div class="col-sm-9">
+            <!-- Name -->
+            <div class="form-group">
+              <label for="name" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Name</label>
+              <input
+                id="name" class="form-control {% if form.name.errors %}parsley-error{% endif %}"
+                name="name" value="{{ form.name.value|default:'' }}"
+                placeholder="Enter product name"
+                required
+              />
+              {% if form.name.errors %}
+              <ul class="parsley-errors-list filled">
+                {% for error in form.name.errors %}
+                <li class="parsley-required">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+              <label for="category" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Category</label>
+              <select name="category" id="category" class="form-control custom-select {% if form.category.errors %}parsley-error{% endif %}" required>
+                {% if not form.instance.category %}
+                <option selected disabled value="">Choose category</option>
+                {% endif %}
+
+                {% for category in category_list %}
+                <option value="{{ category.pk }}" {% if form.category.value|safe == category.pk|safe %}selected{% endif %}>
+                  {{ category.name }}
+                </option>
+                {% endfor %}
+              </select>
+              {% if form.category.errors %}
+                <ul class="parsley-errors-list filled">
+                  {% for error in form.category.errors %}
+                    <li class="parsley-required">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+
+            <!-- Unit -->
+            <div class="form-group">
+              <label for="unit" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Measurement Unit</label>
+              <select name="unit" id="unit" class="form-control custom-select {% if form.unit.errors %}parsley-error{% endif %}" required>
+                {% if form.instance.unit is None %}
+                <option selected disabled value="">Choose unit</option>
+                {% endif %}
+                {% for unit in unit_list %}
+                <option value="{{ unit.pk }}" {% if form.unit.value|safe == unit.pk|safe %}selected{% endif %}>{{ unit.name }} ({{ unit.code }})</option>
+                {% endfor %}
+              </select>
+              {% if form.unit.errors %}
+                <ul class="parsley-errors-list filled">
+                  {% for error in form.unit.errors %}
+                    <li class="parsley-required">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+          </div><!-- modal-body -->
+        </div><!-- /.row -->
+      </div><!-- /.modal-body -->
+      <div class="modal-footer pd-x-20 pd-y-15">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary wd-80">Save</button>
+      </div>
+    </form>
+  </div><!-- modal-content -->
+</div><!-- modal-dialog -->
+
+<script>
+  $(function () {
+    $('#modal-widget').on('submit', '#product-form', function(e) {
+      e.preventDefault();
+
+      const $submitBtn = $('#product-form button[type=submit]');
+      const $spinner = $('<i>', { 'class': 'fas fa-spin fa-circle-notch' });
+
+      $submitBtn.attr('disabled', true).html($spinner);
+
+      const url = $(this).attr('action');
+      const formData = $(this).serialize();
+      const request = $.ajax({
+        method: 'POST',
+        url: url,
+        data: formData,
+        dataType: 'html'
+      });
+
+      request.done(data => {
+        const $updatedPage = $(data).find('#product-list-container');
+        $('#product-list-container').replaceWith($updatedPage);
+        $('#modal-widget').modal('hide');
+        feather.replace();
+      });
+
+      request.fail(jqXHR => {
+        const $form = $('#product-form');
+        const $responseForm = $(jqXHR.responseText).find('#product-form');
+        $form.replaceWith($responseForm);
+        $form.find('button[type=submit]').text('Save').removeAttr('disabled');
+      });
+    });
+  });
+</script>

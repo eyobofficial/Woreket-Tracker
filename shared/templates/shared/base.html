@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Meta -->
+    <meta name="description" content="">
+    <meta name="author" content="Eyob Tariku">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'shared/assets/img/favicon.png' %}">
+
+    <title>{% block title %}Payment Tracker{% endblock %}</title>
+
+    <!-- vendor css -->
+    <link href="{% static 'shared/lib/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'shared/lib/ionicons/css/ionicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'shared/lib/cryptofont/css/cryptofont.min.css' %}" rel="stylesheet">
+    <link href="{% static 'shared/lib/typicons.font/typicons.css' %}" rel="stylesheet">
+    <link href="{% static 'shared/lib/jqvmap/jqvmap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'shared/lib/select2/css/select2.min.css' %}" rel="stylesheet">
+
+    <!-- Extra vendor css plugins/libraries -->
+    {% block vender-css %}{% endblock %}
+
+    <!-- DashForge CSS -->
+    <link rel="stylesheet" href="{% static 'shared/css/dashforge.dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'shared/css/dashforge.css' %}">
+    <link rel="stylesheet" href="{% static 'shared/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'shared/css/dashforge.profile.css' %}">
+
+    <!-- Extra CSS -->
+    {% block extra-css %}{% endblock %}
+
+    <!-- Vendor JavaScript -->
+    <script src="{% static 'shared/lib/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'shared/lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'shared/lib/feather-icons/feather.min.js' %}"></script>
+    <script src="{% static 'shared/lib/chart.js/Chart.bundle.min.js' %}"></script>
+    <script src="{% static 'shared/lib/jquery.flot/jquery.flot.js' %}"></script>
+    <script src="{% static 'shared/lib/jquery.flot/jquery.flot.stack.js' %}"></script>
+    <script src="{% static 'shared/lib/jquery.flot/jquery.flot.resize.js' %}"></script>
+    <script src="{% static 'shared/lib/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'shared/lib/jqvmap/jquery.vmap.min.js' %}"></script>
+    <script src="{% static 'shared/lib/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
+    <script src="{% static 'shared/lib/prismjs/prism.js' %}"></script>
+    <script src="{% static 'shared/lib/cleave.js/cleave.min.js' %}"></script>
+    <script src="{% static 'shared/lib/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'shared/lib/jqueryui/jquery-ui.min.js' %}"></script>
+
+    <!-- Extra Vendor JavaScript -->
+    {% block vendor-js %}{% endblock %}
+
+    <!-- Theme JavaScript -->
+    <script src="{% static 'shared/js/dashforge.js' %}"></script>
+  </head>
+  <body class="page-profile">
+    <!-- Header -->
+    <header class="navbar navbar-header navbar-header-fixed">
+      <a href="" id="mainMenuOpen" class="burger-menu"><i data-feather="menu"></i></a>
+      <div class="navbar-brand">
+        <a href="#" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+      </div><!-- navbar-brand -->
+      <div id="navbarMenu" class="navbar-menu-wrapper">
+        <div class="navbar-menu-header">
+          <a href="#" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+          <a id="mainMenuClose" href=""><i data-feather="x"></i></a>
+        </div><!-- navbar-menu-header -->
+
+        <ul class="nav navbar-menu">
+          {% if user.is_authenticated %}
+            <li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">Main Navigation</li>
+
+            {% if user.is_superuser or user.status == user.ACTIVE and perms.orders %}
+              <!-- Delivery Order -->
+              {% if perms.orders %}
+                <li class="nav-item with-sub {% if page_name == 'delivery-orders' %}active{% endif %}">
+                  <a href="" class="nav-link"><i data-feather="box"></i>Delivery Orders</a>
+
+                  <ul class="navbar-menu-sub">
+                    <li class="nav-sub-item">
+                      <a href="{% url 'orders:open-orders-list' %}" class="nav-sub-link">
+                        <i data-feather="activity"></i>Open Delivery Orders
+                      </a>
+                    </li>
+                    <li class="nav-sub-item">
+                      <a href="{% url 'orders:closed-orders-list' %}" class="nav-sub-link">
+                        <i data-feather="archive"></i>Closed Delivery Orders
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+              {% endif %}
+
+              <!-- Batch -->
+              {% if perms.purchases.view_batch %}
+                <li class="nav-item {% if page_name == 'batches' %}active{% endif %}">
+                  <a href="{% url 'purchases:batch-list' %}" class="nav-link"><i data-feather="box"></i>Purchased LOTS</a>
+                </li>
+              {% endif %}
+
+              <!-- Products -->
+              {% if perms.purchases.view_product %}
+                <li class="nav-item {% if page_name == 'products' %}active{% endif %}">
+                  <a href="{% url 'purchases:product-list' %}" class="nav-link"><i data-feather="box"></i>Products</a>
+                </li>
+              {% endif %}
+
+              <!-- Suppliers -->
+              {% if perms.purchases.view_supplier %}
+                <li class="nav-item {% if page_name == 'suppliers' %}active{% endif %}">
+                  <a href="{% url 'purchases:supplier-list' %}" class="nav-link"><i data-feather="box"></i>Suppliers</a>
+                </li>
+              {% endif %}
+            {% endif %}
+
+            {% if user.is_superuser or user.status == user.ACTIVE and perms.users %}
+              <!-- Users -->
+              <li class="nav-item {% if page_name == 'users' %}active{% endif %}">
+                <a href="{% url 'users:user-list' %}" class="nav-link"><i data-feather="box"></i>Users</a>
+              </li>
+            {% endif %}
+          {% endif %}
+        </ul>
+      </div><!-- navbar-menu-wrapper -->
+      <div class="navbar-right">
+        {% if user.is_authenticated %}
+          <div class="dropdown dropdown-profile">
+            <a href="" class="dropdown-link" data-toggle="dropdown" data-display="static">
+              <div class="avatar avatar-sm">
+                <span class="avatar-initial rounded-circle bg-info">{{ user.first_name|slice:':1'|first }}</span>
+              </div>
+            </a><!-- dropdown-link -->
+            <div class="dropdown-menu dropdown-menu-right tx-13">
+              <div class="avatar avatar-lg mg-b-15">
+                <span class="avatar-initial rounded-circle bg-info">{{ user.first_name|slice:':1'|first }}</span>
+              </div>
+              <h6 class="tx-semibold mg-b-5">{{ user.get_full_name|title }}</h6>
+              <p class="mg-b-25 tx-12 tx-color-03">{{ user.role.name }}</p>
+
+              <a href="{% url 'accounts:profile-update' %}" class="dropdown-item"><i data-feather="edit-3"></i> Edit Profile</a>
+              <a href="{% url 'accounts:password-change' %}" class="dropdown-item"><i data-feather="lock"></i> Change Password</a>
+              <a href="{% url 'accounts:logout' %}" class="dropdown-item"><i data-feather="log-out"></i>Sign Out</a>
+            </div><!-- dropdown-menu -->
+          </div><!-- dropdown -->
+        {% else %}
+          <a href="{% url 'accounts:login' %}"><i data-feather="login-in"></i> &nbsp;Sign In</a>
+        {% endif %}
+        </div><!-- dropdown -->
+      </div><!-- navbar-right -->
+    </header><!-- navbar -->
+
+    {% block content %}{% endblock %}
+
+    <footer class="footer">
+      <div>
+        <span>&copy; {% now 'Y' %} Payment Tracker.</span>
+      </div>
+      <div>
+        <nav class="nav">
+          <span>Created by <a href="#">Zede.Tech</a></span>
+        </nav>
+      </div>
+    </footer>
+
+    <!-- Modal -->
+    <div class="fade modal" id="modal-widget" tabindex="-1" role="dialog"></div>
+    <script>
+      $(function () {
+        var $modal = $('#modal-widget');
+
+        $('body').on('click', '.btn-modal', function () {
+          var url = $(this).data('url');
+
+          $.get(url, function (data) {
+            $modal.html(data);
+            $modal.modal('show');
+          });
+        });
+      });
+    </script>
+
+    <!-- Custom JavaScript -->
+    {% block custom-js %}{% endblock %}
+  </body>
+</html>

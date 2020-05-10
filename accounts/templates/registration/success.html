@@ -1,0 +1,21 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content content-fixed">
+  <div class="container ht-100p">
+    <div class="ht-100p d-flex flex-column align-items-center justify-content-center">
+      <div class="wd-150 wd-sm-250 mg-b-30"><img src="{% static 'shared/img/img17.png' %}" class="img-fluid" alt=""></div>
+      <h4 class="tx-20 tx-sm-24">Thank You For Registering</h4>
+      <p class="tx-color-03 mg-b-40 text-center">
+        Before you can start using your account, it has to be verified &amp; activated by our admins first. <br>
+        You will receive an e-mail when your account is ready.
+      </p>
+      <div class="tx-13 tx-lg-14 mg-b-40">
+        <a href="{% url 'accounts:login' %}" class="btn btn-brand-02 d-inline-flex align-items-center">Back to Sign In Page</a>
+        <a href="" class="btn btn-white d-inline-flex align-items-center mg-l-5">Contact Support</a>
+      </div>
+    </div>
+  </div><!-- container -->
+</div>
+{% endblock %}

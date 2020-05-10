@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Title -->
+  <title>{% block title %}Payment Tracker{% endblock %}</title>
+
+  <!-- Meta -->
+  <meta name="description" content="">
+  <meta name="author" content="Eyob Tariku <eyobtariku@gmail.com>">
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'shared/img/favicon.png' %}">
+
+  <title>DashForge Responsive Bootstrap 4 Dashboard Template</title>
+
+  <!-- vendor css -->
+  <link href="{% static 'shared/lib/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+  <link href="{% static 'shared/lib/ionicons/css/ionicons.min.css' %}" rel="stylesheet">
+
+  <!-- DashForge CSS -->
+  <link rel="stylesheet" href="{% static 'shared/css/dashforge.css' %}">
+  <link rel="stylesheet" href="{% static 'shared/css/dashforge.auth.css' %}">
+  <link id="dfMode" rel="stylesheet" href="{% static 'shared/css/skin.light.css' %}">
+
+  <!-- JavaScript -->
+  <script src="{% static 'shared/lib/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'shared/lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'shared/lib/feather-icons/feather.min.js' %}"></script>
+  <script src="{% static 'shared/lib/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+  <script src="{% static 'shared/js/dashforge.js' %}"></script>
+</head>
+
+<body>
+  <header class="navbar navbar-header navbar-header-fixed">
+    <a href="#" id="mainMenuOpen" class="burger-menu"><i data-feather="menu"></i></a>
+    <div class="navbar-brand">
+      <a href="#" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+    </div><!-- navbar-brand -->
+    <div id="navbarMenu" class="navbar-menu-wrapper">
+      <div class="navbar-menu-header">
+        <a href="#" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+        <a id="mainMenuClose" href=""><i data-feather="x"></i></a>
+      </div><!-- navbar-menu-header -->
+    </div><!-- navbar-menu-wrapper -->
+
+    <div class="navbar-right">
+      {% block navbar-right %}{% endblock %}
+    </div><!-- navbar-right -->
+  </header><!-- navbar -->
+
+  <div class="content content-fixed content-auth">
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div><!-- container -->
+  </div><!-- content -->
+
+  <footer class="footer">
+    <div>
+      <span>&copy; 2019 All Rights Reserved. </span>
+      <span>Created by <a href="#">zede.tech</a></span>
+    </div>
+    <div>
+      <nav class="nav">
+        <a href="#" class="nav-link">About Us</a>
+        <a href="#" class="nav-link">Contact</a>
+        <a href="#" class="nav-link">Get Help</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

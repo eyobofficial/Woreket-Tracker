@@ -1,0 +1,127 @@
+{% load humanize %}
+
+<!-- Delivery Order Allocation -->
+<div class="row row-xs row-flex mg-b-20" id="allocation-section">
+  <div class="col-sm-3 col-lg-3">
+    <div class="card ht-100p">
+      <div class="card-header d-flex justify-content-between">
+        <h6 class="lh-5 mg-b-0">Allocation Summary</h6>
+      </div><!-- card-header -->
+      <div class="card-body pd-x-20">
+        <ul class="list-group list-group-flush mg-b-0 tx-13 summary-list-group">
+          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+            <span class="tx-normal">Rate</span>
+            <span class="tx-medium">${{ object.batch.rate|intcomma }}</span>
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Total allocated quantity" data-target="allocation-quantity-col">
+            <span class="tx-normal">Quantity</span>
+            {% if object.get_allocated_quantity %}
+            <span class="tx-medium">{{ object.get_allocated_quantity|intcomma }} {{ object.unit.code|upper }}</span>
+            {% else %}
+            <span class="tx-medium">-</span>
+            {% endif %}
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Total allocated amount" data-target="allocation-amount-col">
+            <span class="tx-normal">Amount</span>
+            {% if object.get_allocated_amount %}
+            <span class="tx-medium">${{ object.get_allocated_amount|intcomma }}</span>
+            {% else %}
+            <span class="tx-medium">-</span>
+            {% endif %}
+          </li>
+          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="10% amount for allocated amount" data-target="allocation-retention-col">
+            <span class="tx-normal">10% Amount</span>
+            {% if object.get_allocated_retention %}
+            <span class="tx-medium">${{ object.get_allocated_retention|intcomma }}</span>
+            {% else %}
+            <span class="tx-medium">-</span>
+            {% endif %}
+          </li>
+        </ul>
+      </div><!-- card-body -->
+    </div><!-- card -->
+  </div><!-- col -->
+
+  <div class="col-sm-9">
+    <div class="card mg-b-10 ht-100p">
+      <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-10">
+        <div>
+          <h6 class="mg-b-3">Region Allocations</h6>
+          <p class="tx-13 tx-color-03 mg-b-0">Region allocations as per the agreement</p>
+        </div>
+        <div class="d-flex mg-t-20 mg-sm-t-0">
+          <div class="btn-group flex-fill">
+            {% if not object.is_fully_allocated and object.status == object.OPEN and perms.orders.add_allocation %}
+              <a class="tx-12 link-03 btn-modal"
+                data-url="{% url 'orders:order-allocation-create' object.pk %}">
+                  <i data-feather="plus" class="wd-15 ht-15"></i> Add allocation
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div><!-- card-header -->
+
+      <div class="card-body pd-x-0 pd-t-0">
+        <div class="table-responsive">
+          <table class="table table-dashboard table-striped table-card table-detail mg-b-0" id="allocation-table">
+            <thead>
+              <tr>
+                <th>Region</th>
+                <th class="text-right allocation-quantity-col">Quantity ({{ object.unit.code }})</th>
+                <th class="text-right">Rate (USD)</th>
+                <th class="text-right allocation-amount-col">Amount (USD)</th>
+                <th class="text-right allocation-retention-col">10% Amount (USD)</th>
+                {% if object.status == object.OPEN %}<th class="action"></th>{% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for allocation in object.allocations.all %}
+              <tr>
+                <td class="tz-color-03 tx-normal">{{ allocation.buyer.region }}</td>
+                <td class="tz-color-03 tx-normal text-right allocation-quantity-col">
+                  <a data-url="{% url 'orders:order-allocation-detail' allocation.pk %}" class="popup-link btn-modal">
+                    <span class="tx-medium">{{ allocation.get_total_quantity|intcomma }}</span>
+                    &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
+                  </a>
+                </td>
+                <td class="tz-color-03 tx-normal text-right">{{ object.batch.rate|intcomma }}</td>
+                <td class="text-right tx-normal text-right allocation-amount-col">{{ allocation.get_amount|intcomma }}</td>
+                <td class="tx-medium tx-medium text-right allocation-retention-col">{{ allocation.get_retention|intcomma }}</td>
+                {% if object.status == object.OPEN %}
+                <td class="text-right action">
+                  <div class="mg-l-auto d-flex justify-content-end">
+                    <nav class="nav nav-icon-only">
+                      {% if perms.orders.change_allocation %}
+                      <a data-url="{% url 'orders:order-allocation-update' allocation.pk %}"
+                        class="nav-link d-none d-sm-block btn-modal" title="Edit">
+                        <i data-feather="edit-3"></i>
+                      </a>
+                      {% endif %}
+
+                      {% if perms.orders.delete_allocation %}
+                      <a data-url="{% url 'orders:allocation-delete' allocation.pk %}"
+                        class="nav-link d-none d-sm-block btn-modal" title="Delete">
+                        <i data-feather="trash"></i>
+                      </a>
+                      {% endif %}
+                    </nav>
+                  </div>
+                </td>
+                {% endif %}
+              </tr>
+              {% empty %}
+              <tr class="empty-row">
+                {% if object.status == object.OPEN %}
+                <td colspan="6" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">NO ALLOCATION DATA</td>
+                {% else %}
+                <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">NO ALLOCATION DATA</td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div><!-- table-responsive -->
+      </div>
+    </div><!-- card -->
+  </div><!-- col -->
+</div><!-- row -->

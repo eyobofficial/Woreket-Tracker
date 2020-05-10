@@ -1,0 +1,294 @@
+<div class="modal-dialog modal-lg wd-sm-850" role="document">
+  <div class="modal-content">
+    <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
+      <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </a>
+      <div class="media align-items-center">
+        <div class="media-body">
+          <h4 class="tx-18 tx-sm-20 mg-b-2">Delivery Order Distribution</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Create delivery order distribution to regions.</p>
+        </div>
+      </div><!-- media -->
+    </div><!-- modal-header -->
+
+    <form id="distribution-form" action="{{ request.path }}" method="POST">
+      {% csrf_token %}
+      {{ formset.management_form }}
+      <div class="modal-body pd-sm-t-30 pd-sm-b-60 pd-sm-x-30">
+        <div class="row">
+          <div class="col-sm-12">
+
+            <!-- Buyers  -->
+            <div class="form-group mg-b-30 wd-sm-300">
+              <label for="buyer" class="tx-11 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Region</label>
+              <select name="buyer" id="buyer" class="form-control custom-select" required>
+                {% if not formset.instance.buyer %}
+                <option selected disabled value="">Choose Region</option>
+                {% endif %}
+
+                {% for choice in buyer_choices %}
+                <option value="{{ choice.pk }}" {% if formset.instance.buyer == choice %}selected{% endif %}>{{ choice.region }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Error Alerts -->
+            <p class="text-danger mg-t-10 d-none error-alert" id="validation-alert">
+              <i class="wd-15 mg-r-5" data-feather="alert-circle"></i> Please fix the errors below.
+            </p>
+
+            <!-- Empty space to dynamically remove using JavaScript -->
+            <div class="empty-space mg-b-100"></div>
+
+            <fieldset class="d-none mg-t-0">
+              <table id="distribution-formset-table" class="table table-sm table-formset">
+                <thead>
+                  <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03 wd-30">#</th>
+                  <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Union</th>
+                  <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Location</th>
+                  <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Quantity ({{ order.unit.code }})</th>
+                  <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Shortage ({{ order.unit.code }})</th>
+                  <th class="tx-11 tx-uppercase tx-medium tx-spacing-1 tx-color-03">Over Supply ({{ order.unit.code }})</th>
+                  <th></th>
+                </thead>
+                <tbody>
+                  {% for form in formset.forms %}
+                  <tr id="{{ formset.prefix }}-row" class="formset-row">
+                    <!-- Index column -->
+                    <td class="d-flex flex-row align-items-center row-number">
+                      <span class="tx-medium tx-color-03 pd-t-10 tx-14 tx-interui">{{ forloop.counter }}</span>
+                    </td>
+
+                    <!-- Union select column -->
+                    <td class="wd-150">
+                      {% for field in form.hidden_fields %}
+                        {{ field }}
+                      {% endfor %}
+
+                      <select name="formset-{{ forloop.counter0 }}-union" id="id_formset-{{ formloop.counter0 }}-union"
+                        class="form-control custom-select union-input" data-name="union" required>
+                        {% if not form.union.value %}
+                        <option selected disabled value="">Choose union</option>
+                        {% endif %}
+
+                        {% for union in union_choices %}
+                        <option value="{{ union.pk }}" {% if form.union.value|safe ==  union.pk|safe %}selected{% endif %}>{{ union.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </td>
+
+                    <!-- Location select column -->
+                    <td class="wd-150">
+                      <select name="formset-{{ forloop.counter0 }}-location" id="id_formset-{{ formloop.counter0 }}-location"
+                        class="form-control custom-select location-input" data-name="location" required>
+                        {% if not form.location.value %}
+                        <option selected disabled value="">Choose location</option>
+                        {% endif %}
+
+                        {% for location in location_choices %}
+                        <option value="{{ location.pk }}" {% if form.location.value|safe ==  location.pk|safe %}selected{% endif %}>{{ location.name }}
+                        </option>
+                        {% endfor %}
+                      </select>
+                    </td>
+
+                    <!-- Quantity column -->
+                    <td>
+                      <input
+                        id="id_formset-{{ forloop.counter0 }}-quantity"
+                        class="form-control number-input quantity-input {% if form.quantity.errors %}parsley-error{% endif %}"
+                        name="formset-{{ forloop.counter0 }}-quantity"
+                        value="{{ form.quantity.value|default_if_none:'' }}"
+                        data-name="quantity" required
+                      />
+                      {% if form.quantity.errors %}
+                      <ul class="parsley-errors-list filled">
+                        {% for error in form.quantity.errors %}
+                        <li class="parsley-required">{{ error }}</li>
+                        {% endfor %}
+                      </ul>
+                      {% endif %}
+                    </td>
+
+                    <!-- Shortage column -->
+                    <td>
+                      <input
+                        id="id_formset-{{ forloop.counter0 }}-shortage"
+                        class="form-control number-input shortage-input {% if form.shortage.errors %}parsley-error{% endif %}"
+                        name="formset-{{ forloop.counter0 }}-shortage"
+                        value="{{ form.shortage.value|default_if_none:'' }}"
+                        data-name="shortage" required
+                      />
+                      {% if form.shortage.errors %}
+                      <ul class="parsley-errors-list filled">
+                        {% for error in form.shortage.errors %}
+                        <li class="parsley-required">{{ error }}</li>
+                        {% endfor %}
+                      </ul>
+                      {% endif %}
+                    </td>
+
+                    <!-- Over supply column -->
+                    <td>
+                      <input
+                        id="id_formset-{{ forloop.counter0 }}-over"
+                        class="form-control number-input over-input {% if form.over.errors %}parsley-error{% endif %}"
+                        name="formset-{{ forloop.counter0 }}-over"
+                        value="{{ form.over.value|default_if_none:'' }}"
+                        data-name="over" required
+                      />
+                      {% if form.over.errors %}
+                      <ul class="parsley-errors-list filled">
+                        {% for error in form.over.errors %}
+                        <li class="parsley-required">{{ error }}</li>
+                        {% endfor %}
+                      </ul>
+                      {% endif %}
+                    </td>
+
+                    <!-- Delete button column -->
+                    <td class="text-center wd-30">
+                      {% if forloop.counter > 1 %}
+                        <a href="javascript:void(0)" class="icon-link link-03 mg-l-10 remove-row">
+                          <i data-feather="trash" class="wd-20 mg-t-5"></i>
+                        </a>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              <a href="javascript:void(0)" class="icon-link add-union-btn link-03">
+                <i data-feather="plus" class="wd-20"></i> Add more unions
+              </a>
+            </fieldset>
+
+          </div><!-- /.col-sm-10 -->
+        </div><!-- /.row -->
+      </div><!-- /.modal-body -->
+      <div class="modal-footer pd-x-20 pd-y-15 d-none">
+        <button type="button" class="btn btn-white wd-80" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary wd-80">Save</button>
+      </div>
+    </form>
+
+<!-- Empty Table -->
+{% include 'orders/modals/distributions/empty_distribution_row.html' with union_choices=union_choices %}
+
+<script>
+  $(function () {
+    const $form = $('#distribution-form');
+    const $modal = $form.closest('.modal');
+    const $submitBtn = $form.find('button[type=submit]');
+
+    // Selects the region
+    $('#buyer').on('change', function() {
+      const buyerId = $(this).val();
+      const url = `{{ request.path }}?buyer=${buyerId}`;
+
+      $.get(url, function(data) {
+        $ajaxFieldset = $(data).find('fieldset');
+        $ajaxRow = $(data).find('#empty-distribution-table tr');
+
+        $('fieldset').replaceWith($ajaxFieldset);
+        $('#empty-distribution-table tr').replaceWith($ajaxRow);
+        $('fieldset').removeClass('d-none');
+        $('.modal-footer').removeClass('d-none');
+        $('.empty-space').addClass('d-none');
+        formatNumbers();
+        feather.replace();
+      });
+    });
+
+    // Add union row
+    $form.on('click', '.add-union-btn', function() {
+      const $table = $('#distribution-formset-table');
+      const $emptyRow = $('#empty-distribution-table tr');
+      $emptyRow.clone().appendTo($table).find('tbody');
+      updateIndices();
+      formatNumbers();
+    });
+
+    // Remove union row
+    $form.on('click', '.remove-row', function(e) {
+      e.preventDefault();
+      $(this).closest('tr').remove();
+      updateIndices();
+    });
+
+    // Submit form
+    $form.submit(function(e) {
+      e.preventDefault();
+
+      const buyerId = $('#buyer').val();
+      const url = `{{ request.path }}?buyer=${buyerId}`;
+      const $spinner = $('<i>', {'class': 'fas fa-spin fa-circle-notch'});
+
+      $('.error-alert').addClass('d-none');
+      $submitBtn.html($spinner).attr('disabled', true);
+
+      // Send http request
+      const request = $.ajax({
+        method: 'POST',
+        url: url,
+        data: $form.serialize(),
+        dataType: 'html'
+      });
+
+      // AJAX success
+      request.done(function(data) {
+        const $updatedPage = $(data).find('.order-detail-container');
+        $('.order-detail-container').replaceWith($updatedPage);
+        feather.replace();
+        $modal.modal('hide');
+      });
+
+      // AJAX failed
+      request.fail(function(jqXHR) {
+        const $fieldset = $(jqXHR.responseText).find('fieldset');
+        $('fieldset').replaceWith($fieldset);
+        $('fieldset').removeClass('d-none');
+        feather.replace();
+        $submitBtn.html('Save').removeAttr('disabled');
+        $('#validation-alert').removeClass('d-none');
+      });
+    });
+
+    // Dynamically update input names, ids and hidden input fields
+    function updateIndices() {
+      const $form = $('#distribution-form');
+      const $formsets = $form.find('.formset-row');
+
+      $form.find('#id_formset-TOTAL_FORMS').val($formsets.length);
+      $formsets.each(function(idx) {
+        const $inputs = $(this).find('[name]');
+        const rowNumber = idx + 1;
+
+        $inputs.each(function() {
+          const fieldName = $(this).data('name');
+          if (fieldName !== undefined) {
+            $(this).attr('name', `formset-${idx}-${fieldName}`);
+            $(this).attr('id', `id_formset-${idx}-${fieldName}`);
+          }
+        });
+        $(this).find('.row-number span').text(rowNumber);
+      });
+    }
+
+    // Format numbers to be comma separted
+    function formatNumbers() {
+      $form.find('.number-input').each(function() {
+        const id = $(this).attr('id');
+
+        new Cleave(`#${id}`, {
+          numeral: true,
+          numeralThousandsGroupStyle: 'thousand'
+        });
+      });
+    }
+  });
+</script>
+

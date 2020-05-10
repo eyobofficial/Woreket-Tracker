@@ -1,0 +1,34 @@
+- model: shared.Unit
+  pk: 1
+  fields:
+    name: Meteric Ton
+    code: MT
+    type: WEIGHT
+
+- model: shared.Unit
+  pk: 2
+  fields:
+    name: Pieces
+    code: pcs
+    type: COUNTER
+
+- model: shared.Unit
+  pk: 3
+  fields:
+    name: Kilogram
+    code: kg
+    type: WEIGHT
+
+- model: shared.Unit
+  pk: 4
+  fields:
+    name: Litre
+    code: lt
+    type: VOLUME
+
+- model: shared.Unit
+  pk: 5
+  fields:
+    name: Cubic Meter
+    code: m3
+    type: VOLUME
