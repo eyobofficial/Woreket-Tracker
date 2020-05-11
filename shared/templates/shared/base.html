@@ -174,6 +174,7 @@
         var $modal = $('#modal-widget');
 
         $('body').on('click', '.btn-modal', function () {
+          $modal.off('submit');
           var url = $(this).data('url');
 
           $.get(url, function (data) {

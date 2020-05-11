@@ -1,7 +1,7 @@
 {% extends 'purchases/base.html' %}
 {% load humanize %}
 
-{% block title %}Supplier | Payment Tracker{% endblock %}
+{% block title %}Suppliers | Payment Tracker{% endblock %}
 
 {% block content %}
 <div class="content content-fixed bd-b">
@@ -61,6 +61,7 @@
                 <tr>
                   <th class="wd-80">#</th>
                   <th>Name</th>
+                  <th>E-mail</th>
                   <th>City</th>
                   <th>Country</th>
                   <th class="action"></th>
@@ -71,6 +72,7 @@
                 <tr>
                   <td class="tx-color-03 tx-normal">{{ forloop.counter }}</td>
                   <td class="tz-color-03 tx-medium">{{ supplier.name }}</td>
+                  <td class="link-03 tx-normal">{{ supplier.email|default:'-' }}</td>
                   <td class="tx-color-03 tx-normal">{{ supplier.city }}</td>
                   <td class="tx-color-03 tx-normal">{{ supplier.country.name }}</td>
                   <td class="text-right action">
@@ -94,10 +96,10 @@
                 {% empty %}
                 <tr class="empty-row">
                   {% if search_query %}
-                  <td colspan="{% if perms.purchases.change_supplier %}5{% else %}4{% endif %}"
+                  <td colspan="{% if perms.purchases.change_supplier %}6{% else %}5{% endif %}"
                     class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO RESULT FOUND</td>
                   {% else %}
-                  <td colspan="{% if perms.purchases.change_supplier %}5{% else %}4{% endif %}"
+                  <td colspan="{% if perms.purchases.change_supplier %}6{% else %}5{% endif %}"
                     class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO SUPPLIER YET</td>
                   {% endif %}
                 </tr>

@@ -42,6 +42,23 @@
               {% endif %}
             </div>
 
+            <!-- E-mail -->
+            <div class="form-group">
+              <label for="email" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">E-mail</label>
+              <input
+                id="email" class="form-control {% if form.email.errors %}parsley-error{% endif %}"
+                name="email" value="{{ form.email.value|default:'' }}"
+                placeholder="Enter e-mail address (Optional)"
+              />
+              {% if form.email.errors %}
+              <ul class="parsley-errors-list filled">
+                {% for error in form.email.errors %}
+                <li class="parsley-required">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
+
             <!-- City -->
             <div class="form-group">
               <label for="city" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">City</label>

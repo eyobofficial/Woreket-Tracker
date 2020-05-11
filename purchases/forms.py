@@ -22,4 +22,4 @@ class SupplierForm(forms.ModelForm):
 
     class Meta:
         model = Supplier
-        fields = ('name', 'city', 'country')
+        fields = ('name', 'email', 'city', 'country')
