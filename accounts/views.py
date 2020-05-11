@@ -24,9 +24,12 @@ class CustomLoginView(LoginView):
         """
         success_url = super().get_success_url()
         user = self.request.user
-        if user.status == CustomUser.PENDING or user.role is None:
+        if user.is_superuser:
+            return success_url
+        elif user.status == CustomUser.PENDING or user.role is None:
             return reverse('accounts:profile-update')
-        return success_url
+        else:
+            return success_url
 
 
 class UserRegistrationView(CreateView):
