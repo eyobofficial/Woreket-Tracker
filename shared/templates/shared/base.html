@@ -125,7 +125,7 @@
               {% endif %}
             {% endif %}
 
-            {% if user.is_superuser or user.status == user.ACTIVE and perms.users %}
+            {% if user.is_superuser or user.status == user.ACTIVE and perms.accounts.view_customuser %}
               <!-- Users -->
               <li class="nav-item {% if page_name == 'users' %}active{% endif %}">
                 <a href="{% url 'users:user-list' %}" class="nav-link"><i data-feather="box"></i>Users</a>
