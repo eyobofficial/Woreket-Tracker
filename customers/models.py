@@ -51,10 +51,11 @@ class Union(models.Model):
         related_name='unions'
     )
     name = models.CharField(max_length=120)
-    location = models.CharField(max_length=60, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        order_with_respect_to = 'customer'
+        ordering = ('-updated_at', )
 
     def __str__(self):
         return self.name

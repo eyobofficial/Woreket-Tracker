@@ -5,7 +5,7 @@ from .models import ProductCategory, Product, Supplier, Batch
 
 @admin.register(Supplier)
 class SupplierAdmin(admin.ModelAdmin):
-    list_display = ('name', 'city', 'country')
+    list_display = ('name', 'short_name', 'city', 'country')
 
 
 @admin.register(ProductCategory)

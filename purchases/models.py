@@ -14,6 +14,7 @@ from .managers import BatchManager
 class Supplier(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     name = models.CharField('company name', max_length=60)
+    short_name = models.CharField('abbreviation', max_length=60, blank=True)
     email = models.EmailField(max_length=60, blank=True)
     city = models.CharField(max_length=60)
     country = CountryField()
@@ -22,7 +23,7 @@ class Supplier(models.Model):
         ordering = ('name', )
 
     def __str__(self):
-        return self.name
+        return self.short_name or self.name
 
 
 class ProductCategory(models.Model):

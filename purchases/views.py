@@ -46,7 +46,7 @@ class BatchListView(BasePurchasesView, ListView):
         return super().get_context_data(**kwargs)
 
     def get_search_result(self, query):
-        """Returns a batches using search query."""
+        """Returns matching batches using search query."""
         search_qs = self.queryset.filter(
             Q(name__icontains=query) |
             Q(year__icontains=query) |
@@ -166,7 +166,7 @@ class ProductListView(BasePurchasesView, ListView):
         return super().get_context_data(**kwargs)
 
     def get_search_result(self, query):
-        """Returns a batches using search query."""
+        """Returns matching products using search query."""
         search_qs = self.queryset.filter(
             Q(name__icontains=query) |
             Q(description__icontains=query) |
@@ -240,7 +240,7 @@ class ProductDeleteView(BasePurchasesView, SuccessMessageMixin, DeleteView):
 
 
 class SupplierListView(BasePurchasesView, ListView):
-    """List view of fertilier products."""
+    """List view of fertilier suppliers."""
     template_name = 'purchases/supplier_list.html'
     model = Supplier
     paginate_by = 10
@@ -274,9 +274,10 @@ class SupplierListView(BasePurchasesView, ListView):
         return super().get_context_data(**kwargs)
 
     def get_search_result(self, query):
-        """Returns a batches using search query."""
+        """Returns matching suppliers using search query."""
         search_qs = self.queryset.filter(
             Q(name__icontains=query) |
+            Q(short_name__icontains=query) |
             Q(city__icontains=query)
         )
         return search_qs

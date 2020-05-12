@@ -1,7 +1,7 @@
 {% extends 'purchases/base.html' %}
 {% load humanize %}
 
-{% block title %}Suppliers | Payment Tracker{% endblock %}
+{% block title %}Unions | Payment Tracker{% endblock %}
 
 {% block content %}
 <div class="content content-fixed bd-b">
@@ -11,17 +11,17 @@
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb breadcrumb-style1 mg-b-10">
             <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Suppliers</li>
+            <li class="breadcrumb-item active" aria-current="page">Unions</li>
           </ol>
         </nav>
-        <h4 class="mg-b-0">All Suppliers</h4>
+        <h4 class="mg-b-0">All Unions</h4>
       </div>
 
       <div class="d-none d-md-block mg-t-20 mg-sm-t-0">
-        {% if perms.purchases.add_supplier %}
+        {% if perms.customers.add_union %}
         <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
-          data-url="{% url 'purchases:supplier-create' %}">
-          <i data-feather="plus" class="wd-10 mg-r-5"></i>Add New Supplier
+          data-url="{% url 'customers:union-create' %}">
+          <i data-feather="plus" class="wd-10 mg-r-5"></i>Add New Union
         </button>
         {% endif %}
       </div>
@@ -30,7 +30,7 @@
 </div><!-- content -->
 
 <div class="content">
-  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0" id="supplier-list-container">
+  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0" id="union-list-container">
     <div class="row">
       <div class="col-md-9 col-sm-12">
 
@@ -40,11 +40,11 @@
         </div>
         {% endfor %}
 
-        <div class="card mg-b-20 mg-t-10" id="products-table-card">
+        <div class="card mg-b-20 mg-t-10" id="unions-table-card">
           <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-0">
             <div>
-              <h6 class="mg-b-3 pb-0">Suppliers</h6>
-              <p class="tx-13 tx-color-03 mg-b-15">All fertilizer suppliers registered in the system.</p>
+              <h6 class="mg-b-3 pb-0">Unions</h6>
+              <p class="tx-13 tx-color-03 mg-b-15">All peasant unions registered in the system.</p>
             </div>
             <div class="d-flex mg-t-20 mg-sm-t-0">
               <form>
@@ -56,38 +56,32 @@
             </div>
           </div><!-- card-header -->
           <div class="table-responsive">
-            <table class="table table-dashboard mg-b-0" id="supplier-table">
+            <table class="table table-dashboard mg-b-0" id="union-table">
               <thead>
                 <tr>
                   <th class="wd-80">#</th>
                   <th>Name</th>
-                  <th>Abbreviation</th>
-                  <th>E-mail</th>
-                  <th>City</th>
-                  <th>Country</th>
+                  <th>Region</th>
                   <th class="action"></th>
                 </tr>
               </thead>
               <tbody>
-                {% for supplier in object_list %}
+                {% for union in object_list %}
                 <tr>
                   <td class="tx-color-03 tx-normal">{{ forloop.counter }}</td>
-                  <td class="tz-color-03 tx-medium">{{ supplier.name }}</td>
-                  <td class="tx-color-03 tx-normal">{{ supplier.short_name|default:'-' }}</td>
-                  <td class="link-03 tx-normal">{{ supplier.email|default:'-' }}</td>
-                  <td class="tx-color-03 tx-normal">{{ supplier.city }}</td>
-                  <td class="tx-color-03 tx-normal">{{ supplier.country.name }}</td>
+                  <td class="tz-color-03 tx-medium">{{ union.name }}</td>
+                  <td class="tx-color-03 tx-normal">{{ union.customer.region }}</td>
                   <td class="text-right action">
                     <div class="mg-l-auto d-flex justify-content-end">
                       <nav class="nav nav-icon-only">
-                        {% if perms.purchases.change_supplier %}
-                        <a data-url="{% url 'purchases:supplier-update' supplier.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Edit">
+                        {% if perms.customers.change_union %}
+                        <a data-url="{% url 'customers:union-update' union.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Edit">
                           <i data-feather="edit-3"></i>
                         </a>
                         {% endif %}
 
-                        {% if perms.purchases.delete_supplier %}
-                        <a data-url="{% url 'purchases:supplier-delete' supplier.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Delete">
+                        {% if perms.customers.delete_union %}
+                        <a data-url="{% url 'customers:union-delete' union.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Delete">
                           <i data-feather="trash"></i>
                         </a>
                         {% endif %}
@@ -98,11 +92,11 @@
                 {% empty %}
                 <tr class="empty-row">
                   {% if search_query %}
-                  <td colspan="{% if perms.purchases.change_supplier %}7{% else %}6{% endif %}"
+                  <td colspan="{% if perms.customers.change_union %}4{% else %}3{% endif %}"
                     class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO RESULT FOUND</td>
                   {% else %}
-                  <td colspan="{% if perms.purchases.change_supplier %}7{% else %}6{% endif %}"
-                    class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO SUPPLIER FOUND</td>
+                  <td colspan="{% if perms.customers.change_union %}4{% else %}3{% endif %}"
+                    class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO UNION FOUND</td>
                   {% endif %}
                 </tr>
                 {% endfor %}
@@ -156,21 +150,20 @@
 
       <!-- Aside filter links -->
       <aside class="col-md-3 col-sm-12 mg-t-10 mg-lg-t-0 pd-sm-l-40">
-        {% if country_list %}
-        <h6 class="tx-uppercase tx-semibold mg-t-30 mg-b-15">Country</h6>
+        <h6 class="tx-uppercase tx-semibold mg-t-30 mg-b-15">Regions</h6>
         <nav class="nav nav-classic tx-13 mg-lg-b-20">
-          <a href="{% url 'purchases:supplier-list' %}" class="nav-link {% if selected_country is None %}active{% endif %}">
-            <span>All</span> <span class="badge">{{ suppliers_count }}</span>
+          <a href="{% url 'customers:union-list' %}" class="nav-link {% if selected_region is None %}active{% endif %}">
+            <span>All</span> <span class="badge">{{ union_count }}</span>
           </a>
-          {% for country in country_list %}
-          <a href="{{ request.path }}?country={{ country.code }}"
-            class="nav-link {% if selected_country == country.code %}active{% endif %}">
-            <span>{{ country.name }}</span> <span class="badge">{{ country.count }}</span>
+          {% for customer in customer_list %}
+          <a href="{{ request.path }}?region={{ customer.pk }}"
+            class="nav-link {% if selected_region|safe == customer.pk|safe %}active{% endif %}">
+            <span>{{ customer.region }}</span> <span class="badge">{{ customer.unions.count }}</span>
           </a>
           {% endfor %}
         </nav>
-        {% endif %}
       </aside>
+
     </div><!-- row -->
   </div><!-- container -->
 </div><!-- content -->
@@ -182,10 +175,10 @@
       var url = '{{ request.path }}?search=' + query;
 
       $.get(url, function (data) {
-        var $table = $('#supplier-table');
+        var $table = $('#union-table');
         var $pagination = $('#pagination-nav');
 
-        $table.replaceWith($(data).find('#supplier-table'));
+        $table.replaceWith($(data).find('#union-table'));
         $pagination.replaceWith($(data).find('#pagination-nav'));
         feather.replace();
       });
