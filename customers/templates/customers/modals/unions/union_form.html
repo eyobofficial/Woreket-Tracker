@@ -1,0 +1,111 @@
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
+      <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </a>
+      <div class="media align-items-center">
+        <div class="media-body">
+          {% if object %}
+          <h4 class="tx-18 tx-sm-20 mg-b-2">Edit Union</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Update an existing union.</p>
+          {% else %}
+          <h4 class="tx-18 tx-sm-20 mg-b-2">New Union</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Create and add a new union to the system.</p>
+          {% endif %}
+        </div>
+      </div><!-- media -->
+    </div><!-- modal-header -->
+
+    <!-- Product Form -->
+    <form action="{{ request.path }}" method="POST" id="union-form">
+      {% csrf_token %}
+
+      <div class="modal-body pd-sm-t-10 pd-sm-b-30 pd-sm-x-30">
+        <div class="row">
+          <div class="col-sm-9">
+            <!-- Name -->
+            <div class="form-group">
+              <label for="name" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Name</label>
+              <input id="name" class="form-control {% if form.name.errors %}parsley-error{% endif %}" name="name"
+                value="{{ form.name.value|default:'' }}" placeholder="Enter union name" required />
+              {% if form.name.errors %}
+              <ul class="parsley-errors-list filled">
+                {% for error in form.name.errors %}
+                <li class="parsley-required">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
+
+            <!-- Customers -->
+            <div class="form-group">
+              <label for="customer"
+                class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Region</label>
+              <select name="customer" id="customer"
+                class="form-control custom-select {% if form.customer.errors %}parsley-error{% endif %}" required>
+                {% if not form.instance.customer %}
+                <option selected disabled value="">Choose region</option>
+                {% endif %}
+
+                {% for customer in customer_list %}
+                <option value="{{ customer.pk }}"
+                  {% if form.customer.value|safe == customer.pk|safe %}selected{% endif %}>
+                  {{ customer.region }}
+                </option>
+                {% endfor %}
+              </select>
+              {% if form.customer.errors %}
+              <ul class="parsley-errors-list filled">
+                {% for error in form.customer.errors %}
+                <li class="parsley-required">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
+          </div><!-- modal-body -->
+        </div><!-- /.row -->
+      </div><!-- /.modal-body -->
+      <div class="modal-footer pd-x-20 pd-y-15">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary wd-80">Save</button>
+      </div>
+    </form>
+  </div><!-- modal-content -->
+</div><!-- modal-dialog -->
+
+<script>
+  $(function () {
+    $('#modal-widget').on('submit', '#union-form', function (e) {
+      e.preventDefault();
+
+      const $submitBtn = $('#union-form button[type=submit]');
+      const $spinner = $('<i>', { 'class': 'fas fa-spin fa-circle-notch' });
+
+      $submitBtn.attr('disabled', true).html($spinner);
+
+      const url = $(this).attr('action');
+      const formData = $(this).serialize();
+      const request = $.ajax({
+        method: 'POST',
+        url: url,
+        data: formData,
+        dataType: 'html'
+      });
+
+      request.done(data => {
+        const $updatedPage = $(data).find('#union-list-container');
+        $('#union-list-container').replaceWith($updatedPage);
+        $('#modal-widget').modal('hide');
+        feather.replace();
+      });
+
+      request.fail(jqXHR => {
+        const $form = $('#union-form');
+        const $responseForm = $(jqXHR.responseText).find('#union-form');
+        $form.replaceWith($responseForm);
+        $form.find('button[type=submit]').text('Save').removeAttr('disabled');
+      });
+    });
+  });
+</script>
