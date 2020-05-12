@@ -81,7 +81,7 @@
                         {% endif %}
 
                         {% if perms.customers.delete_union %}
-                        <a data-url="" class="nav-link d-none d-sm-block btn-modal" title="Delete">
+                        <a data-url="{% url 'customers:union-delete' union.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Delete">
                           <i data-feather="trash"></i>
                         </a>
                         {% endif %}

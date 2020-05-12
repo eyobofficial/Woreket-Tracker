@@ -1,6 +1,7 @@
 from django.urls import path
 
-from .views import UnionListView, UnionCreateView, UnionUpdateView
+from .views import UnionListView, UnionCreateView, UnionUpdateView, \
+    UnionDeleteView
 
 
 app_name = 'customers'
@@ -12,5 +13,10 @@ urlpatterns = [
         'unions/<uuid:pk>/update/',
         UnionUpdateView.as_view(),
         name='union-update'
+    ),
+    path(
+        'unions/<uuid:pk>/delete/',
+        UnionDeleteView.as_view(),
+        name='union-delete'
     )
 ]

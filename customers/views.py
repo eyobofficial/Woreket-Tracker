@@ -1,7 +1,9 @@
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF
 
@@ -89,3 +91,21 @@ class UnionUpdateView(BaseCustomersView, SuccessMessageMixin, UpdateView):
         response = super().form_invalid(form)
         response.status_code = 400
         return response
+
+
+class UnionDeleteView(BaseCustomersView, SuccessMessageMixin, DeleteView):
+    """Delete view to delete a union."""
+    template_name = 'customers/modals/unions/union_delete_form.html'
+    model = Union
+    success_url = reverse_lazy('customers:union-list')
+    success_message = 'The selected union is successfully deleted.'
+    page_name = 'unions'
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
+
+    def delete(self, request, *args, **kwargs):
+        """Overwrites delete method to send success message."""
+        self.object = self.get_object()
+        self.object.delete()
+        success_url = self.get_success_url()
+        messages.success(request, self.success_message)
+        return redirect(success_url)
