@@ -61,6 +61,7 @@
                 <tr>
                   <th class="wd-80">#</th>
                   <th>Name</th>
+                  <th>Abbreviation</th>
                   <th>E-mail</th>
                   <th>City</th>
                   <th>Country</th>
@@ -72,6 +73,7 @@
                 <tr>
                   <td class="tx-color-03 tx-normal">{{ forloop.counter }}</td>
                   <td class="tz-color-03 tx-medium">{{ supplier.name }}</td>
+                  <td class="tx-color-03 tx-normal">{{ supplier.short_name|default:'-' }}</td>
                   <td class="link-03 tx-normal">{{ supplier.email|default:'-' }}</td>
                   <td class="tx-color-03 tx-normal">{{ supplier.city }}</td>
                   <td class="tx-color-03 tx-normal">{{ supplier.country.name }}</td>
@@ -96,10 +98,10 @@
                 {% empty %}
                 <tr class="empty-row">
                   {% if search_query %}
-                  <td colspan="{% if perms.purchases.change_supplier %}6{% else %}5{% endif %}"
+                  <td colspan="{% if perms.purchases.change_supplier %}7{% else %}6{% endif %}"
                     class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO RESULT FOUND</td>
                   {% else %}
-                  <td colspan="{% if perms.purchases.change_supplier %}6{% else %}5{% endif %}"
+                  <td colspan="{% if perms.purchases.change_supplier %}7{% else %}6{% endif %}"
                     class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO SUPPLIER FOUND</td>
                   {% endif %}
                 </tr>
@@ -128,11 +130,11 @@
             {% endif %}
 
             {% for i in paginator.page_range %}
-            {% if page_obj.number == i %}
-            <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-            {% else %}
-            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-            {% endif %}
+              {% if page_obj.number == i %}
+              <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+              {% endif %}
             {% endfor %}
 
             {% if page_obj.has_next %}
