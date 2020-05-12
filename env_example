@@ -2,6 +2,7 @@
 SECRET_KEY=
 ALLOWED_HOSTS=.localhost, .127.0.0.1
 DJANGO_SETTINGS_MODULE=config.settings.local
+ENVIRONMENT=LOCAL
 
 # Admin Settings
 ADMIN_EMAIL=

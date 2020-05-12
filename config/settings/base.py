@@ -196,3 +196,7 @@ PHONENUMBER_DB_FORMAT = 'NATIONAL'
 
 # Start-up fixtures
 FIXTURES = ['categories', 'customers', 'units', 'ports', 'roles']
+
+
+# Environment
+ENVIRONMENT = config('ENVIRONMENT')
