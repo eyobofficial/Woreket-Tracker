@@ -1,7 +1,7 @@
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, UpdateView
 
 from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF
 
@@ -60,6 +60,28 @@ class UnionCreateView(BaseCustomersView, SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         kwargs.update({
             'customer_list': Customer.objects.all(),
+        })
+        return super().get_context_data(**kwargs)
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        response.status_code = 400
+        return response
+
+
+class UnionUpdateView(BaseCustomersView, SuccessMessageMixin, UpdateView):
+    """Update view for editing existing union."""
+    template_name = 'customers/modals/unions/union_form.html'
+    model = Union
+    fields = ('name', 'customer')
+    success_url = reverse_lazy('customers:union-list')
+    success_message = 'The selected union is successfully updated.'
+    page_name = 'unions'
+    access_roles = [ROLE_ADMIN, ROLE_STAFF]
+
+    def get_context_data(self, **kwargs):
+        kwargs.update({
+            'customer_list': Customer.objects.all()
         })
         return super().get_context_data(**kwargs)
 
