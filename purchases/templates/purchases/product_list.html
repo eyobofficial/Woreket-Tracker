@@ -98,7 +98,7 @@
                     class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO RESULT FOUND</td>
                   {% else %}
                   <td colspan="{% if perms.purchases.change_product %}5{% else %}4{% endif %}"
-                    class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO PRODUCT YET</td>
+                    class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO PRODUCT FOUND</td>
                   {% endif %}
                 </tr>
                 {% endfor %}
@@ -126,11 +126,11 @@
             {% endif %}
 
             {% for i in paginator.page_range %}
-            {% if page_obj.number == i %}
-            <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-            {% else %}
-            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-            {% endif %}
+              {% if page_obj.number == i %}
+              <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+              {% endif %}
             {% endfor %}
 
             {% if page_obj.has_next %}

@@ -116,6 +116,13 @@
                   <a href="{% url 'purchases:supplier-list' %}" class="nav-link"><i data-feather="box"></i>Suppliers</a>
                 </li>
               {% endif %}
+
+              <!-- Unions -->
+              {% if perms.customers.view_union %}
+              <li class="nav-item {% if page_name == 'unions' %}active{% endif %}">
+                <a href="{% url 'customers:union-list' %}" class="nav-link"><i data-feather="box"></i>Unions</a>
+              </li>
+              {% endif %}
             {% endif %}
 
             {% if user.is_superuser or user.status == user.ACTIVE and perms.users %}

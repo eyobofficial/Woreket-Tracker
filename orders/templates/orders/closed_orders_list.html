@@ -68,7 +68,7 @@
                   {% if search_query %}
                   <td colspan="8" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Result Found</td>
                   {% else %}
-                  <td colspan="8" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Closed Delivery Order</td>
+                  <td colspan="8" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Closed Delivery Order Found</td>
                   {% endif %}
                 </tr>
                 {% endfor %}
@@ -96,11 +96,11 @@
             {% endif %}
 
             {% for i in paginator.page_range %}
-            {% if page_obj.number == i %}
-            <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-            {% else %}
-            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-            {% endif %}
+              {% if page_obj.number == i %}
+              <li class="page-item active"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+              {% endif %}
             {% endfor %}
 
             {% if page_obj.has_next %}

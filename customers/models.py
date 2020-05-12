@@ -51,7 +51,6 @@ class Union(models.Model):
         related_name='unions'
     )
     name = models.CharField(max_length=120)
-    location = models.CharField(max_length=60, blank=True)
 
     class Meta:
         order_with_respect_to = 'customer'
