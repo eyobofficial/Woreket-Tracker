@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import Group
@@ -16,6 +17,10 @@ class BaseViewMixin(ContextMixin):
 
     def get_context_data(self, **kwargs):
         kwargs.update(page_name=self.page_name)
+        kwargs.update({
+            'page_name': self.page_name,
+            'environment': settings.ENVIRONMENT
+        })
         return super().get_context_data(**kwargs)
 
 

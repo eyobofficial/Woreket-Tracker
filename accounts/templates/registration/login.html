@@ -30,6 +30,12 @@
           {% endif %}
         {% endif %}
 
+        {% for message in messages %}
+        <div class="alert alert-outline alert-success d-flex align-items-center mg-b-20" role="alert">
+          <i data-feather="check-circle" class="mg-r-10"></i> {{ message }}
+        </div>
+        {% endfor %}
+
         <form method="POST">
           {% csrf_token %}
 
