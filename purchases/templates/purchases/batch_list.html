@@ -82,10 +82,10 @@
                   <td class="tz-color-03 tx-normal">{{ batch.product.name }}</td>
                   <td class="tz-color-03 tx-normal">{{ batch.supplier.name }}</td>
                   <td class="tz-color-03 tx-normal">
-                    {{ batch.quantity|intcomma }} <span class="tx-color-03 tx-11">{{ batch.product.unit.code }}</span>
+                    {{ batch.quantity|floatformat:2|intcomma }} <span class="tx-color-03 tx-11">{{ batch.product.unit.code }}</span>
                   </td>
-                  <td class="tz-color-03 tx-normal text-right">{{ batch.rate|intcomma }}</td>
-                  <td class="tz-color-03 tx-normal text-right">{{ batch.get_amount|intcomma }}</td>
+                  <td class="tz-color-03 tx-normal text-right">{{ batch.rate|floatformat:2|intcomma }}</td>
+                  <td class="tz-color-03 tx-normal text-right">{{ batch.get_amount|floatformat:2|intcomma }}</td>
                   <td class="text-right action">
                     <div class="mg-l-auto d-flex justify-content-end">
                       <nav class="nav nav-icon-only">

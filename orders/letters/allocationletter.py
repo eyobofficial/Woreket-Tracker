@@ -85,7 +85,7 @@ class AllocationLetter(LetterTemplate):
                     Text(
                         f'{eabc} bank account no. '
                         F'{self.BANK_ACCOUNT} for the value of '
-                        f'{allocation.quantity:,} {unit} '
+                        f'{allocation.get_total_quantity():,} {unit} '
                         f'({allocation.buyer.region} Allocation)',
                         bold=True
                     )
@@ -94,7 +94,7 @@ class AllocationLetter(LetterTemplate):
                 p3.add_texts(
                     Text(
                         f'{allocation.buyer.name} account for the value of '
-                        f'{allocation.quantity:,} {unit} ',
+                        f'{allocation.get_total_quantity():,} {unit} ',
                         bold=True
                     )
                 )

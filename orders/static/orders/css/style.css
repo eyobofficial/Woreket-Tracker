@@ -50,3 +50,7 @@
     color: #0148ae;
     transition: 0.3s all;
 }
+
+.unions-modal-body {
+    min-height: 200px;
+}

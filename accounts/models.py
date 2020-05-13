@@ -56,3 +56,21 @@ class CustomUser(AbstractUser):
     def role(self):
         """Gets user role."""
         return self.groups.filter(name__in=ROLE_GROUPS).first()
+
+    @role.setter
+    def role(self, role_name):
+        """Set user role."""
+        try:
+            # Predefined roles
+            admin_group = Group.objects.get(name=ROLE_ADMIN)
+            staff_group = Group.objects.get(name=ROLE_STAFF)
+            management_group = Group.objects.get(name=ROLE_MANAGEMENT)
+            supplier_group = Group.objects.get(name=ROLE_SUPPLIER)
+
+            # New role
+            group = Group.objects.get(name=role_name)
+            self.groups.remove(
+                admin_group, staff_group, management_group, supplier_group)
+            self.groups.add(group)
+        except Group.DoesNotExist:
+            raise ValueError(f'{role_name} role does not exists.')

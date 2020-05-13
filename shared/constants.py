@@ -12,3 +12,9 @@ ROLE_SUPPLIER = 'Supplier'
 ADVANCE = Decimal('0.9')
 RETENTION = Decimal('0.1')
 
+"""Environments"""
+LOCAL = 'LOCAL'
+PRODUCTION = 'PRODUCTION'
+STAGING = 'STAGING'
+DEMO = 'DEMO'
+TESTING = 'TESTING'

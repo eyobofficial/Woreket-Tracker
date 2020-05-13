@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.views import PasswordChangeView, LoginView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -5,7 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, TemplateView, UpdateView
 
-from shared.constants import ROLE_SUPPLIER
+from shared.constants import ROLE_STAFF, ROLE_SUPPLIER, DEMO
 
 from .forms import UserRegistrationForm, ProfileUpdateForm
 from .mixins import AccountMixin
@@ -32,10 +33,35 @@ class CustomLoginView(LoginView):
             return success_url
 
 
-class UserRegistrationView(CreateView):
+class UserRegistrationView(SuccessMessageMixin, CreateView):
+    model = User
     form_class = UserRegistrationForm
     success_url = reverse_lazy('accounts:register-success')
     template_name = 'registration/register.html'
+
+    def get_success_message(self, cleaned_data):
+        if settings.ENVIRONMENT == DEMO:
+            return 'Please login with your new e-mail and password.'
+        return super().get_success_message(cleaned_data)
+
+    def get_success_url(self):
+        success_url = super().get_success_url()
+        if settings.ENVIRONMENT == DEMO:
+            return reverse('accounts:login')
+        return success_url
+
+    def form_valid(self, form):
+        """
+        When the environment is `DEMO`, activate the
+        user and assign him/her a staff role.
+        """
+        redirect_url = super().form_valid(form)
+        if settings.ENVIRONMENT == DEMO:
+            user = self.object
+            user.role = ROLE_STAFF
+            user.status = CustomUser.ACTIVE
+            user.save()
+        return redirect_url
 
 
 class RegistrationSuccessView(TemplateView):

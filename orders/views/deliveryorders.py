@@ -228,7 +228,7 @@ class BillOfLoadingSummary(BaseOrderView, DetailView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        qs = qs.exclude(is_deleted=True)
+        qs = qs.exclude(batch__is_deleted=True)
         return qs
 
 
