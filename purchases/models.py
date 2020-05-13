@@ -102,4 +102,4 @@ class Batch(models.Model):
 
     def get_amount(self):
         """Returns the total amount for the batch."""
-        return self.quantity * self.rate
+        return round(self.quantity * self.rate, 4)
