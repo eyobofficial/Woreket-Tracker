@@ -73,12 +73,12 @@ class Batch(models.Model):
     supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
     quantity = models.DecimalField(
         max_digits=10,
-        decimal_places=2,
+        decimal_places=3,
         help_text='Quantity in the selected product unit.'
     )
     rate = models.DecimalField(
         max_digits=10,
-        decimal_places=2,
+        decimal_places=3,
         help_text='Price is in USD.'
     )
     year = models.PositiveIntegerField(
@@ -102,4 +102,4 @@ class Batch(models.Model):
 
     def get_amount(self):
         """Returns the total amount for the batch."""
-        return round(self.quantity * self.rate, 2)
+        return self.quantity * self.rate

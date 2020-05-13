@@ -59,7 +59,7 @@ class DeliveryOrder(models.Model):
     batch = models.ForeignKey('purchases.Batch', null=True, on_delete=models.SET_NULL)
     quantity = models.DecimalField(
         'agreement quantity',
-        max_digits=10, decimal_places=2
+        max_digits=10, decimal_places=3
     )
     bill_of_loading = models.CharField(
         max_length=30,
@@ -158,7 +158,7 @@ class DeliveryOrder(models.Model):
         Returns:
             amount (Decimal): total agreement amount in USD
         """
-        return round(self.quantity * self.batch.rate, 2)
+        return self.quantity * self.batch.rate
 
     def get_advance_amount(self):
         """Returns the advance payment (90%) paid as per the agreement.
@@ -166,7 +166,7 @@ class DeliveryOrder(models.Model):
         Returns:
             amount (Decimal): the 90% advance payment in USD
         """
-        return round(self.get_agreement_amount() * ADVANCE, 2)
+        return self.get_agreement_amount() * ADVANCE
 
     def get_agreement_retention(self):
         """Returns the 10% retention amount as per the agreement.
@@ -174,7 +174,7 @@ class DeliveryOrder(models.Model):
         Returns:
             amount(Decimal): the 10% agreement retention amount in USD
         """
-        return round(self.get_agreement_amount() * RETENTION, 2)
+        return self.get_agreement_amount() * RETENTION
 
     def get_allocated_quantity(self):
         """Returns the total allocated quantity in product unit.
@@ -258,7 +258,7 @@ class DeliveryOrder(models.Model):
         Returns:
             amount (Decimal): actual retention amount to be paid in USD
         """
-        return round(self.get_delivered_amount() - self.get_advance_amount(), 2)
+        return self.get_delivered_amount() - self.get_advance_amount()
 
     def get_total_distributed_amount(self):
         """Returns the total distributed amount. It should hold the same
@@ -271,7 +271,7 @@ class DeliveryOrder(models.Model):
         for amount in self.distributions.get_distributed_settlement():
             total += amount
 
-        return round(total, 2)
+        return total
 
 
 class Allocation(models.Model):
@@ -327,8 +327,7 @@ class Allocation(models.Model):
         Returns:
             amount (Decimal): Allocation amount in USD
         """
-        amount = self.get_total_quantity() * self.delivery_order.batch.rate
-        return round(amount, 2)
+        return self.get_total_quantity() * self.delivery_order.batch.rate
 
     def get_retention(self):
         """Returns the 10% retention amount for this allocation.
@@ -339,7 +338,7 @@ class Allocation(models.Model):
         amount = self.get_total_quantity() \
                 * self.delivery_order.batch.rate \
                 * RETENTION
-        return round(amount, 2)
+        return amount
 
 
 class UnionAllocation(models.Model):
@@ -350,7 +349,7 @@ class UnionAllocation(models.Model):
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
     quantity = models.DecimalField(
         'allocated quantity',
-        max_digits=10, decimal_places=2,
+        max_digits=10, decimal_places=3,
         help_text='Quantity allocated to the union in product unit.'
     )
 
@@ -431,8 +430,7 @@ class Distribution(models.Model):
         Returns:
             amount (Decimal): Distribution amount in USD
         """
-        amount = self.get_total_quantity() * self.delivery_order.batch.rate
-        return round(amount, 2)
+        return self.get_total_quantity() * self.delivery_order.batch.rate
 
     def get_retention(self):
         """Returns the 10% retention amount for this dis.
@@ -441,8 +439,7 @@ class Distribution(models.Model):
             retention (Decimal): 10% retention amount in USD
         """
         rate = self.delivery_order.batch.rate
-        amount = self.get_total_quantity() * rate * RETENTION
-        return round(amount, 2)
+        return self.get_total_quantity() * rate * RETENTION
 
     def get_distribution_percentage(self):
         """Returns the payment distribution percentage.
@@ -451,7 +448,7 @@ class Distribution(models.Model):
             percentage (Decimal): percent to distribute the retention payment
         """
         delivered_retention = self.delivery_order.get_delivered_retention()
-        return round(self.get_retention() / delivered_retention, 2)
+        return self.get_retention() / delivered_retention
 
     def get_distributed_settlement(self):
         """Returns the distributed amount of the actual retention settlement
@@ -463,7 +460,7 @@ class Distribution(models.Model):
         final_settlement = self.delivery_order.get_final_settlement()
         percentage = self.get_distribution_percentage()
 
-        return round(final_settlement * percentage, 2)
+        return final_settlement * percentage
 
 
 class UnionDistribution(models.Model):
@@ -474,17 +471,17 @@ class UnionDistribution(models.Model):
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
     quantity = models.DecimalField(
         'received quantity',
-        max_digits=10, decimal_places=2,
+        max_digits=10, decimal_places=3,
         help_text='Quantity received by the union in product unit.'
     )
     shortage = models.DecimalField(
         'dispatch shortage',
-        max_digits=10, decimal_places=2,
+        max_digits=10, decimal_places=3,
         help_text='Quantity deficit after transportation in product unit.'
     )
     over = models.DecimalField(
         'over supplied quantity',
-        max_digits=10, decimal_places=2,
+        max_digits=10, decimal_places=3,
         help_text='Over quantity supplied in product unit.'
     )
 
