@@ -11,12 +11,12 @@
         <ul class="list-group list-group-flush mg-b-0 tx-13 summary-list-group">
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-normal">Rate</span>
-            <span class="tx-medium">${{ object.batch.rate|intcomma }}</span>
+            <span class="tx-medium">${{ object.batch.rate|floatformat:2|intcomma }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Total allocated quantity" data-target="allocation-quantity-col">
             <span class="tx-normal">Quantity</span>
             {% if object.get_allocated_quantity %}
-            <span class="tx-medium">{{ object.get_allocated_quantity|intcomma }} {{ object.unit.code|upper }}</span>
+            <span class="tx-medium">{{ object.get_allocated_quantity|floatformat:2|intcomma }} {{ object.unit.code|upper }}</span>
             {% else %}
             <span class="tx-medium">-</span>
             {% endif %}
@@ -24,7 +24,7 @@
           <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Total allocated amount" data-target="allocation-amount-col">
             <span class="tx-normal">Amount</span>
             {% if object.get_allocated_amount %}
-            <span class="tx-medium">${{ object.get_allocated_amount|intcomma }}</span>
+            <span class="tx-medium">${{ object.get_allocated_amount|floatformat:2|intcomma }}</span>
             {% else %}
             <span class="tx-medium">-</span>
             {% endif %}
@@ -32,7 +32,7 @@
           <li class="list-group-item pd-x-0 d-flex justify-content-between" title="10% amount for allocated amount" data-target="allocation-retention-col">
             <span class="tx-normal">10% Amount</span>
             {% if object.get_allocated_retention %}
-            <span class="tx-medium">${{ object.get_allocated_retention|intcomma }}</span>
+            <span class="tx-medium">${{ object.get_allocated_retention|floatformat:2|intcomma }}</span>
             {% else %}
             <span class="tx-medium">-</span>
             {% endif %}
@@ -80,13 +80,13 @@
                 <td class="tz-color-03 tx-normal">{{ allocation.buyer.region }}</td>
                 <td class="tz-color-03 tx-normal text-right allocation-quantity-col">
                   <a data-url="{% url 'orders:order-allocation-detail' allocation.pk %}" class="popup-link btn-modal">
-                    <span class="tx-medium">{{ allocation.get_total_quantity|intcomma }}</span>
+                    <span class="tx-medium">{{ allocation.get_total_quantity|floatformat:2|intcomma }}</span>
                     &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
                   </a>
                 </td>
-                <td class="tz-color-03 tx-normal text-right">{{ object.batch.rate|intcomma }}</td>
-                <td class="text-right tx-normal text-right allocation-amount-col">{{ allocation.get_amount|intcomma }}</td>
-                <td class="tx-medium tx-medium text-right allocation-retention-col">{{ allocation.get_retention|intcomma }}</td>
+                <td class="tz-color-03 tx-normal text-right">{{ object.batch.rate|floatformat:2|intcomma }}</td>
+                <td class="text-right tx-normal text-right allocation-amount-col">{{ allocation.get_amount|floatformat:2|intcomma }}</td>
+                <td class="tx-medium tx-medium text-right allocation-retention-col">{{ allocation.get_retention|floatformat:2|intcomma }}</td>
                 {% if object.status == object.OPEN %}
                 <td class="text-right action">
                   <div class="mg-l-auto d-flex justify-content-end">

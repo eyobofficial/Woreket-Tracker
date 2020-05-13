@@ -68,30 +68,30 @@
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-normal">Agreement Quantity</span>
-            <span class="tx-medium">{{ object.quantity|intcomma }}
+            <span class="tx-medium">{{ object.quantity|floatformat:2|intcomma }}
               <span class="tx-medium">{{ object.unit.code|upper }}</span>
             </span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-normal">Rate</span>
-            <span class="tx-medium">${{ object.batch.rate|intcomma }}</span>
+            <span class="tx-medium">${{ object.batch.rate|floatformat:2|intcomma }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-normal">Total Amount</span>
-            <span class="tx-medium">${{ object.get_agreement_amount|intcomma }}</span>
+            <span class="tx-medium">${{ object.get_agreement_amount|floatformat:2|intcomma }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-normal">Advance Amount (90%)</span>
-            <span class="tx-medium">${{ object.get_advance_amount|intcomma }}</span>
+            <span class="tx-medium">${{ object.get_advance_amount|floatformat:2|intcomma }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-normal">10% Amount</span>
-            <span class="tx-medium">${{ object.get_agreement_retention|intcomma }}</span>
+            <span class="tx-medium">${{ object.get_agreement_retention|floatformat:2|intcomma }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-medium">Final Settlement</span>
             {% if object.get_final_settlement %}
-            <span class="tx-medium">${{ object.get_final_settlement|intcomma }}</span>
+            <span class="tx-medium">${{ object.get_final_settlement|floatformat:2|intcomma }}</span>
             {% else %}
             <span class="tx-medium">-</span>
             {% endif %}
@@ -149,7 +149,7 @@
       <div class="card-body pd-y-20 pd-x-25">
         <div class="row row-sm">
           <div class="col-8">
-            <h3 class="tx-normal tx-rubik tx-spacing--1 mg-b-5">${{ object.get_final_settlement|intcomma }}</h3>
+            <h3 class="tx-normal tx-rubik tx-spacing--1 mg-b-5">${{ object.get_final_settlement|floatformat:2|intcomma }}</h3>
             <h6 class="tx-12 tx-semibold tx-uppercase tx-spacing-1 tx-pink mg-b-5">Final Settlement</h6>
             <p class="tx-11 tx-color-03 mg-b-0">The 10% final settlement to be released to the supplier.</p>
           </div>
