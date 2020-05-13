@@ -157,12 +157,14 @@
   $(function () {
     new Cleave('#quantity', {
       numeral: true,
-      numeralThousandsGroupStyle: 'thousand'
+      numeralThousandsGroupStyle: 'thousand',
+      numeralDecimalScale: 4
     });
 
     new Cleave('#rate', {
       numeral: true,
-      numeralThousandsGroupStyle: 'thousand'
+      numeralThousandsGroupStyle: 'thousand',
+      numeralDecimalScale: 4
     });
 
     $('#modal-widget').on('submit', '#batch-form', function(e) {

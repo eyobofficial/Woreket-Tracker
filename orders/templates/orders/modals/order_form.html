@@ -127,7 +127,8 @@
   $(function () {
     var cleave = new Cleave('#quantity', {
       numeral: true,
-      numeralThousandsGroupStyle: 'thousand'
+      numeralThousandsGroupStyle: 'thousand',
+      numeralDecimalScale: 4
     });
 
     $('#arrivalDate').datepicker({

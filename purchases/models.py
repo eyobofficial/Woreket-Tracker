@@ -73,12 +73,12 @@ class Batch(models.Model):
     supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
     quantity = models.DecimalField(
         max_digits=10,
-        decimal_places=3,
+        decimal_places=4,
         help_text='Quantity in the selected product unit.'
     )
     rate = models.DecimalField(
         max_digits=10,
-        decimal_places=3,
+        decimal_places=4,
         help_text='Price is in USD.'
     )
     year = models.PositiveIntegerField(

@@ -8,8 +8,8 @@ from .models import Batch, Supplier
 
 class BatchForm(forms.ModelForm):
     """Model for creating new batch instance."""
-    quantity = FormattedNumberField(max_digits=10, decimal_places=2)
-    rate = FormattedNumberField(max_digits=10, decimal_places=2)
+    quantity = FormattedNumberField(max_digits=10, decimal_places=4)
+    rate = FormattedNumberField(max_digits=10, decimal_places=4)
 
     class Meta:
         model = Batch
