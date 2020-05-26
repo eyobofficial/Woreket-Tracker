@@ -42,11 +42,7 @@ class UnionListView(BaseCustomersView, ListView):
 
     def get_search_result(self, query):
         """Returns matching unions using search query."""
-        search_qs = self.queryset.filter(
-            Q(name__icontains=query) |
-            Q(customer__region__icontains=query)
-        )
-        return search_qs
+        return self.queryset.filter(name__istartswith=query)
 
 
 class UnionCreateView(BaseCustomersView, SuccessMessageMixin, CreateView):

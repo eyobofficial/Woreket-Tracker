@@ -99,9 +99,7 @@ class BaseOrderListView(BaseOrderView, ListView):
     def get_search_result(self, query):
         """Returns a delivery order queryset using search query."""
         search_qs = self.queryset.filter(
-            Q(vessel__icontains=query) |
-            Q(lc_number__icontains=query) |
-            Q(batch__product__name__icontains=query)
+            Q(vessel__istartswith=query) | Q(lc_number__istartswith=query)
         )
         return search_qs
 

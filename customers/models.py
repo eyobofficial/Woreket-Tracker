@@ -34,7 +34,7 @@ class Location(models.Model):
     name = models.CharField(max_length=120)
 
     class Meta:
-        order_with_respect_to = 'customer'
+        ordering = ('name', )
 
     def __str__(self):
         return self.name
@@ -55,7 +55,7 @@ class Union(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ('-updated_at', )
+        ordering = ('name', )
 
     def __str__(self):
         return self.name

@@ -48,11 +48,7 @@ class BatchListView(BasePurchasesView, ListView):
     def get_search_result(self, query):
         """Returns matching batches using search query."""
         search_qs = self.queryset.filter(
-            Q(name__icontains=query) |
-            Q(year__icontains=query) |
-            Q(product__name__icontains=query) |
-            Q(supplier__name__icontains=query)
-        )
+            Q(name__istartswith=query) | Q(year__istartswith=query) )
         return search_qs
 
 
@@ -167,12 +163,7 @@ class ProductListView(BasePurchasesView, ListView):
 
     def get_search_result(self, query):
         """Returns matching products using search query."""
-        search_qs = self.queryset.filter(
-            Q(name__icontains=query) |
-            Q(description__icontains=query) |
-            Q(category__name__icontains=query)
-        )
-        return search_qs
+        return self.queryset.filter(name__istartswith=query)
 
 
 class ProductCreateView(BasePurchasesView, SuccessMessageMixin, CreateView):
@@ -276,9 +267,9 @@ class SupplierListView(BasePurchasesView, ListView):
     def get_search_result(self, query):
         """Returns matching suppliers using search query."""
         search_qs = self.queryset.filter(
-            Q(name__icontains=query) |
-            Q(short_name__icontains=query) |
-            Q(city__icontains=query)
+            Q(name__istartswith=query) |
+            Q(short_name__istartswith=query) |
+            Q(city__istartswith=query)
         )
         return search_qs
 
