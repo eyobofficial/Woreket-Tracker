@@ -66,12 +66,21 @@
     </div>
 
     {% if object.status == object.CLOSED %}
+    <!-- Delivery Order Closed Alert -->
     <div class="alert alert-info d-flex align-items-center" role="alert">
       <i data-feather="info" class="mg-r-10"></i> This delivery order was closed on {{ object.updated_at|date:'d/m/Y'}}.
     </div>
     {% endif %}
 
+    {% if object.get_allocated_quantity > object.quantity %}
+    <!-- Allocated Quantity Alert -->
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+      <i data-feather="alert-circle" class="mg-r-10"></i> The allocated quantity is greater than the agreement quantity.
+    </div>
+    {% endif %}
+
     {% if object.get_delivered_quantity > object.get_allocated_quantity %}
+    <!-- Distribution Quantity Alert -->
     <div class="alert alert-danger d-flex align-items-center" role="alert">
       <i data-feather="alert-circle" class="mg-r-10"></i> The distributed quantity is greater than the allocated quantity.
     </div>
