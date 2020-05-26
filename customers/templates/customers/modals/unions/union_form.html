@@ -27,8 +27,11 @@
             <!-- Name -->
             <div class="form-group">
               <label for="name" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Name</label>
-              <input id="name" class="form-control {% if form.name.errors %}parsley-error{% endif %}" name="name"
-                value="{{ form.name.value|default:'' }}" placeholder="Enter union name" required />
+              <input
+                id="name" class="form-control {% if form.name.errors %}parsley-error{% endif %}"
+                name="name" value="{{ form.name.value|default:'' }}"
+                placeholder="Enter union name" required autocomplete="off"
+              />
               {% if form.name.errors %}
               <ul class="parsley-errors-list filled">
                 {% for error in form.name.errors %}

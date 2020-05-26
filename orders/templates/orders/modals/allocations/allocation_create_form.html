@@ -99,7 +99,7 @@
                         class="form-control number-input quantity-input {% if form.quantity.errors %}parsley-error{% endif %}"
                         name="formset-{{ forloop.counter0 }}-quantity"
                         value="{{ form.quantity.value|default_if_none:'' }}"
-                        data-name="quantity" required
+                        data-name="quantity" required autocomplete="off"
                       />
                       {% if form.quantity.errors %}
                       <ul class="parsley-errors-list filled">

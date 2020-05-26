@@ -63,11 +63,19 @@
     <header class="navbar navbar-header navbar-header-fixed">
       <a href="" id="mainMenuOpen" class="burger-menu"><i data-feather="menu"></i></a>
       <div class="navbar-brand">
-        <a href="#" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+        {% if perms.orders %}
+          <a href="{% url 'orders:open-orders-list' %}" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+        {% else %}
+          <a href="#" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+        {% endif %}
       </div><!-- navbar-brand -->
       <div id="navbarMenu" class="navbar-menu-wrapper">
         <div class="navbar-menu-header">
-          <a href="#" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+          {% if perms.orders %}
+            <a href="{% url 'orders:open-orders-list' %}" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+          {% else %}
+            <a href="#" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+          {% endif %}
           <a id="mainMenuClose" href=""><i data-feather="x"></i></a>
         </div><!-- navbar-menu-header -->
 
@@ -75,7 +83,7 @@
           {% if user.is_authenticated %}
             <li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">Main Navigation</li>
 
-            {% if user.is_superuser or user.status == user.ACTIVE and perms.orders %}
+            {% if user.is_superuser or user.status == user.ACTIVE %}
               <!-- Delivery Order -->
               {% if perms.orders %}
                 <li class="nav-item with-sub {% if page_name == 'delivery-orders' %}active{% endif %}">

@@ -31,7 +31,7 @@
                 id="name" class="form-control {% if form.name.errors %}parsley-error{% endif %}"
                 name="name" value="{{ form.name.value|default:'' }}"
                 placeholder="Enter batch name: Example: Lot-1"
-                required
+                required autocomplete="off"
               />
               {% if form.name.errors %}
               <ul class="parsley-errors-list filled">
@@ -89,7 +89,7 @@
               <input
                 id="quantity" class="form-control {% if form.quantity.errors %}parsley-error{% endif %}"
                 name="quantity" value="{{ form.instance.quantity|default_if_none:'' }}"
-                placeholder="Enter agreement quantity" required
+                placeholder="Enter agreement quantity" required autocomplete="off"
               />
               {% if form.quantity.errors %}
                 <ul class="parsley-errors-list filled">
@@ -108,7 +108,7 @@
                   id="rate" class="form-control {% if form.rate.errors %}parsley-error{% endif %}"
                   autocomplete="off" name="rate"
                   value="{{ form.rate.value|default_if_none:'' }}"
-                  placeholder="Enter rate in USD" required
+                  placeholder="Enter rate in USD" required autocomplete="off"
                 />
                 <div class="input-group-append">
                   <span class="input-group-text tx-medium" id="basic-addon2">USD</span>

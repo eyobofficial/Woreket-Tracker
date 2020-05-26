@@ -31,7 +31,7 @@
                 id="name" class="form-control {% if form.name.errors %}parsley-error{% endif %}"
                 name="name" value="{{ form.name.value|default:'' }}"
                 placeholder="Enter product name"
-                required
+                required autocomplete="off"
               />
               {% if form.name.errors %}
               <ul class="parsley-errors-list filled">
