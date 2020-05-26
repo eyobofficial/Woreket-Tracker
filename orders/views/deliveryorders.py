@@ -26,21 +26,21 @@ class BaseOrderListView(BaseOrderView, ListView):
         qs = qs.exclude(batch__is_deleted=True)
 
         user = self.request.user
-        lc_number = self.request.GET.get('lc')
-        batch_pk = self.request.GET.get('batch')
-        product_pk = self.request.GET.get('product')
+        lc_number = self.request.GET.get('lc', '')
+        batch_pk = self.request.GET.get('batch', '')
+        product_pk = self.request.GET.get('product', '')
         search_query = self.request.GET.get('search')
 
         if user.role and user.role.name == ROLE_SUPPLIER:
             qs = qs.filter(batch__supplier=user.supplier)
 
-        if lc_number is not None:
+        if lc_number:
             qs = qs.filter(lc_number=lc_number)
 
-        if product_pk is not None:
+        if product_pk:
             qs = qs.filter(batch__product__pk=product_pk).distinct()
 
-        if batch_pk is not None:
+        if batch_pk:
             qs = qs.filter(batch__pk=batch_pk)
 
         if search_query is not None:
@@ -62,8 +62,11 @@ class BaseOrderListView(BaseOrderView, ListView):
         products = [ProductMenu(p, c) for p, c in products.items()]
 
         # Selected Product
-        product_pk = self.request.GET.get('product')
-        selected_product = Product.objects.filter(pk=product_pk).first()
+        product_pk = self.request.GET.get('product', '')
+        if product_pk:
+            selected_product = Product.objects.filter(pk=product_pk).first()
+        else:
+            selected_product = None
 
         # Build Batch Menu
         BatchMenu = namedtuple('BatchMenu', ['batch', 'count'])
@@ -78,8 +81,11 @@ class BaseOrderListView(BaseOrderView, ListView):
         batches = [BatchMenu(b, c) for b, c in batches.items()]
 
         # Selected Batch
-        batch_pk = self.request.GET.get('batch')
-        selected_batch = Batch.objects.filter(pk=batch_pk).first()
+        batch_pk = self.request.GET.get('batch', '')
+        if batch_pk:
+            selected_batch = Batch.objects.filter(pk=batch_pk).first()
+        else:
+            selected_batch = None
 
         kwargs.update({
             'order_count': self.queryset.count(),
