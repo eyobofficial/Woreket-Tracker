@@ -47,7 +47,7 @@
                 name="quantity" value="{{ form.instance.quantity|default_if_none:'' }}"
                 placeholder="Enter quantity in {{ order.unit.name }}"
                 aria-label="Allocation quantity" aria-describedby="basic-addon2"
-                required
+                required autocomplete="off"
               />
               <div class="input-group-append">
                 <span class="input-group-text tx-medium" id="basic-addon2">{{ order.unit.code|upper }}</span>

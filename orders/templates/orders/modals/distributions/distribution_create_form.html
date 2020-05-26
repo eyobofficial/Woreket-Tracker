@@ -101,7 +101,7 @@
                         class="form-control number-input quantity-input {% if form.quantity.errors %}parsley-error{% endif %}"
                         name="formset-{{ forloop.counter0 }}-quantity"
                         value="{{ form.quantity.value|default_if_none:'' }}"
-                        data-name="quantity" required
+                        data-name="quantity" required autocomplete="off"
                       />
                       {% if form.quantity.errors %}
                       <ul class="parsley-errors-list filled">
@@ -119,7 +119,7 @@
                         class="form-control number-input shortage-input {% if form.shortage.errors %}parsley-error{% endif %}"
                         name="formset-{{ forloop.counter0 }}-shortage"
                         value="{{ form.shortage.value|default_if_none:'' }}"
-                        data-name="shortage" required
+                        data-name="shortage" required autocomplete="off"
                       />
                       {% if form.shortage.errors %}
                       <ul class="parsley-errors-list filled">
@@ -137,7 +137,7 @@
                         class="form-control number-input over-input {% if form.over.errors %}parsley-error{% endif %}"
                         name="formset-{{ forloop.counter0 }}-over"
                         value="{{ form.over.value|default_if_none:'' }}"
-                        data-name="over" required
+                        data-name="over" required autocomplete="off"
                       />
                       {% if form.over.errors %}
                       <ul class="parsley-errors-list filled">

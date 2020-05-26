@@ -10,7 +10,7 @@ from .models import DeliveryOrder, Allocation, Distribution, UnionDistribution,\
 
 class DeliveryOrderForm(forms.ModelForm):
     """Model form for creating new deliveries."""
-    quantity = FormattedNumberField(max_digits=10, decimal_places=4)
+    quantity = FormattedNumberField(max_digits=20, decimal_places=4)
 
     class Meta:
         model = DeliveryOrder
@@ -22,7 +22,7 @@ class DeliveryOrderForm(forms.ModelForm):
 
 class AllocationForm(forms.ModelForm):
     """Model form for creating new delivery order allocation."""
-    quantity = FormattedNumberField(max_digits=10, decimal_places=4)
+    quantity = FormattedNumberField(max_digits=20, decimal_places=4)
 
     class Meta:
         model = Allocation
@@ -41,7 +41,7 @@ class UnionAllocationForm(forms.ModelForm):
         empty_label=None,
         required=True
     )
-    quantity = FormattedNumberField(max_digits=10, decimal_places=4)
+    quantity = FormattedNumberField(max_digits=20, decimal_places=4)
 
     class Meta:
         model = UnionAllocation
@@ -86,9 +86,9 @@ class UnionDistributionForm(forms.ModelForm):
         empty_label=None,
         required=True
     )
-    quantity = FormattedNumberField(max_digits=10, decimal_places=4)
-    shortage = FormattedNumberField(max_digits=10, decimal_places=4)
-    over = FormattedNumberField(max_digits=10, decimal_places=4)
+    quantity = FormattedNumberField(max_digits=20, decimal_places=4)
+    shortage = FormattedNumberField(max_digits=20, decimal_places=4)
+    over = FormattedNumberField(max_digits=20, decimal_places=4)
 
     class Meta:
         model = UnionDistribution

@@ -59,7 +59,7 @@ class DeliveryOrder(models.Model):
     batch = models.ForeignKey('purchases.Batch', null=True, on_delete=models.SET_NULL)
     quantity = models.DecimalField(
         'agreement quantity',
-        max_digits=10, decimal_places=4
+        max_digits=20, decimal_places=4
     )
     bill_of_loading = models.CharField(
         max_length=30,
@@ -353,7 +353,7 @@ class UnionAllocation(models.Model):
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
     quantity = models.DecimalField(
         'allocated quantity',
-        max_digits=10, decimal_places=4,
+        max_digits=20, decimal_places=4,
         help_text='Quantity allocated to the union in product unit.'
     )
 
@@ -479,17 +479,17 @@ class UnionDistribution(models.Model):
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
     quantity = models.DecimalField(
         'received quantity',
-        max_digits=10, decimal_places=4,
+        max_digits=16, decimal_places=4,
         help_text='Quantity received by the union in product unit.'
     )
     shortage = models.DecimalField(
         'dispatch shortage',
-        max_digits=10, decimal_places=4,
+        max_digits=20, decimal_places=4,
         help_text='Quantity deficit after transportation in product unit.'
     )
     over = models.DecimalField(
         'over supplied quantity',
-        max_digits=10, decimal_places=4,
+        max_digits=20, decimal_places=4,
         help_text='Over quantity supplied in product unit.'
     )
 

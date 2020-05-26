@@ -93,6 +93,7 @@
                         name="formset-{{ forloop.counter0 }}-quantity"
                         value="{{ form.quantity.value|default_if_none:'' }}"
                         data-name="quantity" {% if not form.DELETE.value %}required{% endif %}
+                        autocomplete="off"
                       />
                       {% if form.quantity.errors %}
                       <ul class="parsley-errors-list filled">

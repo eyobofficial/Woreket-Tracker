@@ -85,8 +85,7 @@ class UserListView(BaseUserEditView, ListView):
     def get_search_result(self, query):
         """Returns a user queryset using search query."""
         search_qs = self.queryset.filter(
-            Q(first_name__icontains=query) |
-            Q(last_name__icontains=query)
+            Q(first_name__istartswith=query) | Q(last_name__istartswith=query)
         )
         return search_qs
 

@@ -24,7 +24,8 @@
               <label for="first-name" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">First Name</label>
               <input
                 id="first-name" class="form-control" name="first_name"
-                value="{{ form.first_name.value|default_if_none:'' }}" placeholder="Enter first name" required
+                value="{{ form.first_name.value|default_if_none:'' }}"
+                placeholder="Enter first name" required autocomplete="off"
               />
             </div>
 
@@ -34,7 +35,7 @@
               <input
                 id="last-name" class="form-control"
                 name="last_name" value="{{ form.last_name.value|default_if_none:'' }}"
-                placeholder="Enter last name" required
+                placeholder="Enter last name" required autocomplete="off"
               />
             </div>
 
