@@ -267,9 +267,7 @@ class SupplierListView(BasePurchasesView, ListView):
     def get_search_result(self, query):
         """Returns matching suppliers using search query."""
         search_qs = self.queryset.filter(
-            Q(name__istartswith=query) |
-            Q(short_name__istartswith=query) |
-            Q(city__istartswith=query)
+            Q(name__istartswith=query) | Q(short_name__istartswith=query)
         )
         return search_qs
 
