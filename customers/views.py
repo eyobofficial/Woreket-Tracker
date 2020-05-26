@@ -22,10 +22,10 @@ class UnionListView(BaseCustomersView, ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        region_pk = self.request.GET.get('region')
+        region_pk = self.request.GET.get('region', '')
         search_query = self.request.GET.get('search')
 
-        if region_pk is not None:
+        if region_pk:
             qs = qs.filter(customer__pk=region_pk)
 
         if search_query is not None:
