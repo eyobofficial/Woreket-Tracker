@@ -69,6 +69,10 @@ class Batch(models.Model):
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     name = models.CharField(max_length=120)
+    lc_number = models.CharField(
+        'L/C number', max_length=30,
+        help_text='Document number for the letter of credit.'
+    )
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
     supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
     quantity = models.DecimalField(

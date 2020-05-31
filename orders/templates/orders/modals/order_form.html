@@ -27,17 +27,6 @@
       <div class="modal-body pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
         <div class="row">
           <div class="col-sm-9">
-            <!-- LC Document Number -->
-            <div class="form-group">
-              <label for="lc-number" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">L/C Document
-                Number</label>
-              <input
-                id="lc-number" class="form-control"
-                name="lc_number" value="{{ form.instance.lc_number|default_if_none:'' }}"
-                placeholder="Enter the L/C document number"
-                autocomplete="off" required />
-            </div>
-
             <!-- Batch -->
             <div class="form-group">
               <label for="batch" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Batch</label>
@@ -45,8 +34,9 @@
                 {% if form.instance.batch is None %}
                 <option selected disabled value="">Choose batch</option>
                 {% endif %}
+
                 {% for batch in batch_list %}
-                <option value="{{ batch.pk }}" {% if form.instance.batch == batch %}selected{% endif %}>{{ batch }}</option>
+                <option value="{{ batch.pk }}" {% if form.instance.batch == batch %}selected{% endif %}>{{ batch.name }} - {{ batch.lc_number }}</option>
                 {% endfor %}
               </select>
             </div>

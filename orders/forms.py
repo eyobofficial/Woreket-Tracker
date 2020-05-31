@@ -15,8 +15,8 @@ class DeliveryOrderForm(forms.ModelForm):
     class Meta:
         model = DeliveryOrder
         fields = (
-            'lc_number', 'batch', 'bill_of_loading',
-            'quantity', 'port',  'vessel', 'arrival_date'
+            'batch', 'bill_of_loading', 'quantity',
+            'port',  'vessel', 'arrival_date'
         )
 
 
