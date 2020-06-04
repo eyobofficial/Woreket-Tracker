@@ -19,7 +19,8 @@ def move_lc(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('orders', '0004_auto_20200526_1708')
+        ('orders', '0004_auto_20200526_1708'),
+        ('purchases', '0007_batch_lc_number')
     ]
 
     operations = [
