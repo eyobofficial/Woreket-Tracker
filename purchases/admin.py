@@ -23,6 +23,6 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Batch)
 class BatchAdmin(admin.ModelAdmin):
-    list_display = ('name', 'supplier', 'year', 'is_deleted')
+    list_display = ('name', 'lc_number', 'supplier', 'year', 'is_deleted')
     list_filter = ('product', 'year', 'is_deleted')
     search_fields = ('name', )
