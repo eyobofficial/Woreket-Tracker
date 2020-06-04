@@ -1,6 +1,7 @@
 from collections import Counter, namedtuple
 
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
     DetailView
@@ -227,7 +228,15 @@ class OrderCreateView(BaseOrderView, CreateView):
         self.object = form.save(commit=False)
         self.object.created_by = self.request.user
         self.object.save()
-        return redirect(self.get_success_url())
+        redirect_url = self.get_success_url()
+        return JsonResponse({
+            'status_code': 201, 'redirect_url': self.get_success_url()
+        })
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        response.status_code = 400
+        return response
 
 
 class OrderUpdateView(BaseOrderDetailView, UpdateView):
@@ -247,6 +256,11 @@ class OrderUpdateView(BaseOrderDetailView, UpdateView):
         redirect_url = super().form_valid(form)
         self.object.touch(updated_by=self.request.user)
         return redirect_url
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        response.status_code = 400
+        return response
 
 
 class OrderCloseView(BaseOrderDetailView, UpdateView):
