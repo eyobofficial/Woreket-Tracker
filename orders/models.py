@@ -54,7 +54,6 @@ class DeliveryOrder(models.Model):
     )
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    lc_number = models.CharField('letter of credit number', max_length=30)
     vessel = models.CharField(max_length=120, help_text='Shipment vessel name.')
     batch = models.ForeignKey('purchases.Batch', null=True, on_delete=models.SET_NULL)
     quantity = models.DecimalField(
@@ -102,7 +101,7 @@ class DeliveryOrder(models.Model):
         verbose_name_plural = 'Delivery Orders'
 
     def __str__(self):
-        return self.lc_number
+        return self.vessel
 
     def get_absolute_url(self):
         return reverse('orders:order-detail', args=[self.pk])
@@ -110,6 +109,10 @@ class DeliveryOrder(models.Model):
     @property
     def unit(self):
         return self.batch.product.unit
+
+    @property
+    def lc_number(self):
+        return self.batch.lc_number
 
     def touch(self, **kwargs):
         """

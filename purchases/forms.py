@@ -13,7 +13,8 @@ class BatchForm(forms.ModelForm):
 
     class Meta:
         model = Batch
-        fields = ('name', 'product', 'supplier', 'quantity', 'rate', 'year')
+        fields = ('name', 'lc_number', 'product',
+                  'supplier', 'quantity', 'rate', 'year')
 
 
 class SupplierForm(forms.ModelForm):

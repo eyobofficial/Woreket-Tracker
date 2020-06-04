@@ -33,53 +33,28 @@
   </nav>
   {% endif %}
 
-  {% if lc_menu %}
-  <h6 class="tx-uppercase tx-semibold mg-t-30 mg-b-15">Letter of Credit (L/C)</h6>
-  <nav class="nav nav-classic tx-13 mg-lg-b-20">
-    {% for lc in lc_menu %}
-    {% if selected_lc %}
-    <a href="{{ request.path }}?lc={{ lc.lc_number }}"
-      class="nav-link {% if lc.lc_number == selected_lc %}active{% endif %}">
-      <span>{{ lc.lc_number }}</span> <span class="badge">{{ lc.count }}</span></a>
-    {% else %}
-    {% if forloop.counter <= 5 %}
-    <a href="{{ request.path }}?lc={{ lc.lc_number }}"
-      class="nav-link {% if lc.lc_number == selected_lc %}active{% endif %}">
-      <span>{{ lc.lc_number }}</span> <span class="badge">{{ lc.count }}</span></a>
-    {% else %}
-    <a href="{{ request.path }}?lc={{ lc.lc_number }}" class="nav-link nav-link-extra d-none">
-      <span>{{ lc.lc_number }}</span> <span class="badge">{{ lc.count }}</span></a>
-    {% endif %}
-    {% endif %}
-    {% endfor %}
-
-    {% if lc_menu|length > 5 and not selected_lc %}
-    <a href class="link-03 mg-t-10 show-toggle" data-show="false">Show All</a>
-    {% endif %}
-  </nav>
-  {% endif %}
 
   {% if batch_menu %}
   <h6 class="tx-uppercase tx-semibold mg-t-30 mg-b-15">Purchased Batches</h6>
   <nav class="nav nav-classic tx-13 mg-lg-b-20">
     {% for item in batch_menu %}
-    {% if selected_batch %}
-    <a href="{{ request.path }}?batch={{ item.batch.pk }}"
-      class="nav-link {% if item.batch.id == selected_batch.id %}active{% endif %}">
-      <span>{{ item.batch.name }} ({{ item.batch.product.name }})</span> <span class="badge">{{ item.count }}</span>
-    </a>
-    {% else %}
-    {% if forloop.counter <= 5 %}
-    <a href="{{ request.path }}?batch={{ item.batch.pk }}"
-      class="nav-link {% if item.batch.id == selected_batch.id %}active{% endif %}">
-      <span>{{ item.batch.name }} ({{ item.batch.product.name }})</span> <span class="badge">{{ item.count }}</span>
-    </a>
-    {% else %}
-    <a href="{{ request.path }}?batch={{ item.batch.pk }}" class="nav-link nav-link-extra d-none">
-      <span>{{ item.batch.name }} ({{ item.batch.product.name }})</span> <span class="badge">{{ item.count }}</span>
-    </a>
-    {% endif %}
-    {% endif %}
+      {% if selected_batch %}
+      <a href="{{ request.path }}?batch={{ item.batch.pk }}"
+        class="nav-link {% if item.batch.id == selected_batch.id %}active{% endif %}">
+        <span>{{ item.batch.name }} - {{ item.batch.lc_number }}</span> <span class="badge">{{ item.count }}</span>
+      </a>
+      {% else %}
+        {% if forloop.counter <= 5 %}
+        <a href="{{ request.path }}?batch={{ item.batch.pk }}"
+          class="nav-link {% if item.batch.id == selected_batch.id %}active{% endif %}">
+          <span>{{ item.batch.name }} - {{ item.batch.lc_number }}</span> <span class="badge">{{ item.count }}</span>
+        </a>
+        {% else %}
+        <a href="{{ request.path }}?batch={{ item.batch.pk }}" class="nav-link nav-link-extra d-none">
+          <span>{{ item.batch.name }} - {{ item.batch.lc_number }}</span> <span class="badge">{{ item.count }}</span>
+        </a>
+        {% endif %}
+      {% endif %}
     {% endfor %}
 
     {% if batch_menu|length > 5 and not selected_batch %}

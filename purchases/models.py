@@ -1,6 +1,9 @@
 import pendulum
 import uuid
 
+from decimal import Decimal
+from functools import reduce
+
 from django.conf import settings
 from django.db import models
 from django_countries.fields import CountryField
@@ -69,6 +72,10 @@ class Batch(models.Model):
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     name = models.CharField(max_length=120)
+    lc_number = models.CharField(
+        'L/C number', max_length=30,
+        help_text='Document number for the letter of credit.'
+    )
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
     supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
     quantity = models.DecimalField(
@@ -103,3 +110,23 @@ class Batch(models.Model):
     def get_amount(self):
         """Returns the total amount for the batch."""
         return round(self.quantity * self.rate, 4)
+
+    def get_delivery_order_quantity(self):
+        """Returns the total quantity of the delivery orders."""
+        delivery_orders = self.delivery_orders.all()
+        quantity = reduce(
+            lambda total, order: total + order.quantity,
+            delivery_orders,
+            Decimal(0)
+        )
+        return quantity
+
+    def get_delivery_order_amount(self):
+        """Returns the total amount of the delivery orders."""
+        delivery_orders = self.delivery_orders.all()
+        amount = reduce(
+            lambda total, order: total + order.get_agreement_amount(),
+            delivery_orders,
+            Decimal(0)
+        )
+        return amount

@@ -42,6 +42,24 @@
               {% endif %}
             </div>
 
+            <!-- LC Document Number -->
+            <div class="form-group">
+              <label for="lc-number" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">L/C Document
+                Number</label>
+              <input
+                id="lc-number" class="form-control {% if form.lc_number.errors %}parsley-error{% endif %}"
+                name="lc_number" value="{{ form.instance.lc_number|default_if_none:'' }}"
+                placeholder="Enter the L/C document number"
+                autocomplete="off" required />
+                {% if form.lc_number.errors %}
+                <ul class="parsley-errors-list filled">
+                  {% for error in form.lc_number.errors %}
+                  <li class="parsley-required">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
             <!-- Supplier -->
             <div class="form-group">
               <label for="supplier" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Supplier</label>

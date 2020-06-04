@@ -1,6 +1,7 @@
 from collections import Counter, namedtuple
 
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
     DetailView
@@ -26,16 +27,12 @@ class BaseOrderListView(BaseOrderView, ListView):
         qs = qs.exclude(batch__is_deleted=True)
 
         user = self.request.user
-        lc_number = self.request.GET.get('lc', '')
         batch_pk = self.request.GET.get('batch', '')
         product_pk = self.request.GET.get('product', '')
         search_query = self.request.GET.get('search')
 
         if user.role and user.role.name == ROLE_SUPPLIER:
             qs = qs.filter(batch__supplier=user.supplier)
-
-        if lc_number:
-            qs = qs.filter(lc_number=lc_number)
 
         if product_pk:
             qs = qs.filter(batch__product__pk=product_pk).distinct()
@@ -91,9 +88,6 @@ class BaseOrderListView(BaseOrderView, ListView):
             'order_count': self.queryset.count(),
             'search_query': self.request.GET.get('search', '').strip(),
 
-            'lc_menu': self.get_lc_list(),
-            'selected_lc': self.request.GET.get('lc'),
-
             'product_menu': products,
             'selected_product': selected_product,
 
@@ -104,31 +98,7 @@ class BaseOrderListView(BaseOrderView, ListView):
 
     def get_search_result(self, query):
         """Returns a delivery order queryset using search query."""
-        search_qs = self.queryset.filter(
-            Q(vessel__istartswith=query) | Q(lc_number__istartswith=query)
-        )
-        return search_qs
-
-    def get_lc_list(self):
-        """Returns LC numbers for open delivery orders.
-
-        Args:
-            status (constant): status of the delivery orders to return
-        Return:
-            lc numbers: list of tuple of lc numbers with their count
-        Raise:
-            TypeError: when a status argument is missing
-        """
-        LCNumber = namedtuple('LCNumber', ['lc_number', 'count'])
-        user = self.request.user
-        qs = DeliveryOrder.objects.filter(status=self.status)
-
-        if user.role and user.role.name == ROLE_SUPPLIER:
-            qs = qs.filter(batch__supplier=user.supplier)
-
-        qs = qs.values_list('lc_number', flat=True)
-        counter = Counter(qs)
-        return [LCNumber(l, c) for l, c in counter.items()]
+        return self.queryset.filter(vessel__istartswith=query)
 
 
 class OpenOrderListView(BaseOrderListView):
@@ -258,7 +228,15 @@ class OrderCreateView(BaseOrderView, CreateView):
         self.object = form.save(commit=False)
         self.object.created_by = self.request.user
         self.object.save()
-        return redirect(self.get_success_url())
+        redirect_url = self.get_success_url()
+        return JsonResponse({
+            'status_code': 201, 'redirect_url': self.get_success_url()
+        })
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        response.status_code = 400
+        return response
 
 
 class OrderUpdateView(BaseOrderDetailView, UpdateView):
@@ -278,6 +256,11 @@ class OrderUpdateView(BaseOrderDetailView, UpdateView):
         redirect_url = super().form_valid(form)
         self.object.touch(updated_by=self.request.user)
         return redirect_url
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        response.status_code = 400
+        return response
 
 
 class OrderCloseView(BaseOrderDetailView, UpdateView):

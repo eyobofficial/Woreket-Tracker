@@ -24,34 +24,35 @@
               <th>Vessel</th>
               <th title="Bill of Loading Document Number">B/L Document No.</th>
               <th class="text-right">Quantity ({{ object.product.unit.code }})</th>
-              <th class="wd-100 text-right">Status</th>
+              <th class="wd-100 text-right">Amount (USD)</th>
             </tr>
           </thead>
           <tbody>
-            {% for delivery_order in object.delivery_orders.all %}
-            <tr>
-              <td class="tx-color-03 tx-normal">{{ forloop.counter }}</td>
-              <td class="tx-color-03 tx-normal">{{ delivery_order.created_at|date:'d-m-Y' }}</td>
-              <td class="tz-color-03 tx-medium">
-                <a href="{% url 'orders:order-detail' delivery_order.pk %}" target="_blank">{{ delivery_order.vessel }}
-                  &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
-                </a>
-              </td>
-              <td class="tz-color-03 tx-normal">{{ delivery_order.bill_of_loading }}</td>
-              <td class="tz-color-03 tx-normal text-right">{{ delivery_order.quantity|intcomma }}</td>
-              <td class="tz-color-03 tx-normal wd-100 text-right">
-                {% if delivery_order.status == delivery_order.OPEN %}
-                <span class="badge badge-success">{{ delivery_order.get_status_display }}</span>
-                {% else %}
-                <span class="badge badge-secondary">{{ delivery_order.get_status_display }}</span>
-                {% endif %}
-              </td>
-            </tr>
-            {% empty %}
-            <tr class="empty-row">
-              <td colspan="6" class="text-center pd-t-50 tx-14 tx-medium text-upper">No Delivery Order Yet</td>
-            </tr>
-            {% endfor %}
+            {% if object.delivery_orders.count > 0 %}
+              {% for delivery_order in object.delivery_orders.all %}
+              <tr>
+                <td class="tx-color-03 tx-normal">{{ forloop.counter }}</td>
+                <td class="tx-color-03 tx-normal">{{ delivery_order.created_at|date:'d-m-Y' }}</td>
+                <td class="tz-color-03 tx-medium">
+                  <a href="{% url 'orders:order-detail' delivery_order.pk %}" target="_blank">{{ delivery_order.vessel }}
+                    &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
+                  </a>
+                </td>
+                <td class="tz-color-03 tx-normal">{{ delivery_order.bill_of_loading }}</td>
+                <td class="tz-color-03 tx-normal text-right">{{ delivery_order.quantity|floatformat:2|intcomma }}</td>
+                <td class="tz-color-03 tx-normal wd-100 text-right">{{ delivery_order.get_agreement_amount|floatformat:2|intcomma }}</td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td class="tx-medium tx-14 text-right pd-t-30" colspan="4">TOTAL</td>
+                <td class="tx-medium tx-14 text-right pd-t-30">{{ object.get_delivery_order_quantity|floatformat:2|intcomma }}</td>
+                <td class="tx-medium tx-14 text-right pd-t-30">{{ object.get_delivery_order_amount|floatformat:2|intcomma }}</td>
+              </tr>
+            {% else %}
+              <tr class="empty-row">
+                <td colspan="6" class="text-center pd-t-50 tx-14 tx-medium text-upper">No Delivery Order Yet</td>
+              </tr>
+            {% endif %}
           </tbody>
         </table>
       </div>

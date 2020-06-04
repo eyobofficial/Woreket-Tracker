@@ -32,7 +32,7 @@
 <div class="content">
   <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0" id="batch-list-container">
     <div class="row">
-      <div class="col-md-9 col-sm-12">
+      <div class="col-md-10 col-sm-12">
 
         {% for message in messages %}
         <div class="alert alert-outline alert-success d-flex align-items-center mg-b-20" role="alert">
@@ -61,6 +61,7 @@
                 <tr>
                   <th>Period</th>
                   <th>Name</th>
+                  <th>L/C Number</th>
                   <th>Product</th>
                   <th>Supplier</th>
                   <th>Quantity</th>
@@ -79,6 +80,7 @@
                       &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
                     </a>
                   </td>
+                  <td class="tz-color-03 tx-normal">{{ batch.lc_number }}</td>
                   <td class="tz-color-03 tx-normal">{{ batch.product.name }}</td>
                   <td class="tz-color-03 tx-normal">{{ batch.supplier.name }}</td>
                   <td class="tz-color-03 tx-normal">
@@ -164,7 +166,7 @@
       </div><!-- col -->
 
       <!-- Aside filter links -->
-      <aside class="col-md-3 col-sm-12 mg-t-10 mg-lg-t-0 pd-sm-l-40">
+      <aside class="col-md-2 col-sm-12 mg-t-10 mg-lg-t-0 pd-sm-l-40">
         <!-- Product Menu -->
         {% if product_list.count > 0 %}
         <h6 class="tx-uppercase tx-semibold mg-t-30 mg-b-15">Products</h6>

@@ -27,51 +27,65 @@
       <div class="modal-body pd-sm-t-30 pd-sm-b-40 pd-sm-x-30">
         <div class="row">
           <div class="col-sm-9">
-            <!-- LC Document Number -->
-            <div class="form-group">
-              <label for="lc-number" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">L/C Document
-                Number</label>
-              <input
-                id="lc-number" class="form-control"
-                name="lc_number" value="{{ form.instance.lc_number|default_if_none:'' }}"
-                placeholder="Enter the L/C document number"
-                autocomplete="off" required />
-            </div>
-
             <!-- Batch -->
             <div class="form-group">
               <label for="batch" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Batch</label>
-              <select name="batch" id="batch" class="form-control custom-select" required>
+              <select name="batch" id="batch" class="form-control {% if form.batch.errors %}parsley-error{% endif %} custom-select" required>
                 {% if form.instance.batch is None %}
                 <option selected disabled value="">Choose batch</option>
                 {% endif %}
+
                 {% for batch in batch_list %}
-                <option value="{{ batch.pk }}" {% if form.instance.batch == batch %}selected{% endif %}>{{ batch }}</option>
+                <option value="{{ batch.pk }}" {% if form.instance.batch == batch %}selected{% endif %}>{{ batch.name }} - {{ batch.lc_number }}</option>
                 {% endfor %}
               </select>
+              {% if form.batch.errors %}
+              <ul class="parsley-errors-list filled">
+                {% for error in form.batch.errors %}
+                <li class="parsley-required">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
             </div>
 
             <!-- Quantity -->
             <div class="form-group">
               <label for="quantity" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Quantity</label>
-              <input id="quantity" class="form-control" name="quantity" value="{{ form.instance.quantity|default_if_none:'' }}"
-                placeholder="Enter agreement quantity" autocomplete="off" required />
+              <input
+                id="quantity" class="form-control {% if form.quantity.errors %}parsley-error{% endif %}"
+                name="quantity" value="{{ form.instance.quantity|default_if_none:'' }}"
+                placeholder="Enter agreement quantity"
+                autocomplete="off" required />
+              {% if form.quantity.errors %}
+              <ul class="parsley-errors-list filled">
+                {% for error in form.quantity.errors %}
+                <li class="parsley-required">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
             </div>
 
             <!-- Bill of loading -->
             <div class="form-group">
               <label for="bill-of-loading" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03" title="Bill of loading document number.">B/L Document No.</label>
               <input
-                id="bill-of-loading" class="form-control"
+                id="bill-of-loading" class="form-control {% if form.bill_of_loading.errors %}parsley-error{% endif %}"
                 name="bill_of_loading" value="{{ form.instance.bill_of_loading|default_if_none:'' }}"
                 placeholder="Enter the B/L number" autocomplete="off" required
               />
+              {% if form.bill_of_loading.errors %}
+              <ul class="parsley-errors-list filled">
+                {% for error in form.bill_of_loading.errors %}
+                <li class="parsley-required">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
             </div>
 
             <!-- Port -->
             <div class="form-group">
               <label for="port" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Port</label>
-              <select name="port" id="port" class="form-control custom-select" required>
+              <select name="port" id="port" class="form-control {% if form.port.errors %}parsley-error{% endif %} custom-select" required>
                 {% if form.instance.port is None %}
                 {% for port in port_list %}
                 <option value="{{ port.pk }}" {% if port.is_default %}selected{% endif %}>
@@ -86,31 +100,58 @@
                 {% endfor %}
                 {% endif %}
               </select>
+
+              {% if form.port.errors %}
+              <ul class="parsley-errors-list filled">
+                {% for error in form.port.errors %}
+                <li class="parsley-required">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
             </div>
 
             <!-- Vessel Name -->
             <div class="form-group">
               <label for="vessel" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Vessel Name</label>
-              <input id="vessel" class="form-control" name="vessel" value="{{ form.instance.vessel|default_if_none:'' }}"
-                placeholder="Enter the vessel name" autocomplete="off" required />
+              <input
+                id="vessel" class="form-control {% if form.vessel.errors %}parsley-error{% endif %}"
+                name="vessel" value="{{ form.instance.vessel|default_if_none:'' }}"
+                placeholder="Enter the vessel name"
+                autocomplete="off" required />
+              {% if form.vessel.errors %}
+              <ul class="parsley-errors-list filled">
+                {% for error in form.vessel.errors %}
+                <li class="parsley-required">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
             </div>
 
             <!-- Arrival Date -->
-            <label for="arrival-date" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Vessel Arrival Date</label>
-            <div class="input-group mg-b-10">
-              <div class="input-group-prepend">
-                <span class="input-group-text tx-medium" id="basic-addon2">
-                  <i class="far fa-calendar-plus"></i>
-                </span>
+            <div class="form-group">
+              <label for="arrival-date" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Vessel Arrival Date</label>
+              <div class="input-group mg-b-10">
+                <div class="input-group-prepend">
+                  <span class="input-group-text tx-medium" id="basic-addon2">
+                    <i class="far fa-calendar-plus"></i>
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  id="arrivalDate"
+                  class="form-control {% if form.arrival_date.errors %}parsley-error{% endif %}"
+                  autocomplete="off"
+                  value="{{ form.instance.arrival_date|date:'d/m/Y'|default_if_none:'' }}"
+                  placeholder="Select vessel arrival date"
+                />
               </div>
-              <input
-                type="text"
-                id="arrivalDate"
-                class="form-control"
-                autocomplete="off"
-                value="{{ form.instance.arrival_date|date:'d/m/Y'|default_if_none:'' }}"
-                placeholder="Select vessel arrival date"
-              />
+              {% if form.arrival_date.errors %}
+              <ul class="parsley-errors-list filled">
+                {% for error in form.arrival_date.errors %}
+                <li class="parsley-required">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
             </div>
           </div><!-- modal-body -->
         </div><!-- /.row -->
@@ -125,15 +166,55 @@
 
 <script>
   $(function () {
-    var cleave = new Cleave('#quantity', {
+    new Cleave('#quantity', {
       numeral: true,
       numeralThousandsGroupStyle: 'thousand',
       numeralDecimalScale: 4
     });
 
-    $('#arrivalDate').datepicker({
-      altField: '#altArrivalDate',
-      altFormat: 'yy-mm-dd'
+    // Initialize date selector
+    initDateSelector();
+
+    $('#modal-widget').on('submit', '#delivery-order-form', function(e) {
+      e.preventDefault();
+
+      const $submitBtn = $('#delivery-order-form button[type=submit]');
+      const $spinner = $('<i>', { 'class': 'fas fa-spin fa-circle-notch' });
+
+      $submitBtn.attr('disabled', true).html($spinner);
+
+      const url = $(this).attr('action');
+      const formData = $(this).serialize();
+      const request = $.ajax({
+        method: 'POST',
+        url: url,
+        data: formData,
+        dataType: 'html'
+      });
+
+      request.done(data => {
+        {% if object is None %}
+          response = JSON.parse(data);
+          window.location.href = response.redirect_url;
+        {% else %}
+          window.location.reload();
+        {% endif %}
+      });
+
+      request.fail(jqXHR => {
+        const $form = $('#delivery-order-form');
+        const $responseForm = $(jqXHR.responseText).find('#delivery-order-form');
+        $form.replaceWith($responseForm);
+        $form.find('button[type=submit]').text('Save').removeAttr('disabled');
+        initDateSelector();
+      });
     });
-  });
+
+    function initDateSelector() {
+      $('#arrivalDate').datepicker({
+        altField: '#altArrivalDate',
+        altFormat: 'yy-mm-dd'
+      });
+    }
+  })
 </script>
