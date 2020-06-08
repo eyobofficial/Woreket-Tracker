@@ -106,8 +106,21 @@
 
               <!-- Batch -->
               {% if perms.purchases.view_batch %}
-                <li class="nav-item {% if page_name == 'batches' %}active{% endif %}">
-                  <a href="{% url 'purchases:batch-list' %}" class="nav-link"><i data-feather="box"></i>Purchased LOTS</a>
+                <li class="nav-item with-sub {% if page_name == 'batches' %}active{% endif %}">
+                  <a href="" class="nav-link"><i data-feather="box"></i>Purchased LOTS</a>
+
+                  <ul class="navbar-menu-sub">
+                    <li class="nav-sub-item">
+                      <a href="{% url 'orders:open-batch-list' %}" class="nav-sub-link">
+                        <i data-feather="activity"></i>Open LOTS
+                      </a>
+                    </li>
+                    <li class="nav-sub-item">
+                      <a href="#" class="nav-sub-link">
+                        <i data-feather="archive"></i>Closed LOTS
+                      </a>
+                    </li>
+                  </ul>
                 </li>
               {% endif %}
 

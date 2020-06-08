@@ -1,5 +1,6 @@
 import operator
 import uuid
+import pendulum
 from decimal import Decimal
 from functools import reduce
 
@@ -14,8 +15,10 @@ from django_countries.fields import CountryField
 
 from shared.constants import ADVANCE, RETENTION
 from shared.models import Unit
-
 from customers.models import Customer, Union, Location
+from purchases.models import Product, Supplier
+
+from .managers import BatchManager
 
 
 User = settings.AUTH_USER_MODEL
@@ -41,8 +44,16 @@ class Port(models.Model):
         return self.name
 
 
-class DeliveryOrder(models.Model):
-    """Product delivery orders."""
+class Batch(models.Model):
+    """Product purchasing batches."""
+    today = pendulum.today(tz=settings.TIME_ZONE)
+    choice_duration = 5
+    ethiopian_year = today.year - 7
+
+    YEAR_CHOICES = [
+        (y, f'{y}/{y + 1}')
+        for y in range(ethiopian_year - choice_duration, ethiopian_year)
+    ]
 
     # Status
     OPEN = 'OPEN'
@@ -54,8 +65,81 @@ class DeliveryOrder(models.Model):
     )
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    name = models.CharField(max_length=120)
+    lc_number = models.CharField(
+        'L/C number', max_length=30,
+        help_text='Document number for the letter of credit.'
+    )
+    product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
+    supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
+    quantity = models.DecimalField(
+        max_digits=20,
+        decimal_places=4,
+        help_text='Quantity in the selected product unit.'
+    )
+    rate = models.DecimalField(
+        max_digits=12,
+        decimal_places=4,
+        help_text='Price is in USD.'
+    )
+    year = models.PositiveIntegerField(
+        choices=YEAR_CHOICES,
+    )
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default=OPEN
+    )
+    is_deleted = models.BooleanField('deleted', default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # Custom manager
+    objects = BatchManager()
+
+    class Meta:
+        default_related_name='batches'
+        verbose_name = 'Purchasing Batch'
+        verbose_name_plural = 'Purchasing Batches'
+        ordering = ('-created_at', )
+        permissions = [
+            ('close_batch', 'Close purchasing batch'),
+            ('reopen_batch', 'Re-open purchasing batch')
+        ]
+
+    def __str__(self):
+        return f'{self.name} ({self.product}) - {self.get_year_display()}'
+
+    def get_agreement_amount(self):
+        """Returns the amount as per the agreement in USD.
+
+        Returns:
+            amount (Decimal): total agreement amount in USD
+        """
+        return round(self.quantity * self.rate, 4)
+
+    def get_advance_amount(self):
+        """Returns the advance payment (90%) paid as per the agreement.
+
+        Returns:
+            amount (Decimal): the 90% advance payment in USD
+        """
+        return round(self.get_agreement_amount() * ADVANCE, 4)
+
+    def get_retention_amount(self):
+        """Returns the advance payment (10%) paid as per the agreement.
+
+        Returns:
+            amount (Decimal): the 10% advance payment in USD
+        """
+        return round(self.get_agreement_amount() * RETENTION, 4)
+
+
+class DeliveryOrder(models.Model):
+    """Product delivery orders."""
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     vessel = models.CharField(max_length=120, help_text='Shipment vessel name.')
-    batch = models.ForeignKey('purchases.Batch', null=True, on_delete=models.SET_NULL)
+    batch = models.ForeignKey(Batch, null=True, on_delete=models.SET_NULL)
     quantity = models.DecimalField(
         'agreement quantity',
         max_digits=20, decimal_places=4
@@ -70,11 +154,6 @@ class DeliveryOrder(models.Model):
         on_delete=models.SET_NULL,
     )
     arrival_date = models.DateField('vessel arrival date')
-    status = models.CharField(
-        max_length=10,
-        choices=STATUS_CHOICES,
-        default=OPEN
-    )
     created_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -103,9 +182,6 @@ class DeliveryOrder(models.Model):
     def __str__(self):
         return self.vessel
 
-    def get_absolute_url(self):
-        return reverse('orders:order-detail', args=[self.pk])
-
     @property
     def unit(self):
         return self.batch.product.unit
@@ -113,6 +189,10 @@ class DeliveryOrder(models.Model):
     @property
     def lc_number(self):
         return self.batch.lc_number
+
+    @property
+    def status(self):
+        return self.batch.status
 
     def touch(self, **kwargs):
         """

@@ -1,0 +1,112 @@
+{% load humanize %}
+
+<div id="tab-container" class="mg-y-30">
+  <!-- Tab Menus -->
+  <ul class="nav nav-tabs" id="delivery-orders-tab" role="tablist">
+    {% for delivery_order in object.delivery_orders.all %}
+    <li class="nav-item">
+      <a
+        class="nav-link {% if active_pk|safe == delivery_order.pk|safe %}active{% endif %}"
+        id="tab-{{ delivery_order.pk }}" data-toggle="tab" role="tab"
+        href="#tab-pane-{{ delivery_order.pk }}">{{ delivery_order.vessel }}</a>
+    </li>
+    {% endfor %}
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        id="tab-new" data-toggle="tab" role="tab" href="#tab-pane-new"><i class="fas fa-plus tx-12"></i></a>
+    </li>
+  </ul><!-- ./ End Tab Menu -->
+
+  <!-- Tab Content -->
+  <div class="tab-content bd bd-gray-300 bd-t-0 pd-20" id="delivery-orders-tab-content">
+    {% for delivery_order in object.delivery_orders.all %}
+    <div class="tab-pane fade {% if active_pk|safe == delivery_order.pk|safe %}active show{% endif %}" role="tabpanel" id="tab-pane-{{ delivery_order.pk }}">
+
+      <div class="d-flex justify-content-between">
+        <button data-url="{% url 'orders:order-update' delivery_order.pk %}" class="btn btn-sm pd-x-40 btn-primary btn-uppercase mg-l-5 btn-modal">
+          <i data-feather="edit" class="wd-10 mg-r-5"></i> Edit
+        </button>
+
+        <button class="btn pd-x-40 btn-danger btn-uppercase mg-l-5 btn-modal">
+          <i data-feather="trash" class="wd-10 mg-r-5"></i> Delete
+        </button>
+      </div>
+
+      <div class="card mg-t-20 mg-b-30">
+        <div class="card-header">
+          <h5 class="mg-b-0">{{ delivery_order.vessel }} Vessel Summary</h5>
+        </div>
+        <div class="card-body d-flex flex-row justify-content-between mg-t-30 mg-b-40">
+          <div class="media mg-b-10">
+            <div class="crypto-icon bg-secondary">
+              <i class="fas fa-truck-loading"></i>
+            </div>
+            <div class="media-body pd-l-8">
+              <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Bill of Loading</h6>
+              <div class="d-flex align-items-baseline tx-rubik">
+                <h5 class="tx-18 mg-b-0">{{ delivery_order.bill_of_loading }}</h5>
+              </div>
+            </div><!-- media-body -->
+          </div><!-- media -->
+
+          <div class="media mg-b-10">
+            <div class="crypto-icon bg-teal">
+              <i class="fas fa-anchor"></i>
+            </div>
+            <div class="media-body pd-l-8">
+              <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Port</h6>
+              <div class="d-flex align-items-baseline tx-rubik">
+                <h5 class="tx-18 mg-b-0">{{ delivery_order.port }}</h5>
+              </div>
+            </div><!-- media-body -->
+          </div><!-- media -->
+
+          <div class="media mg-b-10">
+            <div class="crypto-icon bg-litecoin">
+              <i class="far fa-calendar"></i>
+            </div>
+            <div class="media-body pd-l-8">
+              <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Arrival Date</h6>
+              <div class="d-flex align-items-baseline tx-rubik">
+                <h5 class="tx-18 mg-b-0">{{ delivery_order.arrival_date|date:'d-m-Y' }}</h5>
+              </div>
+            </div><!-- media-body -->
+          </div><!-- media -->
+
+          <div class="media mg-b-10">
+            <div class="crypto-icon bg-warning">
+              <i class="fas fa-balance-scale"></i>
+            </div>
+            <div class="media-body pd-l-8">
+              <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Quantity ({{ delivery_order.unit.code }})</h6>
+              <div class="d-flex align-items-baseline tx-rubik">
+                <h5 class="tx-18 mg-b-0">{{ delivery_order.quantity|floatformat:2|intcomma }}</h5>
+              </div>
+            </div><!-- media-body -->
+          </div><!-- media -->
+
+          <div class="media mg-b-10">
+            <div class="crypto-icon bg-success">
+              <i class="fas fa-coins"></i>
+            </div>
+            <div class="media-body pd-l-8">
+              <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Amount</h6>
+              <div class="d-flex align-items-baseline tx-rubik">
+                <h5 class="tx-18 mg-b-0">${{ delivery_order.get_agreement_amount|floatformat:2|intcomma }}</h5>
+              </div>
+            </div><!-- media-body -->
+          </div><!-- media -->
+        </div>
+      </div>
+
+      <!-- Allocation Summary -->
+      {% include 'orders/partials/allocation_summary.html' with object=delivery_order %}
+    </div>
+    {% endfor %}
+    <div class="tab-pane fade" id="tab-pane-new">
+      <h6>Create New Delivery Order</h6>
+      <p>...</p>
+    </div>
+  </div><!-- ./ Tab Content -->
+</div>

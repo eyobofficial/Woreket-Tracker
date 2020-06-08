@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ProductCategory, Product, Supplier, Batch
+from .models import ProductCategory, Product, Supplier
 
 
 @admin.register(Supplier)
@@ -18,11 +18,4 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'unit')
     list_filter = ('category', )
-    search_fields = ('name', )
-
-
-@admin.register(Batch)
-class BatchAdmin(admin.ModelAdmin):
-    list_display = ('name', 'lc_number', 'supplier', 'year', 'is_deleted')
-    list_filter = ('product', 'year', 'is_deleted')
     search_fields = ('name', )

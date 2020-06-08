@@ -29,14 +29,6 @@
             <span class="tx-medium">-</span>
             {% endif %}
           </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="10% amount for allocated amount" data-target="allocation-retention-col">
-            <span class="tx-normal">10% Amount</span>
-            {% if object.get_allocated_retention %}
-            <span class="tx-medium">${{ object.get_allocated_retention|floatformat:2|intcomma }}</span>
-            {% else %}
-            <span class="tx-medium">-</span>
-            {% endif %}
-          </li>
         </ul>
       </div><!-- card-body -->
     </div><!-- card -->
@@ -51,7 +43,7 @@
         </div>
         <div class="d-flex mg-t-20 mg-sm-t-0">
           <div class="btn-group flex-fill">
-            {% if not object.is_fully_allocated and object.status == object.OPEN and perms.orders.add_allocation %}
+            {% if not object.is_fully_allocated and object.batch.status == object.batch.OPEN and perms.orders.add_allocation %}
               <a class="tx-12 link-03 btn-modal"
                 data-url="{% url 'orders:order-allocation-create' object.pk %}">
                   <i data-feather="plus" class="wd-15 ht-15"></i> Add allocation
@@ -70,8 +62,7 @@
                 <th class="text-right allocation-quantity-col">Quantity ({{ object.unit.code }})</th>
                 <th class="text-right">Rate (USD)</th>
                 <th class="text-right allocation-amount-col">Amount (USD)</th>
-                <th class="text-right allocation-retention-col">10% Amount (USD)</th>
-                {% if object.status == object.OPEN %}<th class="action"></th>{% endif %}
+                {% if object.batch.status == object.batch.OPEN %}<th class="action"></th>{% endif %}
               </tr>
             </thead>
             <tbody>
@@ -86,8 +77,7 @@
                 </td>
                 <td class="tz-color-03 tx-normal text-right">{{ object.batch.rate|floatformat:2|intcomma }}</td>
                 <td class="text-right tx-normal text-right allocation-amount-col">{{ allocation.get_amount|floatformat:2|intcomma }}</td>
-                <td class="tx-medium tx-medium text-right allocation-retention-col">{{ allocation.get_retention|floatformat:2|intcomma }}</td>
-                {% if object.status == object.OPEN %}
+                {% if object.batch.status == object.batch.OPEN %}
                 <td class="text-right action">
                   <div class="mg-l-auto d-flex justify-content-end">
                     <nav class="nav nav-icon-only">

@@ -1,5 +1,7 @@
 from django.urls import path
 
+from .views.batches import OpenBatchListView, BatchCreateView, BatchUpdateView, \
+    BatchDeleteView, BatchDetailView
 from .views.deliveryorders import OpenOrderListView, OrderCreateView, \
     OrderUpdateView, OrderCloseView, OrderDetailView, ClosedOrderListView, \
     OrderReopenView, OrderDeleteView, BatchSummaryView, BillOfLoadingSummary
@@ -12,7 +14,6 @@ from .views.distributions import DistributionCreateView, \
 
 app_name = 'orders'
 
-
 urlpatterns = [
     path('', OpenOrderListView.as_view(), name='open-orders-list'),
     path('closed/', ClosedOrderListView.as_view(), name='closed-orders-list'),
@@ -21,7 +22,7 @@ urlpatterns = [
     path(
         '<uuid:pk>/update/',
         OrderUpdateView.as_view(),
-        name='open-order-update'
+        name='order-update'
     ),
     path(
         '<uuid:pk>/delete/',
@@ -98,4 +99,27 @@ urlpatterns = [
         DistributionDeleteView.as_view(),
         name='distribution-delete'
     ),
+]
+
+
+# Batch URLs
+urlpatterns += [
+    path('batches/', OpenBatchListView.as_view(), name='open-batch-list'),
+    # path(
+    #     'batches/closed/',
+    #     ClosedBatchListView.as_view(),
+    #     name='closed-batch-list'
+    # ),
+    path('batches/create/', BatchCreateView.as_view(), name='batch-create'),
+    path('batches/<uuid:pk>/', BatchDetailView.as_view(), name='batch-detail'),
+    path(
+        'batches/<uuid:pk>/update/',
+        BatchUpdateView.as_view(),
+        name='batch-update'
+    ),
+    path(
+        'batches/<uuid:pk>/delete/',
+        BatchDeleteView.as_view(),
+        name='batch-delete'
+    )
 ]

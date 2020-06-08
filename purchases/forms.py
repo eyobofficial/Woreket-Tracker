@@ -3,18 +3,7 @@ from django_countries.fields import CountryField
 
 from shared.fields import FormattedNumberField
 
-from .models import Batch, Supplier
-
-
-class BatchForm(forms.ModelForm):
-    """Model for creating new batch instance."""
-    quantity = FormattedNumberField(max_digits=20, decimal_places=4)
-    rate = FormattedNumberField(max_digits=12, decimal_places=4)
-
-    class Meta:
-        model = Batch
-        fields = ('name', 'lc_number', 'product',
-                  'supplier', 'quantity', 'rate', 'year')
+from .models import Supplier
 
 
 class SupplierForm(forms.ModelForm):

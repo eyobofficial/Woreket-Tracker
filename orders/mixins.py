@@ -7,3 +7,11 @@ class BaseOrderView(BaseAccessMixin):
     """
     page_name = 'delivery-orders'
     access_roles = []
+
+
+class BaseBatchesView(BaseAccessMixin):
+    """
+    Base view for all `Batch` model views.
+    """
+    page_name = 'batches'
+    access_roles = []

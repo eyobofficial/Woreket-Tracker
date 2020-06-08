@@ -55,8 +55,8 @@
 
       // AJAX success
       request.done(function (data) {
-        const $updatedPage = $(data).find('.order-detail-container');
-        $('.order-detail-container').replaceWith($updatedPage);
+        const $updatedPage = $(data).find('.batch-detail-container');
+        $('.batch-detail-container').replaceWith($updatedPage);
         feather.replace();
         $modal.modal('hide');
       });

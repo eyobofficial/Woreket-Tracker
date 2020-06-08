@@ -1,10 +1,10 @@
-{% extends 'purchases/base.html' %}
+{% extends 'orders/base.html' %}
 {% load humanize %}
 
 {% block title %}Batch Lots | Payment Tracker{% endblock %}
 
 {% block content %}
-<div class="content content-fixed bd-b">
+<div class="content content-fixed bd-b bg-white">
   <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
     <div class="d-sm-flex align-items-center justify-content-between">
       <div>
@@ -18,9 +18,9 @@
       </div>
 
       <div class="d-none d-md-block mg-t-20 mg-sm-t-0">
-        {% if perms.purchases.add_batch %}
+        {% if perms.orders.add_batch %}
         <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
-          data-url="{% url 'purchases:batch-create' %}">
+          data-url="{% url 'orders:batch-create' %}">
           <i data-feather="plus" class="wd-10 mg-r-5"></i>Add New Lot
         </button>
         {% endif %}
@@ -75,9 +75,8 @@
                 <tr>
                   <td class="tx-color-03 tx-normal">{{ batch.get_year_display }}</td>
                   <td class="tz-color-03 tx-normal">
-                    <a data-url="{% url 'purchases:batch-detail' batch.pk %}" class="popup-link btn-modal">
+                    <a href="{% url 'orders:batch-detail' batch.pk %}">
                       <span class="tx-medium">{{ batch.name }}</span>
-                      &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
                     </a>
                   </td>
                   <td class="tz-color-03 tx-normal">{{ batch.lc_number }}</td>
@@ -91,14 +90,14 @@
                   <td class="text-right action">
                     <div class="mg-l-auto d-flex justify-content-end">
                       <nav class="nav nav-icon-only">
-                        {% if perms.purchases.change_batch %}
-                        <a data-url="{% url 'purchases:batch-update' batch.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Edit">
+                        {% if perms.orders.change_batch %}
+                        <a data-url="{% url 'orders:batch-update' batch.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Edit">
                           <i data-feather="edit-3"></i>
                         </a>
                         {% endif %}
 
-                        {% if perms.purchases.delete_batch %}
-                        <a data-url="{% url 'purchases:batch-delete' batch.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Delete">
+                        {% if perms.orders.delete_batch %}
+                        <a data-url="{% url 'orders:batch-delete' batch.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Delete">
                           <i data-feather="trash"></i>
                         </a>
                         {% endif %}
@@ -109,10 +108,10 @@
                 {% empty %}
                 <tr class="empty-row">
                   {% if search_query %}
-                  <td colspan="{% if perms.purchases.change_batch %}8{% else %}7{% endif %}"
+                  <td colspan="{% if perms.orders.change_batch %}8{% else %}7{% endif %}"
                     class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO RESULT FOUND</td>
                   {% else %}
-                  <td colspan="{% if perms.purchases.change_batch %}8{% else %}7{% endif %}"
+                  <td colspan="{% if perms.orders.change_batch %}8{% else %}7{% endif %}"
                     class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO PURCHASED LOTS FOUND</td>
                   {% endif %}
                 </tr>
@@ -171,13 +170,13 @@
         {% if product_list.count > 0 %}
         <h6 class="tx-uppercase tx-semibold mg-t-30 mg-b-15">Products</h6>
         <nav class="nav nav-classic tx-13 mg-lg-b-20">
-          <a href="{% url 'purchases:batch-list' %}" class="nav-link {% if selected_product is None %}active{% endif %}">
+          <a href="{% url 'orders:open-batch-list' %}" class="nav-link {% if selected_product is None %}active{% endif %}">
             <span>All</span> <span class="badge">{{ batch_count }}</span>
           </a>
           {% for product in product_list %}
           <a href="{{ request.path }}?product={{ product.pk }}"
             class="nav-link {% if selected_product|safe == product.pk|safe %}active{% endif %}">
-            <span>{{ product.name }}</span> <span class="badge">{{ product.batches.count }}</span>
+            <span>{{ product.name }}</span> <span class="badge">{{ product.get_open_batches.count }}</span>
           </a>
           {% endfor %}
         </nav>

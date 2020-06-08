@@ -8,23 +8,24 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
 from django.urls import reverse_lazy, reverse
 
 from shared.constants import ROLE_SUPPLIER, ROLE_ADMIN, ROLE_STAFF
-from customers.models import Customer, Union
-from purchases.models import Product, Batch
+from customers.models import Customer
+from purchases.models import Product
 
 from orders.forms import DeliveryOrderForm
 from orders.mixins import BaseOrderView
-from orders.models import DeliveryOrder, Allocation, Port, Distribution
+from orders.models import Batch, DeliveryOrder, Allocation, Port, Distribution
 
 
 class BaseOrderListView(BaseOrderView, ListView):
     """Abstract base class for open & closed order list views."""
     model = DeliveryOrder
+    queryset = DeliveryOrder.objects.exclude(batch__is_deleted=True)
     paginate_by = 10
     status = None
 
     def get_queryset(self):
         qs = super().get_queryset()
-        qs = qs.exclude(batch__is_deleted=True)
+        qs = qs.filter(batch__status=self.status)
 
         user = self.request.user
         batch_pk = self.request.GET.get('batch', '')
@@ -50,7 +51,7 @@ class BaseOrderListView(BaseOrderView, ListView):
         # Build product menu
         ProductMenu = namedtuple('ProductMenu', ['product', 'count'])
         products = Product.objects.filter(
-            batches__delivery_orders__status=self.status
+            batches__status=self.status
         )
         if user.role and user.role.name == ROLE_SUPPLIER:
             products = products.filter(batches__supplier=user.supplier)
@@ -68,8 +69,7 @@ class BaseOrderListView(BaseOrderView, ListView):
         # Build Batch Menu
         BatchMenu = namedtuple('BatchMenu', ['batch', 'count'])
         batches = Batch.objects.filter(
-            delivery_orders__status=self.status,
-            delivery_orders__isnull=False
+            status=self.status, delivery_orders__isnull=False
         )
         if user.role and user.role.name == ROLE_SUPPLIER:
             batches = batches.filter(supplier=user.supplier)
@@ -104,16 +104,14 @@ class BaseOrderListView(BaseOrderView, ListView):
 class OpenOrderListView(BaseOrderListView):
     """Lists all delivery orders with open status."""
     template_name = 'orders/open_orders_list.html'
-    queryset = DeliveryOrder.objects.filter(status=DeliveryOrder.OPEN)
-    status = DeliveryOrder.OPEN
+    status = Batch.OPEN
     access_roles = '__all__'
 
 
 class ClosedOrderListView(BaseOrderListView):
     """Lists all delivery orders with open status."""
     template_name = 'orders/closed_orders_list.html'
-    queryset = DeliveryOrder.objects.filter(status=DeliveryOrder.CLOSED)
-    status = DeliveryOrder.CLOSED
+    status = Batch.CLOSED
     access_roles = '__all__'
 
 
@@ -251,6 +249,11 @@ class OrderUpdateView(BaseOrderDetailView, UpdateView):
             'port_list': Port.objects.all()
         })
         return super().get_context_data(**kwargs)
+
+    def get_success_url(self):
+        url = reverse('orders:batch-detail', args=[self.object.batch.pk])
+        url = f'{url}?active_delivery_order={self.object.pk}'
+        return url
 
     def form_valid(self, form):
         redirect_url = super().form_valid(form)
