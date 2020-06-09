@@ -67,8 +67,11 @@ class DistributionCreateView(BaseDistributionEditView, CreateView):
 
     def get_success_url(self):
         order_pk = self.kwargs.get('pk')
-        page_section = self.request.GET.get('section')
-        return reverse('orders:order-detail', args=[order_pk])
+        delivery_order = get_object_or_404(DeliveryOrder, pk=order_pk)
+        batch_id = delivery_order.batch.pk
+        url = reverse('orders:batch-detail', args=[batch_id])
+        url = f'{url}?active_delivery_order={delivery_order.pk}'
+        return url
 
     def form_valid(self, formset):
         context = self.get_context_data()
@@ -106,10 +109,12 @@ class DistributionUpdateView(BaseDistributionEditView, UpdateView):
         return super().get_context_data(**kwargs)
 
     def get_success_url(self):
-        distribution_pk = self.kwargs.get('pk')
-        distribution = get_object_or_404(Distribution, pk=distribution_pk)
-        order_pk = distribution.delivery_order.pk
-        return reverse('orders:order-detail', args=[order_pk])
+        distribution = self.get_object()
+        batch_pk = distribution.delivery_order.batch.pk
+        delivery_order_pk = distribution.delivery_order.pk
+        url = reverse('orders:batch-detail', args=[batch_pk])
+        url = f'{url}?active_delivery_order={delivery_order_pk}'
+        return url
 
     def form_valid(self, formset):
         redirect_url = super().form_valid(formset)
@@ -130,11 +135,10 @@ class DistributionDeleteView(BaseOrderView, DeleteView):
         return super().get_context_data(**kwargs)
 
     def get_success_url(self):
-        page_section = self.request.GET.get('section')
-        url = reverse(
-            'orders:order-detail',
-            args=[self.object.delivery_order.pk]
-        )
+        batch_pk = self.get_object().delivery_order.batch.pk
+        delivery_order_pk = self.get_object().delivery_order.pk
+        url = reverse('orders:batch-detail', args=[batch_pk])
+        url = f'{url}?active_delivery_order={delivery_order_pk}'
         return url
 
     def delete(self, request, *args, **kwargs):

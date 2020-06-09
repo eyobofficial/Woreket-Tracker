@@ -114,8 +114,7 @@ class AllocationUpdateView(BaseAllocationEditView, UpdateView):
         return super().get_context_data(**kwargs)
 
     def get_success_url(self):
-        allocation_pk = self.kwargs.get('pk')
-        allocation = get_object_or_404(Allocation, pk=allocation_pk)
+        allocation = self.get_object()
         batch_pk = allocation.delivery_order.batch.pk
         delivery_order_pk = allocation.delivery_order.pk
         url = reverse('orders:batch-detail', args=[batch_pk])
@@ -136,8 +135,8 @@ class AllocationDeleteView(BaseOrderView, DeleteView):
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def get_success_url(self):
-        batch_pk = self.object.delivery_order.batch.pk
-        delivery_order_pk = self.object.delivery_order.pk
+        batch_pk = self.get_object().delivery_order.batch.pk
+        delivery_order_pk = self.get_object().delivery_order.pk
         url = reverse('orders:batch-detail', args=[batch_pk])
         url = f'{url}?active_delivery_order={delivery_order_pk}'
         return url

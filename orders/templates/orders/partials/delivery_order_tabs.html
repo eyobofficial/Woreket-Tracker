@@ -13,7 +13,7 @@
     {% endfor %}
     <li class="nav-item">
       <a
-        class="nav-link"
+        class="nav-link {% if not active_pk %}active{% endif %}"
         id="tab-new" data-toggle="tab" role="tab" href="#tab-pane-new"><i class="fas fa-plus tx-12"></i></a>
     </li>
   </ul><!-- ./ End Tab Menu -->
@@ -28,7 +28,7 @@
           <i data-feather="edit" class="wd-10 mg-r-5"></i> Edit
         </button>
 
-        <button class="btn pd-x-40 btn-danger btn-uppercase mg-l-5 btn-modal">
+        <button data-url="{% url 'orders:order-delete' delivery_order.pk %}" class="btn pd-x-40 btn-danger btn-uppercase mg-l-5 btn-modal">
           <i data-feather="trash" class="wd-10 mg-r-5"></i> Delete
         </button>
       </div>
@@ -102,11 +102,13 @@
 
       <!-- Allocation Summary -->
       {% include 'orders/partials/allocation_summary.html' with object=delivery_order %}
+
+      <!-- Distribution Summary -->
+      {% include 'orders/partials/distribution_summary.html' with object=delivery_order %}
     </div>
     {% endfor %}
-    <div class="tab-pane fade" id="tab-pane-new">
-      <h6>Create New Delivery Order</h6>
-      <p>...</p>
+    <div class="tab-pane fade {% if not active_pk %}active show{% endif %}" id="tab-pane-new">
+      {% include 'orders/order_create_form.html' %}
     </div>
   </div><!-- ./ Tab Content -->
 </div>

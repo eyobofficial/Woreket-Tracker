@@ -1,7 +1,7 @@
 {% load humanize %}
 
 <!-- Delivery Order Allocation -->
-<div class="row row-xs row-flex mg-b-20" id="allocation-section">
+<div class="row row-xs row-flex mg-b-30" id="allocation-section">
   <div class="col-sm-3 col-lg-3">
     <div class="card ht-100p">
       <div class="card-header d-flex justify-content-between">
@@ -62,7 +62,9 @@
                 <th class="text-right allocation-quantity-col">Quantity ({{ object.unit.code }})</th>
                 <th class="text-right">Rate (USD)</th>
                 <th class="text-right allocation-amount-col">Amount (USD)</th>
-                {% if object.batch.status == object.batch.OPEN %}<th class="action"></th>{% endif %}
+                {% if object.batch.status == object.batch.OPEN and perms.orders.change_allocation or perms.orders.delete_allocation %}
+                <th class="action wd-80"></th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
@@ -77,7 +79,7 @@
                 </td>
                 <td class="tz-color-03 tx-normal text-right">{{ object.batch.rate|floatformat:2|intcomma }}</td>
                 <td class="text-right tx-normal text-right allocation-amount-col">{{ allocation.get_amount|floatformat:2|intcomma }}</td>
-                {% if object.batch.status == object.batch.OPEN %}
+                {% if object.batch.status == object.batch.OPEN and perms.orders.change_allocation or perms.orders.delete_allocation %}
                 <td class="text-right action">
                   <div class="mg-l-auto d-flex justify-content-end">
                     <nav class="nav nav-icon-only">

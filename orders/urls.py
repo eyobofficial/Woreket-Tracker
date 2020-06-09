@@ -3,8 +3,8 @@ from django.urls import path
 from .views.batches import OpenBatchListView, BatchCreateView, BatchUpdateView, \
     BatchDeleteView, BatchDetailView
 from .views.deliveryorders import OpenOrderListView, OrderCreateView, \
-    OrderUpdateView, OrderCloseView, OrderDetailView, ClosedOrderListView, \
-    OrderReopenView, OrderDeleteView, BatchSummaryView, BillOfLoadingSummary
+    OrderUpdateView, OrderDetailView, OrderDeleteView, BatchSummaryView, \
+    BillOfLoadingSummary
 from .views.allocations import AllocationCreateView, AllocationUpdateView, \
     AllocationDeleteView, LetterFormView, AllocationLetterView, \
     AllocationDetailView
@@ -16,9 +16,12 @@ app_name = 'orders'
 
 urlpatterns = [
     path('', OpenOrderListView.as_view(), name='open-orders-list'),
-    path('closed/', ClosedOrderListView.as_view(), name='closed-orders-list'),
     path('<uuid:pk>/', OrderDetailView.as_view(), name='order-detail'),
-    path('create/', OrderCreateView.as_view(), name='order-create'),
+    path(
+        '<uuid:batch_pk>/create/',
+        OrderCreateView.as_view(),
+        name='order-create'
+    ),
     path(
         '<uuid:pk>/update/',
         OrderUpdateView.as_view(),
@@ -28,16 +31,6 @@ urlpatterns = [
         '<uuid:pk>/delete/',
         OrderDeleteView.as_view(),
         name='order-delete'
-    ),
-    path(
-        '<uuid:pk>/open/',
-        OrderReopenView.as_view(),
-        name='order-open'
-    ),
-    path(
-        '<uuid:pk>/close/',
-        OrderCloseView.as_view(),
-        name='order-close'
     ),
     path(
         'batch/<uuid:pk>/summary/',

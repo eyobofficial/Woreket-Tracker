@@ -9,12 +9,11 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
     DetailView
 
 from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF
-from shared.models import Unit
 from purchases.models import Supplier, Product
 
 from orders.forms import BatchForm
 from orders.mixins import BaseBatchesView
-from orders.models import Batch
+from orders.models import Batch, Port
 
 
 class BaseBatchListView(BaseBatchesView, ListView):
@@ -89,6 +88,7 @@ class BatchDetailView(BaseBatchesView, DetailView):
 
     def get_context_data(self, **kwargs):
         kwargs['active_pk'] = self.get_active_tab()
+        kwargs['port_list'] = Port.objects.all()
         return super().get_context_data(**kwargs)
 
     def get_active_tab(self):

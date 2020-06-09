@@ -74,7 +74,6 @@
             <li class="list-inline-item mg-l-10">
               <span class="d-inline-block wd-7 ht-7 bg-teal rounded-circle mg-r-5"></span>
               Allocated Quantity ({{ object.unit.code|upper }})
-              </span>
             </li>
             <li class="list-inline-item mg-l-10">
               <span class="d-inline-block wd-7 ht-7 bg-primary rounded-circle mg-r-5"></span>
@@ -86,7 +85,7 @@
       <div class="card-body pd-lg-25 pd-b-0 ">
         <div class="row align-items-sm-end">
           <div class="col-lg-12 col-xl-12">
-            <div class="chart-six"><canvas id="deliveryOrderChart"></canvas></div>
+            <div class="chart-six"><canvas id="deliveryOrdersChart"></canvas></div>
           </div>
         </div>
       </div><!-- card-body -->
@@ -148,7 +147,7 @@
 <script>
   $(function() {
     // Chart
-    var ctx1 = document.getElementById('deliveryOrderChart').getContext('2d');
+    var ctx1 = document.getElementById('deliveryOrdersChart').getContext('2d');
     var ctxChart1 = new Chart(ctx1, {
       type: 'bar',
       data: {

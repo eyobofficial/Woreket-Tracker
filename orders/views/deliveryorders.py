@@ -1,8 +1,7 @@
 from collections import Counter, namedtuple
 
 from django.db.models import Q
-from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
     DetailView
 from django.urls import reverse_lazy, reverse
@@ -108,13 +107,6 @@ class OpenOrderListView(BaseOrderListView):
     access_roles = '__all__'
 
 
-class ClosedOrderListView(BaseOrderListView):
-    """Lists all delivery orders with open status."""
-    template_name = 'orders/closed_orders_list.html'
-    status = Batch.CLOSED
-    access_roles = '__all__'
-
-
 class BaseOrderDetailView(BaseOrderView):
     """Base class for all delivery order detail views."""
     model = DeliveryOrder
@@ -206,30 +198,37 @@ class BillOfLoadingSummary(BaseOrderView, DetailView):
 
 class OrderCreateView(BaseOrderView, CreateView):
     """Creates new delivery order instances."""
-    template_name = 'orders/modals/order_form.html'
+    # template_name = 'orders/modals/order_form.html'
+    template_name = 'orders/order_create_form.html'
     form_class = DeliveryOrderForm
     model = DeliveryOrder
     object = None
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
+    def get_batch(self):
+        batch_pk = self.kwargs.get('batch_pk')
+        return get_object_or_404(Batch, pk=batch_pk)
+
     def get_context_data(self, **kwargs):
         kwargs.update({
-            'batch_list': Batch.objects.all(),
+            'batch': self.get_batch(),
             'port_list': Port.objects.all()
         })
         return super().get_context_data(**kwargs)
 
     def get_success_url(self):
-        return reverse('orders:order-detail', args=[self.object.pk])
+        batch = self.get_batch()
+        url = reverse('orders:batch-detail', args=[batch.pk])
+        if self.object is not None:
+            url = f'{url}?active_delivery_order={self.object.pk}'
+        return url
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        self.object.batch = self.get_batch()
         self.object.created_by = self.request.user
         self.object.save()
-        redirect_url = self.get_success_url()
-        return JsonResponse({
-            'status_code': 201, 'redirect_url': self.get_success_url()
-        })
+        return redirect(self.get_success_url())
 
     def form_invalid(self, form):
         response = super().form_invalid(form)
@@ -266,32 +265,13 @@ class OrderUpdateView(BaseOrderDetailView, UpdateView):
         return response
 
 
-class OrderCloseView(BaseOrderDetailView, UpdateView):
-    """Closes a delivery order instance."""
-    template_name = 'orders/modals/order_close.html'
-    fields = ('status', )
-    access_roles = [ROLE_ADMIN, ROLE_STAFF]
-
-    def form_valid(self, form):
-        redirect_url = super().form_valid(form)
-        self.object.touch(updated_by=self.request.user)
-        return redirect_url
-
-
-class OrderReopenView(BaseOrderDetailView, UpdateView):
-    """Opens a delivery order instance."""
-    template_name = 'orders/modals/order_open.html'
-    fields = ('status', )
-    access_roles = [ROLE_ADMIN]
-
-    def form_valid(self, form):
-        redirect_url = super().form_valid(form)
-        self.object.touch(updated_by=self.request.user)
-        return redirect_url
-
-
 class OrderDeleteView(BaseOrderDetailView, DeleteView):
     """Deletes a deliver order instance."""
     template_name = 'orders/modals/order_delete_form.html'
     success_url = reverse_lazy('orders:closed-orders-list')
     access_roles = [ROLE_ADMIN]
+
+    def get_success_url(self):
+        delivery_order = self.get_object()
+        batch_pk = delivery_order.batch.pk
+        return reverse_lazy('orders:batch-detail', args=[batch_pk])
