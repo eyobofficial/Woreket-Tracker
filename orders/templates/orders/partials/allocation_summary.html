@@ -53,6 +53,65 @@
         </div>
       </div><!-- card-header -->
 
+      {% if object.allocations.count > 0 %}
+        <!-- Media cards -->
+        <div class="card-body">
+          <div class="d-sm-flex justify-content-between summary-card allocation-summary-card">
+            <!-- Total Quantity -->
+            <div class="media mg-md-y-5 mg-lg-y-0">
+              <div class="wd-40 wd-md-40 ht-40 ht-md-40 bg-secondary tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-6">
+                <i class="fas fa-balance-scale tx-20"></i>
+              </div>
+              <div class="media-body">
+                <h6 class="tx-sans tx-uppercase tx-10 tx-spacing-1 tx-color-03 tx-semibold tx-nowrap mg-b-5 mg-md-b-6">Total Quantity</h6>
+                <h4 class="tx-16 tx-sm-16 tx-md-18 tx-normal tx-rubik mg-b-0">
+                  {{ object.get_allocated_quantity|floatformat:2|intcomma }} <span class="tx-12 tx-color-03 tx-rubik">{{ object.unit.code }}</span>
+                </h4>
+              </div>
+            </div>
+
+            <!-- Total Amount -->
+            <div class="media mg-md-y-5 mg-lg-y-0">
+              <div class="wd-40 wd-md-40 ht-40 ht-md-40 bg-teal tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-6">
+                <i class="fas fa-coins tx-20"></i>
+              </div>
+              <div class="media-body">
+                <h6 class="tx-sans tx-uppercase tx-10 tx-spacing-1 tx-color-03 tx-semibold tx-nowrap mg-b-5 mg-md-b-6">Total Amount</h6>
+                <h4 class="tx-16 tx-sm-16 tx-md-18 tx-normal tx-rubik mg-b-0">
+                  ${{ object.get_allocated_amount|floatformat:2|intcomma }}
+                </h4>
+              </div>
+            </div>
+
+            <!-- Advance Amount -->
+            <div class="media mg-md-y-5 mg-lg-y-0">
+              <div class="wd-40 wd-md-40 ht-40 ht-md-40 bg-warning tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-8">
+                <i class="fas fa-funnel-dollar tx-20"></i>
+              </div>
+              <div class="media-body">
+                <h6 class="tx-sans tx-uppercase tx-10 tx-spacing-1 tx-color-03 tx-semibold tx-nowrap mg-b-5 mg-md-b-6">90% Amount</h6>
+                <h4 class="tx-16 tx-sm-16 tx-md-18 tx-normal tx-rubik mg-b-0">
+                  ${{ object.get_allocated_advance|floatformat:2|intcomma }}
+                </h4>
+              </div>
+            </div>
+
+            <!-- Retention Quantity -->
+            <div class="media mg-md-y-5 mg-lg-y-0">
+              <div class="wd-40 wd-md-40 ht-40 ht-md-40 bg-pink tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-6">
+                <i class="fas fa-hand-holding-usd tx-20"></i>
+              </div>
+              <div class="media-body">
+                <h6 class="tx-sans tx-uppercase tx-10 tx-spacing-1 tx-color-03 tx-semibold tx-nowrap mg-b-5 mg-md-b-6">10% Amount</h6>
+                <h4 class="tx-16 tx-sm-16 tx-md-18 tx-normal tx-rubik mg-b-0">
+                  ${{ object.get_allocated_retention|floatformat:2|intcomma }}
+                </h4>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.end .media-cards -->
+      {% endif %}
+
       <div class="card-body pd-x-0 pd-t-0">
         <div class="table-responsive">
           <table class="table table-dashboard table-striped table-card table-detail mg-b-0" id="allocation-table">
@@ -63,7 +122,7 @@
                 <th class="text-right">Rate (USD)</th>
                 <th class="text-right allocation-amount-col">Amount (USD)</th>
                 {% if object.batch.status == object.batch.OPEN and perms.orders.change_allocation or perms.orders.delete_allocation %}
-                <th class="action wd-80"></th>
+                  <th class="action wd-80"></th>
                 {% endif %}
               </tr>
             </thead>
@@ -104,9 +163,9 @@
               {% empty %}
               <tr class="empty-row">
                 {% if object.status == object.OPEN %}
-                <td colspan="6" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">NO ALLOCATION DATA</td>
-                {% else %}
                 <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">NO ALLOCATION DATA</td>
+                {% else %}
+                <td colspan="4" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">NO ALLOCATION DATA</td>
                 {% endif %}
               </tr>
               {% endfor %}

@@ -82,3 +82,9 @@
     border-bottom: none;
     margin-bottom: 0;
 }
+
+
+.summary-card {
+    flex-wrap: wrap;
+    align-content: space-between;
+}
