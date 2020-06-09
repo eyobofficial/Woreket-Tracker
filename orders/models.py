@@ -171,7 +171,7 @@ class DeliveryOrder(models.Model):
 
     class Meta:
         default_related_name = 'delivery_orders'
-        ordering = ('-created_at', )
+        ordering = ('created_at', )
         permissions = [
             ('close_deliveryorder', 'Close delivery order'),
             ('reopen_deliveryorder', 'Re-open delivery order')
