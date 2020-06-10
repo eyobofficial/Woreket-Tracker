@@ -451,6 +451,16 @@ class Allocation(models.Model):
                 * RETENTION
         return round(amount, 4)
 
+    def get_percentage(self):
+        """Returns the region allocation percentage.
+
+        Returns:
+            percentage (Decimal): allocation quantity in percent.
+        """
+        quantity = self.get_total_quantity()
+        total_allocation = self.delivery_order.get_allocated_quantity()
+        percent = (quantity / total_allocation) * 100
+        return round(percent, 2)
 
 class UnionAllocation(models.Model):
     """Allocation data to the unions for the delivery order."""

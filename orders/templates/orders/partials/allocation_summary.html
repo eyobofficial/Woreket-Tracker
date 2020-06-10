@@ -2,40 +2,42 @@
 
 <!-- Delivery Order Allocation -->
 <div class="row row-xs row-flex mg-b-30" id="allocation-section">
-  <div class="col-sm-3 col-lg-3">
+  <div class="col-sm-12 col-md-4 col-lg-3 mg-xs-b-10 mg-sm-b-10 mg-md-b-0">
     <div class="card ht-100p">
       <div class="card-header d-flex justify-content-between">
         <h6 class="lh-5 mg-b-0">Allocation Summary</h6>
       </div><!-- card-header -->
-      <div class="card-body pd-x-20">
-        <ul class="list-group list-group-flush mg-b-0 tx-13 summary-list-group">
-          <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Rate</span>
-            <span class="tx-medium">${{ object.batch.rate|floatformat:2|intcomma }}</span>
-          </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Total allocated quantity" data-target="allocation-quantity-col">
-            <span class="tx-normal">Quantity</span>
-            {% if object.get_allocated_quantity %}
-            <span class="tx-medium">{{ object.get_allocated_quantity|floatformat:2|intcomma }} {{ object.unit.code|upper }}</span>
-            {% else %}
-            <span class="tx-medium">-</span>
-            {% endif %}
-          </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Total allocated amount" data-target="allocation-amount-col">
-            <span class="tx-normal">Amount</span>
-            {% if object.get_allocated_amount %}
-            <span class="tx-medium">${{ object.get_allocated_amount|floatformat:2|intcomma }}</span>
-            {% else %}
-            <span class="tx-medium">-</span>
-            {% endif %}
-          </li>
-        </ul>
+
+      {% if object.allocations.count > 0 %}
+      <div class="card-body pd-y-20">
+        <div class="row">
+          <div class="col-12 pd-b-10">
+            <div class="region-summary-chart"><canvas id="chart-allocation-{{ object.pk }}"></canvas></div>
+          </div>
+          {% for allocation in object.allocations.all %}
+            <div class="col-12 tx-12 mg-t-15 allocation-bullets" id="bullet-allocation-{{ allocation.buyer.code }}">
+              <div class="d-flex align-items-center">
+                <div class="wd-10 ht-10 rounded-circle pos-relative t--1 bullet-color"></div>
+                <span class="tx-medium mg-l-10">{{ allocation.buyer.code }}</span>
+                <span class="tx-rubik mg-l-auto">{{ allocation.get_total_quantity|floatformat:2|intcomma }} {{ object.unit.code }}</span>
+                <span class="wd-60 tx-right tx-rubik mg-l-5 tx-success">{{ allocation.get_percentage }}%</span>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
       </div><!-- card-body -->
+      {% else %}
+      <div class="card-body pd-y-60">
+        <h5 class="text-uppercase tx-sans tx-semibold text-center tx-16 text-secondary op-4">
+          No Allocation
+        </h5>
+      </div>
+      {% endif %}
     </div><!-- card -->
   </div><!-- col -->
 
-  <div class="col-sm-9">
-    <div class="card mg-b-10 ht-100p">
+  <div class="col-sm-12 col-md-8 col-lg-9 mg-xs-b-10 mg-sm-b-10 mg-md-b-0">
+    <div class="card ht-100p">
       <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-10">
         <div>
           <h6 class="mg-b-3">Region Allocations</h6>
@@ -55,10 +57,10 @@
 
       {% if object.allocations.count > 0 %}
         <!-- Media cards -->
-        <div class="card-body">
+        <div class="card-body pd-b-0">
           <div class="d-sm-flex justify-content-between summary-card allocation-summary-card">
             <!-- Total Quantity -->
-            <div class="media mg-md-y-5 mg-lg-y-0">
+            <div class="media mg-xs-y-10 mg-md-y-5 mg-lg-y-0">
               <div class="wd-40 wd-md-40 ht-40 ht-md-40 bg-secondary tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-6">
                 <i class="fas fa-balance-scale tx-20"></i>
               </div>
@@ -71,7 +73,7 @@
             </div>
 
             <!-- Total Amount -->
-            <div class="media mg-md-y-5 mg-lg-y-0">
+            <div class="media mg-xs-y-10 mg-md-y-5 mg-lg-y-0">
               <div class="wd-40 wd-md-40 ht-40 ht-md-40 bg-teal tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-6">
                 <i class="fas fa-coins tx-20"></i>
               </div>
@@ -84,7 +86,7 @@
             </div>
 
             <!-- Advance Amount -->
-            <div class="media mg-md-y-5 mg-lg-y-0">
+            <div class="media mg-xs-y-10 mg-md-y-5 mg-lg-y-0">
               <div class="wd-40 wd-md-40 ht-40 ht-md-40 bg-warning tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-8">
                 <i class="fas fa-funnel-dollar tx-20"></i>
               </div>
@@ -97,7 +99,7 @@
             </div>
 
             <!-- Retention Quantity -->
-            <div class="media mg-md-y-5 mg-lg-y-0">
+            <div class="media mg-xs-y-10 mg-md-y-5 mg-lg-y-0">
               <div class="wd-40 wd-md-40 ht-40 ht-md-40 bg-pink tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-6">
                 <i class="fas fa-hand-holding-usd tx-20"></i>
               </div>
@@ -176,3 +178,61 @@
     </div><!-- card -->
   </div><!-- col -->
 </div><!-- row -->
+
+<script>
+  $(function(){
+    /** ALLOCATION PIE CHART **/
+    const regionColors = [
+      {region: 'AMH', color: '#00cccc', className: 'bg-teal'},
+      {region: 'BEN', color: '#7987a1', className: 'bg-secondary'},
+      {region: 'EABC', color: '#10b759', className: 'bg-success'},
+      {region: 'ORO', color: '#ffc107', className: 'bg-warning'},
+      {region: 'SNNP', color: '#0168fa', className: 'bg-primary'},
+      {region: 'TIG', color: '#f10075', className: 'bg-pink'},
+    ]
+    const labels = [];
+    const data = [];
+    const backgroundColors = [];
+    let code, quantity, colorData;
+
+    {% for allocation in object.allocations.all %}
+      code = '{{ allocation.buyer.code }}';
+      quantity = +'{{ allocation.get_total_quantity|floatformat:2 }}';
+      colorData = regionColors.find(item => item['region'] == code);
+
+      labels.push(code);
+      data.push(quantity);
+      backgroundColors.push(colorData['color']);
+      $(`#bullet-allocation-${code}`).find('.bullet-color')
+                                    .addClass(colorData['className']);
+    {% endfor %}
+
+    const datapie = {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: backgroundColors
+      }]
+    };
+
+    const optionpie = {
+      maintainAspectRatio: false,
+      responsive: true,
+      legend: {
+        display: false,
+      },
+      animation: {
+        animateScale: true,
+        animateRotate: true
+      }
+    };
+
+    // Pie chart
+    const ctx2 = document.getElementById('chart-allocation-{{ object.pk }}');
+    const allocationChart = new Chart(ctx2, {
+      type: 'doughnut',
+      data: datapie,
+      options: optionpie
+    });
+  })
+</script>
