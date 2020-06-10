@@ -579,6 +579,17 @@ class Distribution(models.Model):
         amount = self.get_total_quantity() * rate * RETENTION
         return round(amount, 4)
 
+    def get_percentage(self):
+        """Returns the region distribution percentage.
+
+        Returns:
+            percentage (Decimal): distribution quantity in percent.
+        """
+        quantity = self.get_total_quantity()
+        total_distribution = self.delivery_order.get_delivered_quantity()
+        percent = (quantity / total_distribution) * 100
+        return round(percent, 2)
+
 
 class UnionDistribution(models.Model):
     """Actual distribution data to the unions for the delivery order."""
