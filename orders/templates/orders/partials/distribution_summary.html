@@ -15,7 +15,7 @@
             <div class="region-summary-chart"><canvas id="chart-distribution-{{ object.pk }}"></canvas></div>
           </div>
           {% for distribution in object.distributions.all %}
-            <div class="col-12 tx-12 mg-t-15 distribution-bullets" id="bullet-distribution-{{ distribution.buyer.code }}">
+            <div class="col-12 tx-12 mg-t-15 distribution-bullets" id="bullet-distribution-{{ distribution.pk }}">
               <div class="d-flex align-items-center">
                 <div class="wd-10 ht-10 rounded-circle pos-relative t--1 bullet-color"></div>
                 <span class="tx-medium mg-l-10">{{ distribution.buyer.code }}</span>
@@ -168,58 +168,68 @@
 
 <script>
   $(function(){
-    /** ALLOCATION PIE CHART **/
-    const regionColors = [
-      {region: 'AMH', color: '#00cccc', className: 'bg-teal'},
-      {region: 'BEN', color: '#7987a1', className: 'bg-secondary'},
-      {region: 'EABC', color: '#10b759', className: 'bg-success'},
-      {region: 'ORO', color: '#ffc107', className: 'bg-warning'},
-      {region: 'SNNP', color: '#0168fa', className: 'bg-primary'},
-      {region: 'TIG', color: '#f10075', className: 'bg-pink'},
-    ]
-    const labels = [];
-    const data = [];
-    const backgroundColors = [];
-    let code, quantity, colorData;
+    /** DISTRIBUTION PIE CHART **/
+    {% if object.distributions.count > 0 %}
+      let distributionChart = initDistributionChart();
+      $('#tab-{{ object.pk }}').on('shown.bs.tab', function() {
+        distributionChart.destroy();
+        initDistributionChart();
+      });
+    {% endif %}
 
-    {% for distribution in object.distributions.all %}
-      code = '{{ distribution.buyer.code }}';
-      quantity = +'{{ distribution.get_total_quantity|floatformat:2 }}';
-      colorData = regionColors.find(item => item['region'] == code);
+    function initDistributionChart() {
+      const regionColors = [
+        {region: 'AMH', color: '#00cccc', className: 'bg-teal'},
+        {region: 'BEN', color: '#7987a1', className: 'bg-secondary'},
+        {region: 'EABC', color: '#10b759', className: 'bg-success'},
+        {region: 'ORO', color: '#ffc107', className: 'bg-warning'},
+        {region: 'SNNP', color: '#0168fa', className: 'bg-primary'},
+        {region: 'TIG', color: '#f10075', className: 'bg-pink'},
+      ]
+      const labels = [];
+      const data = [];
+      const backgroundColors = [];
+      let code, quantity, colorData;
 
-      labels.push(code);
-      data.push(quantity);
-      backgroundColors.push(colorData['color']);
-      $(`#bullet-distribution-${code}`).find('.bullet-color')
-                                    .addClass(colorData['className']);
-    {% endfor %}
+      {% for distribution in object.distributions.all %}
+        code = '{{ distribution.buyer.code }}';
+        quantity = +'{{ distribution.get_total_quantity|floatformat:2 }}';
+        colorData = regionColors.find(item => item['region'] == code);
 
-    const datapie = {
-      labels: labels,
-      datasets: [{
-        data: data,
-        backgroundColor: backgroundColors
-      }]
-    };
+        labels.push(code);
+        data.push(quantity);
+        backgroundColors.push(colorData['color']);
+        $('#bullet-distribution-{{ distribution.pk }}').find('.bullet-color')
+                                      .addClass(colorData['className']);
+      {% endfor %}
 
-    const optionpie = {
-      maintainAspectRatio: false,
-      responsive: true,
-      legend: {
-        display: false,
-      },
-      animation: {
-        animateScale: true,
-        animateRotate: true
-      }
-    };
+      const datapie = {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: backgroundColors
+        }]
+      };
 
-    // Pie chart
-    const ctx2 = document.getElementById('chart-distribution-{{ object.pk }}');
-    const distributionChart = new Chart(ctx2, {
-      type: 'doughnut',
-      data: datapie,
-      options: optionpie
-    });
+      const optionpie = {
+        maintainAspectRatio: false,
+        responsive: true,
+        legend: {
+          display: false,
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true
+        }
+      };
+
+      // Pie chart
+      const ctx = document.getElementById('chart-distribution-{{ object.pk }}');
+      return new Chart (ctx, {
+        type: 'doughnut',
+        data: datapie,
+        options: optionpie
+      });
+    }
   })
 </script>
