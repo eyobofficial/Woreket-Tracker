@@ -32,23 +32,6 @@
             {% endif %}
           </div>
 
-          <!-- Quantity -->
-          <div class="form-group">
-            <label for="quantity" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Quantity</label>
-            <input
-              id="quantity" class="form-control {% if form.quantity.errors %}parsley-error{% endif %}"
-              name="quantity" value="{{ form.instance.quantity|default_if_none:'' }}"
-              placeholder="Enter agreement quantity"
-              autocomplete="off" required />
-            {% if form.quantity.errors %}
-            <ul class="parsley-errors-list filled">
-              {% for error in form.quantity.errors %}
-              <li class="parsley-required">{{ error }}</li>
-              {% endfor %}
-            </ul>
-            {% endif %}
-          </div>
-
           <!-- Bill of loading -->
           <div class="form-group">
             <label for="bill-of-loading" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03" title="Bill of loading document number.">B/L Document No.</label>
@@ -133,7 +116,6 @@
 <script>
   $(function () {
     // Initialize plugins
-    initCleave();
     initDateSelector();
 
     const $card = $('#do-form-card');
@@ -168,7 +150,6 @@
         $form.replaceWith($responseForm);
         $form.find('button[type=submit]').text('Save').removeAttr('disabled');
         initDateSelector();
-        initCleave();
       });
     });
 
@@ -176,14 +157,6 @@
       $('#arrivalDate').datepicker({
         altField: '#altArrivalDate',
         altFormat: 'yy-mm-dd'
-      });
-    }
-
-    function initCleave() {
-      new Cleave('#quantity', {
-        numeral: true,
-        numeralThousandsGroupStyle: 'thousand',
-        numeralDecimalScale: 4
       });
     }
   });

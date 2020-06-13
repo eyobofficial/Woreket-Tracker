@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-lg wd-sm-650" role="document">
+<div class="modal-dialog modal-lg wd-sm-550" role="document">
   <div class="modal-content">
     <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
       <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
@@ -38,23 +38,6 @@
               {% if form.vessel.errors %}
               <ul class="parsley-errors-list filled">
                 {% for error in form.vessel.errors %}
-                <li class="parsley-required">{{ error }}</li>
-                {% endfor %}
-              </ul>
-              {% endif %}
-            </div>
-
-            <!-- Quantity -->
-            <div class="form-group">
-              <label for="quantity" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Quantity</label>
-              <input
-                id="quantity" class="form-control {% if form.quantity.errors %}parsley-error{% endif %}"
-                name="quantity" value="{{ form.instance.quantity|default_if_none:'' }}"
-                placeholder="Enter agreement quantity"
-                autocomplete="off" required />
-              {% if form.quantity.errors %}
-              <ul class="parsley-errors-list filled">
-                {% for error in form.quantity.errors %}
                 <li class="parsley-required">{{ error }}</li>
                 {% endfor %}
               </ul>
@@ -145,12 +128,6 @@
 
 <script>
   $(function () {
-    new Cleave('#quantity', {
-      numeral: true,
-      numeralThousandsGroupStyle: 'thousand',
-      numeralDecimalScale: 4
-    });
-
     // Initialize date selector
     initDateSelector();
 

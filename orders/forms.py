@@ -21,12 +21,10 @@ class BatchForm(forms.ModelForm):
 
 class DeliveryOrderForm(forms.ModelForm):
     """Model form for creating new deliveries."""
-    quantity = FormattedNumberField(max_digits=20, decimal_places=4)
-
     class Meta:
         model = DeliveryOrder
         fields = (
-            'bill_of_loading', 'quantity', 'port',  'vessel', 'arrival_date'
+            'bill_of_loading', 'port',  'vessel', 'arrival_date'
         )
 
 
