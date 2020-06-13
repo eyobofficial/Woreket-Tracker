@@ -12,7 +12,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from shared.constants import ADVANCE, RETENTION
 from shared.models import Unit
-# from orders.models import DeliveryOrder
+from orders.models import Batch
 
 from .managers import BatchManager
 
@@ -62,3 +62,19 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_open_batches(self):
+        """Returns associated batches with `OPEN` status.
+
+        Returns:
+            batches (queryset): A queryset of open batches.
+        """
+        return self.batches.filter(status=Batch.OPEN)
+
+    def get_closed_batches(self):
+        """Returns associated batches with `CLOSED` status.
+
+        Returns:
+            batches (queryset): A queryset of closed batches.
+        """
+        return self.batches.filter(status=Batch.CLOSED)

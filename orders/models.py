@@ -15,7 +15,6 @@ from django_countries.fields import CountryField
 from shared.constants import ADVANCE, RETENTION
 from shared.models import Unit
 from customers.models import Customer, Union, Location
-from purchases.models import Product, Supplier
 
 
 User = settings.AUTH_USER_MODEL
@@ -67,8 +66,14 @@ class Batch(models.Model):
         'L/C number', max_length=30,
         help_text='Document number for the letter of credit.'
     )
-    product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
-    supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
+    product = models.ForeignKey(
+        'purchases.Product',
+        null=True, on_delete=models.SET_NULL
+    )
+    supplier = models.ForeignKey(
+        'purchases.Supplier',
+        null=True, on_delete=models.SET_NULL
+    )
     quantity = models.DecimalField(
         max_digits=20,
         decimal_places=4,

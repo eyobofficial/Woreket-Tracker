@@ -14,7 +14,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'shared/assets/img/favicon.png' %}">
 
-    <title>{% block title %}Payment Tracker{% endblock %}</title>
+    <title>{% block title %}Woreket Tracker{% endblock %}</title>
 
     <!-- vendor css -->
     <link href="{% static 'shared/vendor/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
@@ -64,17 +64,17 @@
       <a href="" id="mainMenuOpen" class="burger-menu"><i data-feather="menu"></i></a>
       <div class="navbar-brand">
         {% if perms.orders %}
-          <a href="{% url 'orders:open-orders-list' %}" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+          <a href="{% url 'orders:open-batch-list' %}" class="df-logo">Woreket&nbsp;<span>Tracker</span></a>
         {% else %}
-          <a href="#" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+          <a href="#" class="df-logo">Woreket&nbsp;<span>Tracker</span></a>
         {% endif %}
       </div><!-- navbar-brand -->
       <div id="navbarMenu" class="navbar-menu-wrapper">
         <div class="navbar-menu-header">
           {% if perms.orders %}
-            <a href="{% url 'orders:open-orders-list' %}" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+            <a href="{% url 'orders:open-orders-list' %}" class="df-logo">Woreket&nbsp;<span>Tracker</span></a>
           {% else %}
-            <a href="#" class="df-logo">Payment&nbsp;<span>Tracker</span></a>
+            <a href="#" class="df-logo">Woreket&nbsp;<span>Tracker</span></a>
           {% endif %}
           <a id="mainMenuClose" href=""><i data-feather="x"></i></a>
         </div><!-- navbar-menu-header -->
@@ -107,7 +107,7 @@
               <!-- Batch -->
               {% if perms.purchases.view_batch %}
                 <li class="nav-item with-sub {% if page_name == 'batches' %}active{% endif %}">
-                  <a href="" class="nav-link"><i data-feather="box"></i>Purchased LOTS</a>
+                  <a href="" class="nav-link"><i data-feather="box"></i>Purchased Batches</a>
 
                   <ul class="navbar-menu-sub">
                     <li class="nav-sub-item">
@@ -186,7 +186,7 @@
 
     <footer class="footer">
       <div>
-        <span>&copy; {% now 'Y' %} Payment Tracker.</span>
+        <span>&copy; {% now 'Y' %} Woreket Tracker.</span>
       </div>
       <div>
         <nav class="nav">

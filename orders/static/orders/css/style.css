@@ -8,12 +8,12 @@
     padding-left: 8px !important;
 }
 
-#orders-table-card .search-form .form-control {
+.summary-table-container .search-form .form-control {
     width: 70%;
     height: calc(1.3em + 0.8375rem + 2px);
 }
 
-#orders-table-card .search-form button {
+.summary-table-container .search-form button {
     z-index: 100;
 }
 
@@ -82,7 +82,6 @@
     border-bottom: none;
     margin-bottom: 0;
 }
-
 
 .summary-card {
     flex-wrap: wrap;
