@@ -77,6 +77,66 @@
     <!-- BATCH SUMMARY AND GRAPH -->
     {% include 'orders/partials/batch_summary.html' with object=object %}
 
+    <div class="row row-xs">
+      <div class="col mg-t-20">
+        <div class="card card-dashboard-table" id="delivery-order-summary-card">
+          <div class="pd-b-30 table-responsive">
+            <table class="table table-bordered table-hover" id="delivery-order-summary-table">
+              <thead>
+                <tr>
+                  <th class="bg-white">&nbsp;</th>
+                  <th colspan="4" class="text-center bg-white text-uppercase tx-medium">Allocations</th>
+                  <th colspan="3" class="text-center bg-white text-uppercase tx-medium">Distributions</th>
+                </tr>
+                <tr>
+                  <th>Delivery Orders</th>
+                  <th>Quantity ({{ object.product.unit.code }})</th>
+                  <th>Total Amount</th>
+                  <th>90% Advance</th>
+                  <th>10% Settlement</th>
+                  <th>Quantity ({{ object.product.unit.code }})</th>
+                  <th>Shortage ({{ object.product.unit.code }})</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if object.delivery_orders.count > 0 %}
+                  {% for delivery_order in object.delivery_orders.all %}
+                  <tr>
+                    <td><a class="tx-medium text-primary">{{ delivery_order.vessel }}</a></td>
+                    <td class="tz-color-03 tx-normal">{{ delivery_order.get_allocated_quantity|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ delivery_order.get_allocated_amount|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ delivery_order.get_allocated_advance|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ delivery_order.get_allocated_retention|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">{{ delivery_order.get_distributed_quantity|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">{{ delivery_order.get_distributed_shortage|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ delivery_order.get_distributed_amount|floatformat:2|intcomma }}</td>
+                  </tr>
+                  {% endfor %}
+                  <tr>
+                    <td><a class="tx-semibold tx-spacing-1 tx-rubik">TOTAL</a></td>
+                    <td class="tz-color-03 tx-normal">{{ object.get_allocated_quantity|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ object.get_allocated_amount|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ object.get_advance_amount|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal tx-pink">${{ object.get_retention_amount|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">{{ object.get_distributed_quantity|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">{{ object.get_distributed_shortage|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ object.get_distributed_amount|floatformat:2|intcomma }}</td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="8" style="border-bottom: none;">
+                      <h4 class="text-center pd-t-40 pd-b-20 text-secondary text-uppercase op-6">No Delivery Order</h4>
+                    </td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div><!-- table-responsive -->
+        </div><!-- card -->
+      </div>
+    </div>
+
     <!-- DELIVERY ORDER TABS  -->
     {% include 'orders/partials/delivery_order_tabs.html' with object=object %}
 

@@ -96,7 +96,7 @@
   <div class="col-sm-4">
     <div class="card ht-100p">
       <div class="card-header d-flex justify-content-between">
-        <h6 class="lh-5 mg-b-0">L/C Summary</h6>
+        <h6 class="lh-5 mg-b-0">Batch Summary</h6>
       </div><!-- card-header -->
       <div class="card-body pd-x-20">
         <ul class="list-group list-group-flush mg-b-0 tx-13 summary-list-group">
@@ -130,14 +130,14 @@
             <span class="tx-medium tx-spacing-1 tx-rubik">Total Amount</span>
             <span class="tx-semibold tx-spacing-1 tx-rubik">${{ object.get_agreement_amount|floatformat:2|intcomma }}</span>
           </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between">
+          <!-- <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-medium tx-spacing-1 tx-rubik">Advance Amount (90%)</span>
             <span class="tx-semibold tx-spacing-1 tx-rubik">${{ object.get_advance_amount|floatformat:2|intcomma }}</span>
           </li>
           <li class="list-group-item pd-x-0 d-flex justify-content-between">
             <span class="tx-medium tx-spacing-1 tx-rubik">10% Amount</span>
             <span class="tx-semibold tx-spacing-1 tx-rubik">${{ object.get_retention_amount|floatformat:2|intcomma }}</span>
-          </li>
+          </li> -->
         </ul>
       </div><!-- card-body -->
     </div><!-- card -->

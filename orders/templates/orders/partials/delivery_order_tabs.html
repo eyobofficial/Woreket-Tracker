@@ -22,81 +22,88 @@
   <div class="tab-content bd bd-gray-300 bd-t-0 pd-20" id="delivery-orders-tab-content">
     {% for delivery_order in object.delivery_orders.all %}
     <div class="tab-pane fade {% if active_pk|safe == delivery_order.pk|safe %}active show{% endif %}" role="tabpanel" id="tab-pane-{{ delivery_order.pk }}">
-
       <div class="d-flex justify-content-between">
-        <button data-url="{% url 'orders:order-update' delivery_order.pk %}" class="btn btn-sm pd-x-40 btn-primary btn-uppercase mg-l-5 btn-modal">
+        <button data-url="{% url 'orders:order-update' delivery_order.pk %}" class="btn btn-sm pd-x-20 btn-primary btn-uppercase mg-l-5 btn-modal">
           <i data-feather="edit" class="wd-10 mg-r-5"></i> Edit
         </button>
-
-        <button data-url="{% url 'orders:order-delete' delivery_order.pk %}" class="btn btn-sm pd-x-40 btn-danger btn-uppercase mg-l-5 btn-modal">
-          <i data-feather="trash" class="wd-10 mg-r-5"></i> Delete
-        </button>
+        <div>
+          <button data-url="{% url 'orders:order-update' delivery_order.pk %}" class="btn btn-sm pd-x-20 btn-white btn-uppercase mg-l-5 btn-modal">
+            <i data-feather="file-text" class="wd-10 mg-r-5"></i> Letter
+          </button>
+          <button data-url="{% url 'orders:order-delete' delivery_order.pk %}" class="btn btn-sm pd-x-20 btn-danger btn-uppercase mg-l-5 btn-modal">
+            <i data-feather="trash" class="wd-10 mg-r-5"></i> Delete
+          </button>
+        </div>
       </div>
-
       <div class="card mg-t-20 mg-b-30">
         <div class="card-header">
           <h5 class="mg-b-0">{{ delivery_order.vessel }} Vessel Summary</h5>
         </div>
-        <div class="card-body d-flex flex-row justify-content-between mg-t-30 mg-b-40">
-          <div class="media mg-b-10">
-            <div class="crypto-icon bg-secondary">
-              <i class="fas fa-truck-loading"></i>
+        <div class="card-body pd-0">
+          <div class="row no-gutters">
+            <div class="col col-sm-6 col-lg">
+              <div class="crypto">
+                <div class="media mg-b-10 pd-y-25">
+                  <div class="crypto-icon bg-secondary">
+                    <i class="fas fa-truck-loading"></i>
+                  </div><!-- crypto-icon -->
+                  <div class="media-body pd-l-8">
+                    <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Bill of Loading</h6>
+                    <div class="d-flex align-items-baseline tx-rubik">
+                      <h5 class="tx-18 mg-b-0">{{ delivery_order.bill_of_loading }}</h5>
+                    </div>
+                  </div><!-- media-body -->
+                </div><!-- media -->
+              </div><!-- crypto -->
             </div>
-            <div class="media-body pd-l-8">
-              <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Bill of Loading</h6>
-              <div class="d-flex align-items-baseline tx-rubik">
-                <h5 class="tx-18 mg-b-0">{{ delivery_order.bill_of_loading }}</h5>
-              </div>
-            </div><!-- media-body -->
-          </div><!-- media -->
 
-          <div class="media mg-b-10">
-            <div class="crypto-icon bg-teal">
-              <i class="fas fa-anchor"></i>
-            </div>
-            <div class="media-body pd-l-8">
-              <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Port</h6>
-              <div class="d-flex align-items-baseline tx-rubik">
-                <h5 class="tx-18 mg-b-0">{{ delivery_order.port }}</h5>
-              </div>
-            </div><!-- media-body -->
-          </div><!-- media -->
 
-          <div class="media mg-b-10">
-            <div class="crypto-icon bg-litecoin">
-              <i class="far fa-calendar"></i>
+            <div class="col col-sm-6 col-lg bd-t bd-sm-t-0 bd-sm-l">
+              <div class="crypto">
+                <div class="media mg-b-10 pd-y-25">
+                  <div class="crypto-icon bg-success">
+                    <i class="fas fa-anchor"></i>
+                  </div>
+                  <div class="media-body pd-l-8">
+                    <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Port</h6>
+                    <div class="d-flex align-items-baseline tx-rubik">
+                      <h5 class="tx-18 mg-b-0">{{ delivery_order.port }}</h5>
+                    </div>
+                  </div><!-- media-body -->
+                </div><!-- media -->
+              </div><!-- crypto -->
             </div>
-            <div class="media-body pd-l-8">
-              <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Arrival Date</h6>
-              <div class="d-flex align-items-baseline tx-rubik">
-                <h5 class="tx-18 mg-b-0">{{ delivery_order.arrival_date|date:'d-m-Y' }}</h5>
-              </div>
-            </div><!-- media-body -->
-          </div><!-- media -->
-
-          <div class="media mg-b-10">
-            <div class="crypto-icon bg-warning">
-              <i class="fas fa-balance-scale"></i>
+            <div class="col col-sm-6 col-lg bd-t bd-lg-t-0 bd-lg-l">
+              <div class="crypto">
+                <div class="media mg-b-10 pd-y-25">
+                  <div class="crypto-icon bg-litecoin">
+                    <i class="far fa-calendar"></i>
+                  </div><!-- crypto-icon -->
+                  <div class="media-body pd-l-8">
+                    <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Arrival Date</h6>
+                    <div class="d-flex align-items-baseline tx-rubik">
+                      <h5 class="tx-18 mg-b-0">{{ delivery_order.arrival_date|date:'M d, Y' }}</h5>
+                    </div>
+                  </div><!-- media-body -->
+                </div><!-- media -->
+              </div><!-- crypto -->
             </div>
-            <div class="media-body pd-l-8">
-              <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Quantity ({{ delivery_order.unit.code }})</h6>
-              <div class="d-flex align-items-baseline tx-rubik">
-                <h5 class="tx-18 mg-b-0">{{ delivery_order.quantity|floatformat:2|intcomma }}</h5>
-              </div>
-            </div><!-- media-body -->
-          </div><!-- media -->
-
-          <div class="media mg-b-10">
-            <div class="crypto-icon bg-success">
-              <i class="fas fa-coins"></i>
+            <div class="col col-sm-6 col-lg bd-t bd-lg-t-0 bd-sm-l">
+              <div class="crypto">
+                <div class="media mg-b-10 pd-y-25">
+                  <div class="crypto-icon bg-primary">
+                    <i class="fas fa-balance-scale"></i>
+                  </div><!-- crypto-icon -->
+                  <div class="media-body pd-l-8">
+                    <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Quantity ({{ delivery_order.unit.code }})</h6>
+                    <div class="d-flex align-items-baseline tx-rubik">
+                      <h5 class="tx-18 mg-b-0">{{ delivery_order.get_allocated_quantity|floatformat:2|intcomma }}</h5>
+                    </div>
+                  </div><!-- media-body -->
+                </div><!-- media -->
+              </div><!-- crypto -->
             </div>
-            <div class="media-body pd-l-8">
-              <h6 class="tx-11 tx-spacing-1 tx-uppercase tx-color-03 mg-b-5">Amount</h6>
-              <div class="d-flex align-items-baseline tx-rubik">
-                <h5 class="tx-18 mg-b-0">${{ delivery_order.get_agreement_amount|floatformat:2|intcomma }}</h5>
-              </div>
-            </div><!-- media-body -->
-          </div><!-- media -->
+          </div>
         </div>
       </div>
 

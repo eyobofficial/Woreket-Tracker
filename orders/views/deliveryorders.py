@@ -198,7 +198,6 @@ class BillOfLoadingSummary(BaseOrderView, DetailView):
 
 class OrderCreateView(BaseOrderView, CreateView):
     """Creates new delivery order instances."""
-    # template_name = 'orders/modals/order_form.html'
     template_name = 'orders/order_create_form.html'
     form_class = DeliveryOrderForm
     model = DeliveryOrder

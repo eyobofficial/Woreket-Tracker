@@ -88,3 +88,20 @@
     flex-wrap: wrap;
     align-content: space-between;
 }
+
+#delivery-order-summary-card {
+    border-radius: 6px;
+}
+
+#delivery-order-summary-card .table-responsive {
+    border-radius: 6px;
+}
+
+
+#delivery-order-summary-table td:first-child {
+    border-left: none;
+}
+
+#delivery-order-summary-table td:last-child {
+    border-right: none;
+}
