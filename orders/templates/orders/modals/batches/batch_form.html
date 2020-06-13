@@ -203,10 +203,12 @@
       });
 
       request.done(data => {
-        const $updatedPage = $(data).find('#batch-list-container');
-        $('#batch-list-container').replaceWith($updatedPage);
-        $('#modal-widget').modal('hide');
-        feather.replace();
+        {% if object is None %}
+          response = JSON.parse(data);
+          window.location.href = response.redirect_url;
+        {% else %}
+          window.location.reload();
+        {% endif %}
       });
 
       request.fail(jqXHR => {

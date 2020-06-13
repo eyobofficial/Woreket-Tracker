@@ -3,6 +3,7 @@ from collections import namedtuple, Counter
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
@@ -110,7 +111,6 @@ class BatchCreateView(BaseBatchesView, SuccessMessageMixin, CreateView):
     template_name = 'orders/modals/batches/batch_form.html'
     form_class = BatchForm
     model = Batch
-    success_url = reverse_lazy('purchases:batch-list')
     success_message = 'A new LOT record is successfully created.'
     page_name = 'batches'
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
@@ -123,6 +123,13 @@ class BatchCreateView(BaseBatchesView, SuccessMessageMixin, CreateView):
         })
         return super().get_context_data(**kwargs)
 
+    def form_valid(self, form):
+        super().form_valid(form)
+        return JsonResponse({
+            'status_code': 201,
+            'redirect_url': self.get_success_url()
+        })
+
     def form_invalid(self, form):
         response = super().form_invalid(form)
         response.status_code = 400
@@ -134,7 +141,6 @@ class BatchUpdateView(BaseBatchesView, SuccessMessageMixin, UpdateView):
     template_name = 'orders/modals/batches/batch_form.html'
     form_class = BatchForm
     model = Batch
-    success_url = reverse_lazy('purchases:batch-list')
     success_message = 'The LOT data is successfully updated.'
     page_name = 'batches'
     access_roles = [ROLE_ADMIN, ROLE_STAFF]

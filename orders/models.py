@@ -109,6 +109,9 @@ class Batch(models.Model):
     def __str__(self):
         return f'{self.name} ({self.product}) - {self.get_year_display()}'
 
+    def get_absolute_url(self):
+        return reverse('orders:batch-detail', args=[self.pk])
+
     def get_agreement_amount(self):
         """Returns the amount as per the agreement in USD.
 

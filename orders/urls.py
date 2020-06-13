@@ -3,8 +3,7 @@ from django.urls import path
 from .views.batches import OpenBatchListView, BatchCreateView, BatchUpdateView, \
     BatchDeleteView, BatchDetailView
 from .views.deliveryorders import OpenOrderListView, OrderCreateView, \
-    OrderUpdateView, OrderDetailView, OrderDeleteView, BatchSummaryView, \
-    BillOfLoadingSummary
+    OrderUpdateView, OrderDetailView, OrderDeleteView
 from .views.allocations import AllocationCreateView, AllocationUpdateView, \
     AllocationDeleteView, LetterFormView, AllocationLetterView, \
     AllocationDetailView
@@ -31,16 +30,6 @@ urlpatterns = [
         '<uuid:pk>/delete/',
         OrderDeleteView.as_view(),
         name='order-delete'
-    ),
-    path(
-        'batch/<uuid:pk>/summary/',
-        BatchSummaryView.as_view(),
-        name='batch-summary'
-    ),
-    path(
-        'bill-of-loading/<uuid:pk>/summary/',
-        BillOfLoadingSummary.as_view(),
-        name='bill-of-loading'
     ),
     path(
         '<uuid:pk>/letter-form/',
