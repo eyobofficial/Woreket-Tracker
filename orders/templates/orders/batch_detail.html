@@ -22,7 +22,7 @@
             <li class="breadcrumb-item active" aria-current="page">{{ object.lc_number }} </li>
           </ol>
         </nav>
-        <h4 class="mg-b-0 tx-spacing--1">Purchased LOT for {{ object.lc_number }}</h4>
+        <h4 class="mg-b-0 tx-spacing--1">{{ object.name|upper }} - {{ object.lc_number }}</h4>
       </div>
 
       {% if object.status == object.OPEN %}
@@ -41,7 +41,7 @@
 
         {% if perms.purchases.change_batch %}
         <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
-          data-url="">
+          data-url="{% url 'orders:batch-update' object.pk %}">
           <i data-feather="edit" class="wd-10 mg-r-5"></i> Edit
         </button>
         {% endif %}

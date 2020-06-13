@@ -137,38 +137,7 @@ class OrderDetailView(BaseOrderDetailView, DetailView):
             'buyer', flat=True
         )
         buyer_choices = [c for c in customers if c.pk not in distributed_buyers]
-
-        # Build graph data
-        regions = customers.order_by('code').values_list('code', flat=True)
-        graph = dict()
-        graph['regions'] = list(regions)
-        graph['allocations'] = []
-        graph['distributions'] = []
-
-        for region in graph['regions']:
-            allocation = Allocation.objects.filter(
-                delivery_order=self.object,
-                buyer__code=region
-            ).first()
-            if allocation is not None:
-                graph['allocations'].append(allocation.get_total_quantity())
-            else:
-                graph['allocations'].append(0)
-
-            distribution = Distribution.objects.filter(
-                delivery_order=self.object,
-                buyer__code=region
-            ).first()
-
-            if distribution is not None:
-                graph['distributions'].append(distribution.get_total_quantity())
-            else:
-                graph['distributions'].append(0)
-
-        kwargs.update({
-            'buyer_choices': buyer_choices,
-            'graph': graph
-        })
+        kwargs.update({'buyer_choices': buyer_choices,})
         return super().get_context_data(**kwargs)
 
 

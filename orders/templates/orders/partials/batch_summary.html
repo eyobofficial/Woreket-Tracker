@@ -66,18 +66,18 @@
       <div
         class="card-header bd-b-0 pd-t-20 pd-lg-t-25 pd-l-20 pd-lg-l-25 d-flex flex-column flex-sm-row align-items-sm-start justify-content-sm-between">
         <div>
-          <h6 class="mg-b-5">L/C Metrics</h6>
-          <p class="tx-12 tx-color-03 mg-b-0">Allocated vs actual distributed quantity to regions.</p>
+          <h6 class="mg-b-5">Delivery Order Metrics</h6>
+          <p class="tx-12 tx-color-03 mg-b-0">Allocated vs actual distributed quantity of delivery orders.</p>
         </div>
         <div class="btn-group mg-t-20 mg-sm-t-0">
           <ul class="list-inline tx-uppercase tx-10 tx-medium tx-spacing-1 tx-color-03 mg-b-0 text-right">
             <li class="list-inline-item mg-l-10">
               <span class="d-inline-block wd-7 ht-7 bg-teal rounded-circle mg-r-5"></span>
-              Allocated Quantity ({{ object.unit.code|upper }})
+              Allocated Quantity ({{ object.product.unit.code }})
             </li>
             <li class="list-inline-item mg-l-10">
               <span class="d-inline-block wd-7 ht-7 bg-primary rounded-circle mg-r-5"></span>
-              Delivered Quantity ({{ object.unit.code|upper }})
+              Distributed Quantity ({{ object.product.unit.code }})
             </li>
           </ul>
         </div><!-- btn-group -->
@@ -147,39 +147,28 @@
 <script>
   $(function() {
     // Chart
-    var ctx1 = document.getElementById('deliveryOrdersChart').getContext('2d');
-    var ctxChart1 = new Chart(ctx1, {
+    const labels = [];
+    const allocations = [];
+    const distributions = [];
+
+    {% for delivery_order in object.delivery_orders.all %}
+      labels.push('{{ delivery_order.vessel }}');
+      allocations.push(Number.parseFloat('{{ delivery_order.get_allocated_quantity }}'));
+      distributions.push(Number.parseFloat('{{ delivery_order.get_distributed_quantity }}'));
+    {% endfor %}
+
+    const ctx1 = document.getElementById('deliveryOrdersChart').getContext('2d');
+    const batchChart = new Chart(ctx1, {
       type: 'bar',
       data: {
-        labels: [
-          '{{ graph.regions.0 }}',
-          '{{ graph.regions.1 }}',
-          '{{ graph.regions.2 }}',
-          '{{ graph.regions.3 }}',
-          '{{ graph.regions.4 }}',
-          '{{ graph.regions.5 }}'
-        ],
+        labels: labels,
         datasets: [{
-          label: 'Allocated ({{ object.unit.code|upper }})',
-          data: [
-            '{{ graph.allocations.0 }}',
-            '{{ graph.allocations.1 }}',
-            '{{ graph.allocations.2 }}',
-            '{{ graph.allocations.3 }}',
-            '{{ graph.allocations.4 }}',
-            '{{ graph.allocations.5 }}'
-          ],
+          label: 'Allocated ({{ object.product.unit.code }})',
+          data: allocations,
           backgroundColor: '#65e0e0'
         }, {
-          label: 'Delivered ({{ object.unit.code|upper }})',
-          data: [
-            '{{ graph.distributions.0 }}',
-            '{{ graph.distributions.1 }}',
-            '{{ graph.distributions.2 }}',
-            '{{ graph.distributions.3 }}',
-            '{{ graph.distributions.4 }}',
-            '{{ graph.distributions.5 }}'
-          ],
+          label: 'Distributed ({{ object.product.unit.code }})',
+          data: distributions,
           backgroundColor: '#66a4fb'
         }]
       },
@@ -194,7 +183,7 @@
         scales: {
           xAxes: [{
             display: true,
-            barPercentage: 0.9
+            barPercentage: 0.8
           }],
           yAxes: [{
             display: true,

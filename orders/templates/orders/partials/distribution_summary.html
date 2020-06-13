@@ -78,7 +78,7 @@
               <div class="media-body">
                 <h6 class="tx-sans tx-uppercase tx-10 tx-spacing-1 tx-color-03 tx-semibold tx-nowrap mg-b-5 mg-md-b-6">Shortage</h6>
                 <h4 class="tx-16 tx-sm-16 tx-md-18 tx-normal tx-rubik mg-b-0">
-                  {{ object.get_total_shortage|floatformat:2|intcomma }} <span class="tx-12 tx-color-03 tx-rubik">{{ object.unit.code }}</span>
+                  {{ object.get_distributed_shortage|floatformat:2|intcomma }} <span class="tx-12 tx-color-03 tx-rubik">{{ object.unit.code }}</span>
                 </h4>
               </div>
             </div>
