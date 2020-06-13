@@ -136,18 +136,6 @@ class OrderDetailView(BaseOrderDetailView, DetailView):
         return super().get_context_data(**kwargs)
 
 
-# class BatchSummaryView(BaseOrderView, DetailView):
-#     """A popup modal for batch summary page."""
-#     template_name = 'orders/modals/batch_summary.html'
-#     model = Batch
-#     access_roles = '__all__'
-
-#     def get_queryset(self):
-#         qs = super().get_queryset()
-#         qs = qs.exclude(is_deleted=True)
-#         return qs
-
-
 class OrderCreateView(BaseOrderView, CreateView):
     """Creates new delivery order instances."""
     template_name = 'orders/order_create_form.html'

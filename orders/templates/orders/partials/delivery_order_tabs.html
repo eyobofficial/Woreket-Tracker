@@ -27,9 +27,9 @@
           <i data-feather="edit" class="wd-10 mg-r-5"></i> Edit
         </button>
         <div>
-          <button data-url="{% url 'orders:order-update' delivery_order.pk %}" class="btn btn-sm pd-x-20 btn-white btn-uppercase mg-l-5 btn-modal">
+          <a href="{% url 'orders:order-allocation-letter' delivery_order.pk %}" class="btn btn-sm pd-x-20 btn-white btn-uppercase mg-l-5">
             <i data-feather="file-text" class="wd-10 mg-r-5"></i> Letter
-          </button>
+          </a>
           <button data-url="{% url 'orders:order-delete' delivery_order.pk %}" class="btn btn-sm pd-x-20 btn-danger btn-uppercase mg-l-5 btn-modal">
             <i data-feather="trash" class="wd-10 mg-r-5"></i> Delete
           </button>
