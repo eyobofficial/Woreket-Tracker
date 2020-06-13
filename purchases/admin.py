@@ -5,7 +5,10 @@ from .models import ProductCategory, Product, Supplier
 
 @admin.register(Supplier)
 class SupplierAdmin(admin.ModelAdmin):
-    list_display = ('name', 'short_name', 'city', 'country')
+    list_display = (
+        'name', 'short_name', 'city', 'email',
+        'phone_number', 'fax_number', 'country'
+    )
 
 
 @admin.register(ProductCategory)

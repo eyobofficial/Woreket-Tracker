@@ -61,7 +61,7 @@ class BaseBatchListView(BaseBatchesView, ListView):
 class OpenBatchListView(BaseBatchListView):
     """List view of OPEN purchasing batches (lots)."""
     template_name = 'orders/open_batch_list.html'
-    queryset = Batch.objects.exclude(is_deleted=True).filter(status=Batch.OPEN)
+    queryset = Batch.objects.filter(status=Batch.OPEN)
     status = Batch.OPEN
     access_roles = '__all__'
 
@@ -69,8 +69,7 @@ class OpenBatchListView(BaseBatchListView):
 class ClosedBatchListView(BaseBatchListView):
     """List view of CLOSED purchasing batches (lots)."""
     template_name = 'orders/open_batch_list.html'
-    queryset = Batch.objects.exclude(
-        is_deleted=True).filter(status=Batch.CLOSED)
+    queryset = Batch.objects.filter(status=Batch.CLOSED)
     status = Batch.CLOSED
     access_roles = '__all__'
 
@@ -79,13 +78,9 @@ class BatchDetailView(BaseBatchesView, DetailView):
     """Detail view for a purchasing batch instance."""
     template_name = 'orders/batch_detail.html'
     model = Batch
+    queryset = Batch.objects.all()
     page_name = 'batches'
     access_roles = [ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF]
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.exclude(is_deleted=True)
-        return qs
 
     def get_context_data(self, **kwargs):
         kwargs['active_pk'] = self.get_active_tab()
@@ -163,16 +158,20 @@ class BatchDeleteView(BaseBatchesView, SuccessMessageMixin, DeleteView):
     """Delete view to delete purchasing batch."""
     template_name = 'orders/modals/batches/batch_delete_form.html'
     model = Batch
-    success_url = reverse_lazy('purchases:batch-list')
+    success_url = reverse_lazy('orders:open-batch-list')
     success_message = 'The selected LOT is successfully deleted.'
     page_name = 'batches'
     access_roles = [ROLE_ADMIN, ROLE_STAFF]
 
     def delete(self, request, *args, **kwargs):
         """Overwrites delete method to change is_delete status `True`."""
-        self.object = self.get_object()
-        self.object.is_deleted = True
-        self.object.save()
-        success_url = self.get_success_url()
+        redirect_url = super().delete(request, *args, **kwargs)
         messages.success(request, self.success_message)
-        return redirect(success_url)
+        return redirect_url
+
+
+class SupplierPopupView(BaseBatchesView, DetailView):
+    """A popup modal for supplier summary page."""
+    template_name = 'orders/modals/supplier_popup.html'
+    model = Supplier
+    access_roles = '__all__'

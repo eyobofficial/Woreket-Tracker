@@ -8,6 +8,8 @@ from django.conf import settings
 from django.db import models
 from django_countries.fields import CountryField
 
+from phonenumber_field.modelfields import PhoneNumberField
+
 from shared.constants import ADVANCE, RETENTION
 from shared.models import Unit
 # from orders.models import DeliveryOrder
@@ -20,6 +22,8 @@ class Supplier(models.Model):
     name = models.CharField('company name', max_length=60)
     short_name = models.CharField('abbreviation', max_length=60, blank=True)
     email = models.EmailField(max_length=60, blank=True)
+    phone_number = PhoneNumberField(null=True, unique=True)
+    fax_number = PhoneNumberField(null=True, unique=True)
     city = models.CharField(max_length=60)
     country = CountryField()
 

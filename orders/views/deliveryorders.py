@@ -18,7 +18,7 @@ from orders.models import Batch, DeliveryOrder, Allocation, Port, Distribution
 class BaseOrderListView(BaseOrderView, ListView):
     """Abstract base class for open & closed order list views."""
     model = DeliveryOrder
-    queryset = DeliveryOrder.objects.exclude(batch__is_deleted=True)
+    queryset = DeliveryOrder.objects.all()
     paginate_by = 10
     status = None
 
@@ -110,11 +110,6 @@ class OpenOrderListView(BaseOrderListView):
 class BaseOrderDetailView(BaseOrderView):
     """Base class for all delivery order detail views."""
     model = DeliveryOrder
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.exclude(batch__is_deleted=True)
-        return qs
 
 
 class OrderDetailView(BaseOrderDetailView, DetailView):

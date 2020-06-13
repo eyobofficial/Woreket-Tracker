@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views.batches import OpenBatchListView, BatchCreateView, BatchUpdateView, \
-    BatchDeleteView, BatchDetailView
+    BatchDeleteView, BatchDetailView, SupplierPopupView
 from .views.deliveryorders import OpenOrderListView, OrderCreateView, \
     OrderUpdateView, OrderDetailView, OrderDeleteView
 from .views.allocations import AllocationCreateView, AllocationUpdateView, \
@@ -103,5 +103,10 @@ urlpatterns += [
         'batches/<uuid:pk>/delete/',
         BatchDeleteView.as_view(),
         name='batch-delete'
-    )
+    ),
+   path(
+        'supplier/<uuid:pk>/popup/',
+        SupplierPopupView.as_view(),
+        name='supplier-popup'
+    ),
 ]

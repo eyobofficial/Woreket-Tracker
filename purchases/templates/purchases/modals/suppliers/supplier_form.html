@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-lg wd-sm-550" role="document">
+<div class="modal-dialog modal-lg wd-sm-600" role="document">
   <div class="modal-content">
     <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
       <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
@@ -71,6 +71,42 @@
               {% if form.email.errors %}
               <ul class="parsley-errors-list filled">
                 {% for error in form.email.errors %}
+                <li class="parsley-required">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-group">
+              <label for="phone_number" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Phone Number</label>
+              <input
+                id="phone-number" class="form-control {% if form.phone_number.errors %}parsley-error{% endif %}"
+                name="phone_number" value="{{ form.phone_number.value|default:'' }}"
+                placeholder="Enter a valid phone number (Optional)"
+                autocomplete="off"
+              />
+              {% if form.phone_number.errors %}
+              <ul class="parsley-errors-list filled">
+                {% for error in form.phone_number.errors %}
+                <li class="parsley-required">{{ error }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
+
+            <!-- Fax Number -->
+            <div class="form-group">
+              <label for="fax_number" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Fax Number</label>
+              <input
+                id="fax-number" class="form-control {% if form.fax_number.errors %}parsley-error{% endif %}"
+                name="fax_number" value="{{ form.fax_number.value|default:'' }}"
+                placeholder="Enter a valid fax number (Optional)"
+                autocomplete="off"
+              />
+              {% if form.fax_number.errors %}
+              <ul class="parsley-errors-list filled">
+                {% for error in form.fax_number.errors %}
                 <li class="parsley-required">{{ error }}</li>
                 {% endfor %}
               </ul>

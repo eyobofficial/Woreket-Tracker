@@ -17,8 +17,6 @@ from shared.models import Unit
 from customers.models import Customer, Union, Location
 from purchases.models import Product, Supplier
 
-from .managers import BatchManager
-
 
 User = settings.AUTH_USER_MODEL
 
@@ -89,12 +87,8 @@ class Batch(models.Model):
         choices=STATUS_CHOICES,
         default=OPEN
     )
-    is_deleted = models.BooleanField('deleted', default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    # Custom manager
-    objects = BatchManager()
 
     class Meta:
         default_related_name='batches'
