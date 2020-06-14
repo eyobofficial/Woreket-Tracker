@@ -224,9 +224,6 @@
     - - view_uniondistribution
       - orders
       - uniondistribution
-    - - view_batch
-      - purchases
-      - batch
     - - view_product
       - purchases
       - product
@@ -361,9 +358,6 @@
     - - view_uniondistribution
       - orders
       - uniondistribution
-    - - add_batch
-      - purchases
-      - batch
     - - add_product
       - purchases
       - product
