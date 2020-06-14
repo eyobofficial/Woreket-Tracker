@@ -63,6 +63,24 @@
     - - view_allocation
       - orders
       - allocation
+    - - add_batch
+      - orders
+      - batch
+    - - change_batch
+      - orders
+      - batch
+    - - close_batch
+      - orders
+      - batch
+    - - delete_batch
+      - orders
+      - batch
+    - - reopen_batch
+      - orders
+      - batch
+    - - view_batch
+      - orders
+      - batch
     - - add_deliveryorder
       - orders
       - deliveryorder
