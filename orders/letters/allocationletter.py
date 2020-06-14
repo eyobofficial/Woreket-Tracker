@@ -24,12 +24,13 @@ class AllocationLetter(LetterTemplate):
 
     @property
     def subject(self):
-        return f'Documentary Credit Number {self.object.lc_number}'
+        return f'Documentary Credit Number {self.object.batch.lc_number}'
 
     def _build_content(self, *args, **kwargs):
         """Builds the letter content."""
         vessel = self.object.vessel
-        quantity = self.object.quantity
+        quantity = self.object.get_allocated_quantity()
+        quantity = round(quantity, 2)
         product = self.object.batch.product.name
         category = self.object.batch.product.category.name.lower()
         bol = self.object.bill_of_loading  # bill of loading
@@ -49,7 +50,7 @@ class AllocationLetter(LetterTemplate):
             Text('Reading the subject in caption '),
             Text(vessel, bold=True),
             Text(' a vessel carrying '),
-            Text(f'{quantity:,} MT {product} {category} ', bold=True),
+            Text(f'{quantity:,} {unit} {product} {category} ', bold=True),
             Text(f'under B/L {bol} for {batch} ', bold=True),
             Text('will arrive at port of '),
             Text(f'{port} ', bold=True),
@@ -80,12 +81,13 @@ class AllocationLetter(LetterTemplate):
                 self.document, style='List Bullet',
                 line_spacing=1.4, left_indent=Pt(12)
             )
+            allocation_quantity = round(allocation.get_total_quantity(), 2)
             if allocation.buyer.code == 'TIG':
                 p3.add_texts(
                     Text(
                         f'{eabc} bank account no. '
                         F'{self.BANK_ACCOUNT} for the value of '
-                        f'{allocation.get_total_quantity():,} {unit} '
+                        f'{allocation_quantity:,} {unit} '
                         f'({allocation.buyer.region} Allocation)',
                         bold=True
                     )
@@ -94,7 +96,7 @@ class AllocationLetter(LetterTemplate):
                 p3.add_texts(
                     Text(
                         f'{allocation.buyer.name} account for the value of '
-                        f'{allocation.get_total_quantity():,} {unit} ',
+                        f'{allocation_quantity:,} {unit} ',
                         bold=True
                     )
                 )

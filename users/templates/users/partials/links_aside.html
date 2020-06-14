@@ -7,13 +7,13 @@
       class="nav-link {% if not selected_status and not selected_role %}active{% endif %}">
       <span>All</span> <span class="badge">{{ all_count }}</span>
     </a>
-    <a href="{{ request.path }}?status={{ user.PENDING }}" class="nav-link {% if selected_status|add:'0' == user.PENDING %}active{% endif %}">
+    <a href="?status={{ user.PENDING }}" class="nav-link {% if selected_status|add:'0' == user.PENDING %}active{% endif %}">
       <span>Pending</span> <span class="badge">{{ pending_count }}</span>
     </a>
-    <a href="{{ request.path }}?status={{ user.ACTIVE }}" class="nav-link {% if selected_status|add:'0' == user.ACTIVE %}active{% endif %}">
+    <a href="?status={{ user.ACTIVE }}" class="nav-link {% if selected_status|add:'0' == user.ACTIVE %}active{% endif %}">
       <span>Active</span> <span class="badge">{{ active_count }}</span>
     </a>
-    <a href="{{ request.path }}?status={{ user.DISABLED }}" class="nav-link {% if selected_status|add:'0' == user.DISABLED %}active{% endif %}">
+    <a href="?status={{ user.DISABLED }}" class="nav-link {% if selected_status|add:'0' == user.DISABLED %}active{% endif %}">
       <span>Deactivated</span> <span class="badge">{{ disabled_count }}</span>
     </a>
   </nav>
@@ -21,17 +21,20 @@
   <!-- Role Menu -->
   <h6 class="tx-uppercase tx-semibold mg-t-30 mg-b-15">Role</h6>
   <nav class="nav nav-classic tx-13 mg-lg-b-20">
-    <a href="{{ request.path }}?role={{ ROLE_ADMIN }}" class="nav-link {% if selected_role == ROLE_ADMIN %}active{% endif %}">
+    <a href="?role={{ ROLE_ADMIN }}" class="nav-link {% if selected_role == ROLE_ADMIN %}active{% endif %}">
       <span>Admins</span> <span class="badge">{{ admin_count }}</span>
     </a>
-    <a href="{{ request.path }}?role={{ ROLE_MANAGEMENT }}" class="nav-link {% if selected_role == ROLE_MANAGEMENT %}active{% endif %}">
+    <a href="?role={{ ROLE_MANAGEMENT }}" class="nav-link {% if selected_role == ROLE_MANAGEMENT %}active{% endif %}">
       <span>Managements</span> <span class="badge">{{ management_count }}</span>
     </a>
-    <a href="{{ request.path }}?role={{ ROLE_STAFF }}" class="nav-link {% if selected_role == ROLE_STAFF %}active{% endif %}">
+    <a href="?role={{ ROLE_STAFF }}" class="nav-link {% if selected_role == ROLE_STAFF %}active{% endif %}">
       <span>Staffs</span> <span class="badge">{{ staff_count }}</span>
     </a>
-    <a href="{{ request.path }}?role={{ ROLE_SUPPLIER }}" class="nav-link {% if selected_role == ROLE_SUPPLIER %}active{% endif %}">
+    <a href="?role={{ ROLE_SUPPLIER }}" class="nav-link {% if selected_role == ROLE_SUPPLIER %}active{% endif %}">
       <span>Suppliers</span> <span class="badge">{{ supplier_count }}</span>
+    </a>
+    <a href="?role={{ ROLE_GUEST }}" class="nav-link {% if selected_role == ROLE_GUEST %}active{% endif %}">
+      <span>Guests</span> <span class="badge">{{ guest_count }}</span>
     </a>
   </nav>
 </aside>

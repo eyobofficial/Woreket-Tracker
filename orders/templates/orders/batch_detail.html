@@ -1,0 +1,169 @@
+{% extends 'orders/base.html' %}
+{% load humanize %}
+{% load shared_tags %}
+
+{% block title %} {{ object.lc_number }} | Payment Tracker{% endblock %}
+
+{% block content %}
+<div class="content content-fixed mg-b-20">
+  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0 batch-detail-container">
+
+    <!-- BREADCRUMB -->
+    <div class="d-sm-flex align-items-center justify-content-between mg-b-20 mg-lg-b-25 mg-xl-b-30">
+      <div>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb breadcrumb-style1 mg-b-10">
+            <li class="breadcrumb-item"><a href="#">Dashbooard</a></li>
+            {% if object.status == object.CLOSED %}
+            <li class="breadcrumb-item"><a href="#">Closed Purchased Batch</a></li>
+            {% else %}
+            <li class="breadcrumb-item"><a href="#">Open Purchased Batch</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ object.lc_number }} </li>
+          </ol>
+        </nav>
+        <h4 class="mg-b-0 tx-spacing--1">{{ object.lc_number }}</h4>
+      </div>
+
+      {% if object.status == object.OPEN %}
+      <div class="d-none d-md-block">
+        {% if perms.orders.close_batch %}
+        <button class="btn btn-sm pd-x-15 btn-white btn-uppercase btn-modal"
+          data-url="{% url 'orders:batch-close' object.pk %}">
+          <i data-feather="flag" class="wd-10 mg-r-5"></i> Close
+        </button>
+        {% endif %}
+
+        <button class="btn btn-sm pd-x-15 btn-white btn-uppercase mg-l-5 btn-modal" disabled
+          data-url="">
+          <i data-feather="file-text" class="wd-10 mg-r-5"></i> Letter
+        </button>
+
+        {% if perms.orders.change_batch %}
+        <button class="btn btn-sm pd-x-15 btn-white btn-uppercase mg-l-5 btn-modal"
+          data-url="{% url 'orders:batch-update' object.pk %}">
+          <i data-feather="edit" class="wd-10 mg-r-5"></i> Edit
+        </button>
+        {% endif %}
+
+        {% if perms.orders.delete_batch %}
+        <button class="btn btn-sm pd-x-15 btn-danger btn-uppercase mg-l-5 btn-modal "
+          data-url="{% url 'orders:batch-delete' object.pk %}">
+          <i data-feather="trash" class="wd-10 mg-r-5"></i> Delete
+        </button>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="d-none d-md-block">
+        {% if perms.orders.reopen_batch %}
+        <button class="btn btn-sm pd-x-15 btn-white btn-uppercase mg-l-5 btn-modal"
+          data-url="{% url 'orders:batch-reopen' object.pk %}">
+          <i data-feather="share" class="wd-10 mg-r-5"></i> Re-Open
+        </button>
+        {% endif %}
+
+        {% if perms.orders.delete_batch %}
+        <button class="btn btn-sm pd-x-15 btn-danger btn-uppercase mg-l-5 btn-modal"
+          data-url="{% url 'orders:batch-delete' object.pk %}">
+          <i data-feather="trash" class="wd-10 mg-r-5"></i> Delete
+        </button>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+    <!-- END BREADCRUMB -->
+
+    <!-- MESSAGES -->
+    {% for message in messages %}
+    <div class="alert alert-outline alert-success d-flex align-items-center mg-b-20" role="alert">
+      <i data-feather="check-circle" class="mg-r-10"></i> {{ message }}
+    </div>
+    {% endfor %}
+
+    {% if object.status == object.CLOSED %}
+    <!-- Delivery Order Closed Alert -->
+    <div class="alert alert-info d-flex align-items-center" role="alert">
+      <i data-feather="info" class="mg-r-10"></i> This purchased batch was closed on {{ object.updated_at|date:'d/m/Y'}}.
+    </div>
+    {% endif %}
+
+    <!-- BATCH SUMMARY AND GRAPH -->
+    {% include 'orders/partials/batch_summary.html' with object=object %}
+
+    <div class="row row-xs">
+      <div class="col mg-t-20">
+        <div class="card card-dashboard-table" id="delivery-order-summary-card">
+          <div class="pd-b-30 table-responsive">
+            <table class="table table-bordered table-hover" id="delivery-order-summary-table">
+              <thead>
+                <tr>
+                  <th class="bg-white">&nbsp;</th>
+                  <th colspan="4" class="text-center bg-white text-uppercase tx-medium">Allocations</th>
+                  <th colspan="3" class="text-center bg-white text-uppercase tx-medium">Distributions</th>
+                </tr>
+                <tr>
+                  <th>Delivery Orders</th>
+                  <th>Quantity ({{ object.product.unit.code }})</th>
+                  <th>Total Amount</th>
+                  <th>90% Advance</th>
+                  <th>10% Settlement</th>
+                  <th>Quantity ({{ object.product.unit.code }})</th>
+                  <th>Shortage ({{ object.product.unit.code }})</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if object.delivery_orders.count > 0 %}
+                  {% for delivery_order in object.delivery_orders.all %}
+                  <tr>
+                    <td><a class="tx-medium text-primary">{{ delivery_order.vessel }}</a></td>
+                    <td class="tz-color-03 tx-normal">{{ delivery_order.get_allocated_quantity|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ delivery_order.get_allocated_amount|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ delivery_order.get_allocated_advance|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ delivery_order.get_allocated_retention|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">{{ delivery_order.get_distributed_quantity|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">{{ delivery_order.get_distributed_shortage|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ delivery_order.get_distributed_amount|floatformat:2|intcomma }}</td>
+                  </tr>
+                  {% endfor %}
+                  <tr>
+                    <td><a class="tx-semibold tx-spacing-1 tx-rubik">TOTAL</a></td>
+                    <td class="tz-color-03 tx-normal">{{ object.get_allocated_quantity|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ object.get_allocated_amount|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ object.get_advance_amount|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal tx-pink">${{ object.get_retention_amount|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">{{ object.get_distributed_quantity|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">{{ object.get_distributed_shortage|floatformat:2|intcomma }}</td>
+                    <td class="tz-color-03 tx-normal">${{ object.get_distributed_amount|floatformat:2|intcomma }}</td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="8" style="border-bottom: none;">
+                      <h4 class="text-center pd-t-40 pd-b-20 text-secondary text-uppercase op-6">No Delivery Order</h4>
+                    </td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div><!-- table-responsive -->
+        </div><!-- card -->
+      </div>
+    </div>
+
+    {% if object.status == object.OPEN or object.delivery_orders.count > 0 %}
+       <!-- DELIVERY ORDER TABS  -->
+      {% include 'orders/partials/delivery_order_tabs.html' with object=object %}
+    {% endif %}
+  </div><!-- container -->
+</div><!-- content -->
+
+<script>
+  $(function () {
+    // Dynamically highlight columns
+    $('.list-group-item[data-target]').hover(
+      function () { $('.' + $(this).data('target')).addClass('bg-highlight'); },
+      function () { $('.' + $(this).data('target')).removeClass('bg-highlight'); }
+    );
+  });
+</script>
+{% endblock %}

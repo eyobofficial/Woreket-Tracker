@@ -4,19 +4,27 @@ from django.forms import inlineformset_factory, BaseInlineFormSet
 from shared.fields import FormattedNumberField
 from customers.models import Union, Location
 
-from .models import DeliveryOrder, Allocation, Distribution, UnionDistribution,\
-    UnionAllocation
+from .models import Batch, DeliveryOrder, Allocation, Distribution, \
+    UnionDistribution, UnionAllocation
+
+
+class BatchForm(forms.ModelForm):
+    """Model for creating new batch instance."""
+    quantity = FormattedNumberField(max_digits=20, decimal_places=4)
+    rate = FormattedNumberField(max_digits=12, decimal_places=4)
+
+    class Meta:
+        model = Batch
+        fields = ('name', 'lc_number', 'product',
+                  'supplier', 'quantity', 'rate', 'year')
 
 
 class DeliveryOrderForm(forms.ModelForm):
     """Model form for creating new deliveries."""
-    quantity = FormattedNumberField(max_digits=20, decimal_places=4)
-
     class Meta:
         model = DeliveryOrder
         fields = (
-            'batch', 'bill_of_loading', 'quantity',
-            'port',  'vessel', 'arrival_date'
+            'bill_of_loading', 'port',  'vessel', 'arrival_date'
         )
 
 

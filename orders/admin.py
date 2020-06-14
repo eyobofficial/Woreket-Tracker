@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Port, DeliveryOrder, Allocation, UnionAllocation, \
+from .models import Port, DeliveryOrder, Batch, Allocation, UnionAllocation, \
     Distribution, UnionDistribution
 
 
@@ -9,6 +9,13 @@ class PortAdmin(admin.ModelAdmin):
     list_display = ('name', 'country', 'is_default')
     list_filter = ('country', 'is_default')
     search_fields = ('name', 'country')
+
+
+@admin.register(Batch)
+class BatchAdmin(admin.ModelAdmin):
+    list_display = ('name', 'lc_number', 'supplier', 'year')
+    list_filter = ('product', 'year')
+    search_fields = ('name', )
 
 
 class AllocationInline(admin.TabularInline):
@@ -23,8 +30,8 @@ class DistributionInline(admin.TabularInline):
 
 @admin.register(DeliveryOrder)
 class DeliveryOrderAdmin(admin.ModelAdmin):
-    list_display = ('lc_number', 'vessel', 'batch', 'created_at')
-    list_filter = ('batch', 'created_at', 'status')
+    list_display = ('vessel', 'batch', 'lc_number', 'created_at')
+    list_filter = ('batch', 'created_at')
     search_fields = ('lc_number', 'vessel')
     inlines = (AllocationInline, DistributionInline)
 

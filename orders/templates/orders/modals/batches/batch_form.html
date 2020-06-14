@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-lg wd-sm-600" role="document">
+<div class="modal-dialog modal-lg wd-sm-650" role="document">
   <div class="modal-content">
     <div class="modal-header pd-y-20 pd-x-20 pd-sm-x-30">
       <a href="" role="button" class="close pos-absolute t-15 r-15" data-dismiss="modal" aria-label="Close">
@@ -203,10 +203,12 @@
       });
 
       request.done(data => {
-        const $updatedPage = $(data).find('#batch-list-container');
-        $('#batch-list-container').replaceWith($updatedPage);
-        $('#modal-widget').modal('hide');
-        feather.replace();
+        {% if object is None %}
+          response = JSON.parse(data);
+          window.location.href = response.redirect_url;
+        {% else %}
+          window.location.reload();
+        {% endif %}
       });
 
       request.fail(jqXHR => {

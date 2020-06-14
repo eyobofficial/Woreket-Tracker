@@ -1,7 +1,7 @@
-{% extends 'purchases/base.html' %}
+{% extends 'orders/base.html' %}
 {% load humanize %}
 
-{% block title %}Batch Lots | Payment Tracker{% endblock %}
+{% block title %}Closed Purchased Batches | Payment Tracker{% endblock %}
 
 {% block content %}
 <div class="content content-fixed bd-b">
@@ -14,14 +14,13 @@
             <li class="breadcrumb-item active" aria-current="page">Purchased Batches</li>
           </ol>
         </nav>
-        <h4 class="mg-b-0">All Purchased Lots</h4>
+        <h4 class="mg-b-0">All Closed Purchased Batches</h4>
       </div>
-
       <div class="d-none d-md-block mg-t-20 mg-sm-t-0">
-        {% if perms.purchases.add_batch %}
+        {% if perms.orders.add_batch %}
         <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5 btn-modal"
-          data-url="{% url 'purchases:batch-create' %}">
-          <i data-feather="plus" class="wd-10 mg-r-5"></i>Add New Lot
+          data-url="{% url 'orders:batch-create' %}">
+          <i data-feather="plus" class="wd-10 mg-r-5"></i>Add Purchased Batch
         </button>
         {% endif %}
       </div>
@@ -30,9 +29,9 @@
 </div><!-- content -->
 
 <div class="content">
-  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0" id="batch-list-container">
+  <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0 summary-table-container" id="batch-list-container">
     <div class="row">
-      <div class="col-md-10 col-sm-12">
+      <div class="col-md-9 col-sm-12">
 
         {% for message in messages %}
         <div class="alert alert-outline alert-success d-flex align-items-center mg-b-20" role="alert">
@@ -43,8 +42,8 @@
         <div class="card mg-b-20 mg-t-10" id="lots-table-card">
           <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-0">
             <div>
-              <h6 class="mg-b-3 pb-0">Lots</h6>
-              <p class="tx-13 tx-color-03 mg-b-15">All purchased product batches.</p>
+              <h6 class="mg-b-3 pb-0">Closed Purchased Batches</h6>
+              <p class="tx-13 tx-color-03 mg-b-20">All closed or settled purchased lots.</p>
             </div>
             <div class="d-flex mg-t-20 mg-sm-t-0">
               <form>
@@ -56,18 +55,15 @@
             </div>
           </div><!-- card-header -->
           <div class="table-responsive">
-            <table class="table table-dashboard table-hovered mg-b-0" id="batch-table">
+            <table class="table table-dashboard mg-b-0" id="batch-table">
               <thead>
                 <tr>
-                  <th>Period</th>
-                  <th>Name</th>
+                  <th>Period (E.C.)</th>
+                  <th>Batch Name</th>
                   <th>L/C Number</th>
                   <th>Product</th>
                   <th>Supplier</th>
-                  <th>Quantity</th>
-                  <th class="text-right">Rate (USD)</th>
-                  <th class="text-right">Amount (USD)</th>
-                  <th class="action"></th>
+                  <th class="text-right">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -75,44 +71,22 @@
                 <tr>
                   <td class="tx-color-03 tx-normal">{{ batch.get_year_display }}</td>
                   <td class="tz-color-03 tx-normal">
-                    <a data-url="{% url 'purchases:batch-detail' batch.pk %}" class="popup-link btn-modal">
+                    <a href="{% url 'orders:batch-detail' batch.pk %}">
                       <span class="tx-medium">{{ batch.name }}</span>
-                      &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
                     </a>
                   </td>
                   <td class="tz-color-03 tx-normal">{{ batch.lc_number }}</td>
                   <td class="tz-color-03 tx-normal">{{ batch.product.name }}</td>
                   <td class="tz-color-03 tx-normal">{{ batch.supplier.name }}</td>
-                  <td class="tz-color-03 tx-normal">
-                    {{ batch.quantity|floatformat:2|intcomma }} <span class="tx-color-03 tx-11">{{ batch.product.unit.code }}</span>
-                  </td>
-                  <td class="tz-color-03 tx-normal text-right">{{ batch.rate|floatformat:2|intcomma }}</td>
-                  <td class="tz-color-03 tx-normal text-right">{{ batch.get_amount|floatformat:2|intcomma }}</td>
-                  <td class="text-right action">
-                    <div class="mg-l-auto d-flex justify-content-end">
-                      <nav class="nav nav-icon-only">
-                        {% if perms.purchases.change_batch %}
-                        <a data-url="{% url 'purchases:batch-update' batch.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Edit">
-                          <i data-feather="edit-3"></i>
-                        </a>
-                        {% endif %}
-
-                        {% if perms.purchases.delete_batch %}
-                        <a data-url="{% url 'purchases:batch-delete' batch.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Delete">
-                          <i data-feather="trash"></i>
-                        </a>
-                        {% endif %}
-                      </nav>
-                    </div>
-                  </td>
+                  <td class="text-right"><span class="badge badge-secondary">closed</span></td>
                 </tr>
                 {% empty %}
                 <tr class="empty-row">
                   {% if search_query %}
-                  <td colspan="{% if perms.purchases.change_batch %}8{% else %}7{% endif %}"
+                  <td colspan="{% if perms.orders.change_batch %}8{% else %}7{% endif %}"
                     class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO RESULT FOUND</td>
                   {% else %}
-                  <td colspan="{% if perms.purchases.change_batch %}8{% else %}7{% endif %}"
+                  <td colspan="{% if perms.orders.change_batch %}8{% else %}7{% endif %}"
                     class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">NO PURCHASED LOTS FOUND</td>
                   {% endif %}
                 </tr>
@@ -166,24 +140,69 @@
       </div><!-- col -->
 
       <!-- Aside filter links -->
-      <aside class="col-md-2 col-sm-12 mg-t-10 mg-lg-t-0 pd-sm-l-40">
-        <!-- Product Menu -->
+      <aside class="col-md-3 col-sm-12 mg-lg-t-15 pd-sm-l-40">
         {% if product_list.count > 0 %}
-        <h6 class="tx-uppercase tx-semibold mg-t-30 mg-b-15">Products</h6>
+        <h6 class="tx-uppercase tx-semibold mg-t-0 mg-b-15">Purchased Products</h6>
         <nav class="nav nav-classic tx-13 mg-lg-b-20">
-          <a href="{% url 'purchases:batch-list' %}" class="nav-link {% if selected_product is None %}active{% endif %}">
+          <a href="{% url 'orders:open-batch-list' %}" class="nav-link {% if selected_product is None %}active{% endif %}">
             <span>All</span> <span class="badge">{{ batch_count }}</span>
           </a>
           {% for product in product_list %}
-          <a href="{{ request.path }}?product={{ product.pk }}"
-            class="nav-link {% if selected_product|safe == product.pk|safe %}active{% endif %}">
-            <span>{{ product.name }}</span> <span class="badge">{{ product.batches.count }}</span>
-          </a>
+            {% if selected_product %}
+            <a href="?product={{ product.pk }}"
+              class="nav-link {% if product.pk|safe == selected_product|safe %}active{% endif %}">
+              <span>{{ product.name }}</span> <span class="badge">{{ product.get_closed_batches.count }}</span>
+            </a>
+            {% else %}
+              {% if forloop.counter <= 5 %}
+              <a href="?product={{ product.pk }}"
+                class="nav-link {% if product.pk|safe == selected_product|safe %}active{% endif %}">
+                <span>{{ product.name }}</span> <span class="badge">{{ product.get_closed_batches.count }}</span>
+              </a>
+              {% else %}
+              <a href="?product={{ product.pk }}" class="nav-link nav-link-extra d-none">
+                <span>{{ product.name }}</span> <span class="badge">{{ product.get_closed_batches.count }}</span>
+              </a>
+              {% endif %}
+            {% endif %}
           {% endfor %}
+
+          {% if product_list.count > 5 and not selected_product %}
+          <a href class="link-03 mg-t-10 show-toggle">Show All</a>
+          {% endif %}
+        </nav>
+        {% endif %}
+
+        <!-- Supplier Menu -->
+        {% if supplier_list.count > 0 %}
+        <h6 class="tx-uppercase tx-semibold mg-t-30 mg-b-15">Suppliers</h6>
+        <nav class="nav nav-classic tx-13 mg-lg-b-20">
+          {% for supplier in supplier_list %}
+            {% if selected_supplier %}
+            <a href="?supplier={{ supplier.pk }}"
+              class="nav-link {% if supplier.pk|safe == selected_supplier|safe %}active{% endif %}">
+              <span>{{ supplier.name }}</span> <span class="badge">{{ supplier.get_closed_batches.count }}</span>
+            </a>
+            {% else %}
+              {% if forloop.counter <= 5 %}
+              <a href="?supplier={{ supplier.pk }}"
+                class="nav-link {% if supplier.pk|safe == selected_supplier|safe %}active{% endif %}">
+                <span>{{ supplier.name }}</span> <span class="badge">{{ supplier.get_closed_batches.count }}</span>
+              </a>
+              {% else %}
+              <a href="?supplier={{ supplier.pk }}" class="nav-link nav-link-extra d-none">
+                <span>{{ supplier.name }}</span> <span class="badge">{{ supplier.get_closed_batches.count }}</span>
+              </a>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {% if supplier_list.count > 5 and not selected_supplier %}
+          <a href class="link-03 mg-t-10 show-toggle">Show All</a>
+          {% endif %}
         </nav>
         {% endif %}
       </aside>
-
     </div><!-- row -->
   </div><!-- container -->
 </div><!-- content -->
@@ -202,6 +221,16 @@
         $pagination.replaceWith($(data).find('#pagination-nav'));
         feather.replace();
       });
+    });
+
+    $('.show-toggle').click(function (e) {
+      e.preventDefault();
+      $(this).siblings('.nav-link-extra').toggleClass('d-none');
+
+      if ($(this).siblings('.nav-link-extra').hasClass('d-none'))
+        $(this).text('Show All');
+      else
+        $(this).text('Show Less');
     });
   });
 </script>

@@ -1,0 +1,163 @@
+<div class="card" id="do-form-card">
+  <div class="card-header pd-t-20 pd-b-10">
+    <h4 class="tx-18 tx-sm-20 mg-b-0">Add Delivery Order</h4>
+    <p class="tx-13 tx-color-03 mg-b-0">Create a new delivery order record for this batch.</p>
+  </div>
+  <div class="card-body">
+    <div class="row row-xs">
+      <div class="col-lg-5 col-md-12">
+        <!-- Delivery Order Form -->
+        <form action="{% url 'orders:order-create' batch.pk %}" method="POST" id="do-form">
+          {% csrf_token %}
+
+          <h2>{{ object.batch.lc_number }}</h2>
+
+          <!-- Hidden Fields -->
+          <input type="hidden" id="altArrivalDate" name="arrival_date" value="{{ form.instance.arrival_date|date:'Y-m-d'|default_if_none:'' }}">
+
+          <!-- Vessel Name -->
+          <div class="form-group">
+            <label for="vessel" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Vessel Name</label>
+            <input
+              id="vessel" class="form-control {% if form.vessel.errors %}parsley-error{% endif %}"
+              name="vessel" value="{{ form.instance.vessel|default_if_none:'' }}"
+              placeholder="Enter the vessel name"
+              autocomplete="off" required />
+            {% if form.vessel.errors %}
+            <ul class="parsley-errors-list filled">
+              {% for error in form.vessel.errors %}
+              <li class="parsley-required">{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <!-- Bill of loading -->
+          <div class="form-group">
+            <label for="bill-of-loading" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03" title="Bill of loading document number.">B/L Document No.</label>
+            <input
+              id="bill-of-loading" class="form-control {% if form.bill_of_loading.errors %}parsley-error{% endif %}"
+              name="bill_of_loading" value="{{ form.instance.bill_of_loading|default_if_none:'' }}"
+              placeholder="Enter the B/L number" autocomplete="off" required
+            />
+            {% if form.bill_of_loading.errors %}
+            <ul class="parsley-errors-list filled">
+              {% for error in form.bill_of_loading.errors %}
+              <li class="parsley-required">{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <!-- Port -->
+          <div class="form-group">
+            <label for="port" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Port</label>
+            <select name="port" id="port" class="form-control {% if form.port.errors %}parsley-error{% endif %} custom-select" required>
+              {% if form.instance.port is None %}
+              {% for port in port_list %}
+              <option value="{{ port.pk }}" {% if port.is_default %}selected{% endif %}>
+                {{ port.name }} ({{ port.country.name }})
+              </option>
+              {% endfor %}
+              {% else %}
+              {% for port in port_list %}
+              <option value="{{ port.pk }}" {% if form.instance.port == port %}selected{% endif %}>
+                {{ port.name }} ({{ port.country.name }})
+              </option>
+              {% endfor %}
+              {% endif %}
+            </select>
+
+            {% if form.port.errors %}
+            <ul class="parsley-errors-list filled">
+              {% for error in form.port.errors %}
+              <li class="parsley-required">{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <!-- Arrival Date -->
+          <div class="form-group">
+            <label for="arrival-date" class="tx-10 tx-uppercase tx-medium tx-spacing-1 mg-b-5 tx-color-03">Vessel Arrival Date</label>
+            <div class="input-group mg-b-10">
+              <div class="input-group-prepend">
+                <span class="input-group-text tx-medium" id="basic-addon2">
+                  <i class="far fa-calendar-plus"></i>
+                </span>
+              </div>
+              <input
+                type="text"
+                id="arrivalDate"
+                class="form-control {% if form.arrival_date.errors %}parsley-error{% endif %}"
+                autocomplete="off"
+                value="{{ form.instance.arrival_date|date:'d/m/Y'|default_if_none:'' }}"
+                placeholder="Select vessel arrival date"
+              />
+            </div>
+            {% if form.arrival_date.errors %}
+            <ul class="parsley-errors-list filled">
+              {% for error in form.arrival_date.errors %}
+              <li class="parsley-required">{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <div class="form-group mg-t-40 mg-b-10">
+            <button type="submit" class="btn btn-primary wd-100">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(function () {
+    // Initialize plugins
+    initDateSelector();
+
+    const $card = $('#do-form-card');
+    $card.on('submit', '#do-form', function(e) {
+      e.preventDefault();
+
+      const $form = $card.find('#do-form');
+      const $submitBtn = $form.find('button[type=submit]');
+      const $spinner = $('<i>', { 'class': 'fas fa-spin fa-circle-notch' });
+
+      $submitBtn.attr('disabled', true).html($spinner);
+
+      const url = $form.attr('action');
+      const formData = $form.serialize();
+      const request = $.ajax({
+        method: 'POST',
+        url: url,
+        data: formData,
+        dataType: 'html'
+      });
+
+      // AJAX success
+      request.done(function (data) {
+        const $updatedPage = $(data).find('.batch-detail-container');
+        $('.batch-detail-container').replaceWith($updatedPage);
+        feather.replace();
+      });
+
+      request.fail(jqXHR => {
+        const $form = $card.find('#do-form');
+        const $responseForm = $(jqXHR.responseText).find('#do-form');
+        $form.replaceWith($responseForm);
+        $form.find('button[type=submit]').text('Save').removeAttr('disabled');
+        initDateSelector();
+      });
+    });
+
+    function initDateSelector() {
+      $('#arrivalDate').datepicker({
+        altField: '#altArrivalDate',
+        altFormat: 'yy-mm-dd'
+      });
+    }
+  });
+</script>

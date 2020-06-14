@@ -31,12 +31,12 @@
               <td class="tz-color-03 tx-normal">{{ forloop.counter }}</td>
               <td class="tz-color-03 tx-normal">{{ allocation.union.name }}</td>
               <td class="tz-color-03 tx-normal">{{ allocation.location.name }}</td>
-              <td class="tz-color-03 tx-normal text-right">{{ allocation.quantity|intcomma }}</td>
+              <td class="tz-color-03 tx-normal text-right">{{ allocation.quantity|floatformat:2|intcomma }}</td>
             </tr>
             {% endfor %}
             <tr>
               <td class="tx-medium tx-16 text-right pd-t-30" colspan="3">TOTAL</td>
-              <td class="tx-medium tx-16 text-right pd-t-30">{{ object.get_total_quantity|intcomma }}</td>
+              <td class="tx-medium tx-16 text-right pd-t-30">{{ object.get_total_quantity|floatformat:2|intcomma }}</td>
             </tr>
           </tbody>
         </table>

@@ -129,18 +129,6 @@
     - - view_uniondistribution
       - orders
       - uniondistribution
-    - - add_batch
-      - purchases
-      - batch
-    - - change_batch
-      - purchases
-      - batch
-    - - delete_batch
-      - purchases
-      - batch
-    - - view_batch
-      - purchases
-      - batch
     - - add_product
       - purchases
       - product
@@ -218,9 +206,6 @@
     - - view_unionallocation
       - orders
       - unionallocation
-    - - view_batch
-      - purchases
-      - batch
     - - view_product
       - purchases
       - product
@@ -352,15 +337,6 @@
     - - add_batch
       - purchases
       - batch
-    - - change_batch
-      - purchases
-      - batch
-    - - delete_batch
-      - purchases
-      - batch
-    - - view_batch
-      - purchases
-      - batch
     - - add_product
       - purchases
       - product
@@ -420,3 +396,53 @@
     - - view_uniondistribution
       - orders
       - uniondistribution
+- model: auth.group
+  pk: 6
+  fields:
+    name: Guest
+    permissions:
+    - - view_customuser
+      - accounts
+      - customuser
+    - - view_customer
+      - customers
+      - customer
+    - - view_location
+      - customers
+      - location
+    - - view_union
+      - customers
+      - union
+    - - view_allocation
+      - orders
+      - allocation
+    - - view_batch
+      - orders
+      - batch
+    - - view_deliveryorder
+      - orders
+      - deliveryorder
+    - - view_distribution
+      - orders
+      - distribution
+    - - view_port
+      - orders
+      - port
+    - - view_unionallocation
+      - orders
+      - unionallocation
+    - - view_uniondistribution
+      - orders
+      - uniondistribution
+    - - view_product
+      - purchases
+      - product
+    - - view_productcategory
+      - purchases
+      - productcategory
+    - - view_supplier
+      - purchases
+      - supplier
+    - - view_unit
+      - shared
+      - unit

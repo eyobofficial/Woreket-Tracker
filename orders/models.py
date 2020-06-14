@@ -1,5 +1,5 @@
-import operator
 import uuid
+import pendulum
 from decimal import Decimal
 from functools import reduce
 
@@ -14,7 +14,6 @@ from django_countries.fields import CountryField
 
 from shared.constants import ADVANCE, RETENTION
 from shared.models import Unit
-
 from customers.models import Customer, Union, Location
 
 
@@ -41,8 +40,16 @@ class Port(models.Model):
         return self.name
 
 
-class DeliveryOrder(models.Model):
-    """Product delivery orders."""
+class Batch(models.Model):
+    """Product purchasing batches."""
+    today = pendulum.today(tz=settings.TIME_ZONE)
+    choice_duration = 5
+    ethiopian_year = today.year - 7
+
+    YEAR_CHOICES = [
+        (y, f'{y}/{y + 1}')
+        for y in range(ethiopian_year - choice_duration, ethiopian_year)
+    ]
 
     # Status
     OPEN = 'OPEN'
@@ -54,12 +61,168 @@ class DeliveryOrder(models.Model):
     )
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
-    vessel = models.CharField(max_length=120, help_text='Shipment vessel name.')
-    batch = models.ForeignKey('purchases.Batch', null=True, on_delete=models.SET_NULL)
-    quantity = models.DecimalField(
-        'agreement quantity',
-        max_digits=20, decimal_places=4
+    name = models.CharField(max_length=120)
+    lc_number = models.CharField(
+        'L/C number', max_length=30,
+        help_text='Document number for the letter of credit.'
     )
+    product = models.ForeignKey(
+        'purchases.Product',
+        null=True, on_delete=models.SET_NULL
+    )
+    supplier = models.ForeignKey(
+        'purchases.Supplier',
+        null=True, on_delete=models.SET_NULL
+    )
+    quantity = models.DecimalField(
+        max_digits=20,
+        decimal_places=4,
+        help_text='Quantity in the selected product unit.'
+    )
+    rate = models.DecimalField(
+        max_digits=12,
+        decimal_places=4,
+        help_text='Price is in USD.'
+    )
+    year = models.PositiveIntegerField(
+        choices=YEAR_CHOICES,
+    )
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default=OPEN
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        default_related_name='batches'
+        verbose_name = 'Purchasing Batch'
+        verbose_name_plural = 'Purchasing Batches'
+        ordering = ('-created_at', )
+        permissions = [
+            ('close_batch', 'Close purchasing batch'),
+            ('reopen_batch', 'Re-open purchasing batch')
+        ]
+
+    def __str__(self):
+        return f'{self.name} ({self.product}) - {self.get_year_display()}'
+
+    def get_absolute_url(self):
+        return reverse('orders:batch-detail', args=[self.pk])
+
+    def get_agreement_amount(self):
+        """Returns the amount as per the agreement in USD.
+
+        Returns:
+            amount (Decimal): total agreement amount in USD
+        """
+        return round(self.quantity * self.rate, 4)
+
+    def get_allocated_quantity(self):
+        """Returns the total allocated (actual) quantity.
+
+        Return:
+            quantity (Decimal): total allocated quantity in product unit
+        """
+        delivery_orders = self.delivery_orders.all()
+        quantity = reduce(
+            lambda total, order: total + order.get_allocated_quantity(),
+            delivery_orders,
+            Decimal(0)
+        )
+        return quantity
+
+    def get_allocated_amount(self):
+        """Returns the total allocated (actual) amount.
+
+        Return:
+            amount (Decimal): total allocated amount in USD.
+        """
+        delivery_orders = self.delivery_orders.all()
+        amount = reduce(
+            lambda total, order: total + order.get_allocated_amount(),
+            delivery_orders,
+            Decimal(0)
+        )
+        return amount
+
+    def get_advance_amount(self):
+        """Returns the 90% allocated advance amount.
+
+        Return:
+            amount (Decimal): total 90% allocated advance amount in USD.
+        """
+        delivery_orders = self.delivery_orders.all()
+        amount = reduce(
+            lambda total, order: total + order.get_allocated_advance(),
+            delivery_orders,
+            Decimal(0)
+        )
+        return amount
+
+    def get_retention_amount(self):
+        """Returns the 10% allocated retention amount.
+
+        Return:
+            amount (Decimal): total 10% allocated retention amount in USD.
+        """
+        delivery_orders = self.delivery_orders.all()
+        amount = reduce(
+            lambda total, order: total + order.get_allocated_retention(),
+            delivery_orders,
+            Decimal(0)
+        )
+        return amount
+
+    def get_distributed_quantity(self):
+        """Returns the total distributed (actual) quantity.
+
+        Return:
+            quantity (Decimal): total distributed quantity in product unit
+        """
+        delivery_orders = self.delivery_orders.all()
+        quantity = reduce(
+            lambda total, order: total + order.get_distributed_quantity(),
+            delivery_orders,
+            Decimal(0)
+        )
+        return quantity
+
+    def get_distributed_shortage(self):
+        """Returns the total distributed shortage (actual) quantity.
+
+        Return:
+            quantity (Decimal): total distributed shortage in product unit
+        """
+        delivery_orders = self.delivery_orders.all()
+        quantity = reduce(
+            lambda total, order: total + order.get_distributed_shortage(),
+            delivery_orders,
+            Decimal(0)
+        )
+        return quantity
+
+    def get_distributed_amount(self):
+        """Returns the total distributed (actual) amount.
+
+        Return:
+            amount (Decimal): total distributed amount in USD.
+        """
+        delivery_orders = self.delivery_orders.all()
+        amount = reduce(
+            lambda total, order: total + order.get_distributed_amount(),
+            delivery_orders,
+            Decimal(0)
+        )
+        return amount
+
+
+class DeliveryOrder(models.Model):
+    """Product delivery orders."""
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    vessel = models.CharField(max_length=120, help_text='Shipment vessel name.')
+    batch = models.ForeignKey(Batch, null=True, on_delete=models.SET_NULL)
     bill_of_loading = models.CharField(
         max_length=30,
         help_text='Bill of loading (B/L) number.'
@@ -70,11 +233,6 @@ class DeliveryOrder(models.Model):
         on_delete=models.SET_NULL,
     )
     arrival_date = models.DateField('vessel arrival date')
-    status = models.CharField(
-        max_length=10,
-        choices=STATUS_CHOICES,
-        default=OPEN
-    )
     created_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -92,19 +250,12 @@ class DeliveryOrder(models.Model):
 
     class Meta:
         default_related_name = 'delivery_orders'
-        ordering = ('-created_at', )
-        permissions = [
-            ('close_deliveryorder', 'Close delivery order'),
-            ('reopen_deliveryorder', 'Re-open delivery order')
-        ]
+        ordering = ('created_at', )
         verbose_name = 'Delivery Order'
         verbose_name_plural = 'Delivery Orders'
 
     def __str__(self):
         return self.vessel
-
-    def get_absolute_url(self):
-        return reverse('orders:order-detail', args=[self.pk])
 
     @property
     def unit(self):
@@ -113,6 +264,10 @@ class DeliveryOrder(models.Model):
     @property
     def lc_number(self):
         return self.batch.lc_number
+
+    @property
+    def status(self):
+        return self.batch.status
 
     def touch(self, **kwargs):
         """
@@ -155,30 +310,6 @@ class DeliveryOrder(models.Model):
                 return False
         return True
 
-    def get_agreement_amount(self):
-        """Returns the amount as per the agreement in USD.
-
-        Returns:
-            amount (Decimal): total agreement amount in USD
-        """
-        return round(self.quantity * self.batch.rate, 4)
-
-    def get_advance_amount(self):
-        """Returns the advance payment (90%) paid as per the agreement.
-
-        Returns:
-            amount (Decimal): the 90% advance payment in USD
-        """
-        return round(self.get_agreement_amount() * ADVANCE, 4)
-
-    def get_agreement_retention(self):
-        """Returns the 10% retention amount as per the agreement.
-
-        Returns:
-            amount(Decimal): the 10% agreement retention amount in USD
-        """
-        return round(self.get_agreement_amount() * RETENTION, 4)
-
     def get_allocated_quantity(self):
         """Returns the total allocated quantity in product unit.
 
@@ -190,25 +321,27 @@ class DeliveryOrder(models.Model):
             quantity += allocation.get_total_quantity()
         return round(quantity, 4)
 
-    def get_delivered_quantity(self):
-        """Returns the total delivered quantity in product unit.
+    def get_distributed_quantity(self):
+        """Returns the total distributed quantity in product unit.
 
         Returns:
-            quantity (Decimal): the total delivered quantity
+            quantity (Decimal): the total distributed quantity
         """
         quantity = Decimal('0')
         for distribution in self.distributions.all():
             quantity += distribution.get_total_quantity()
         return round(quantity, 4)
 
-    def get_total_shortage(self):
+    def get_distributed_shortage(self):
         """Returns the difference between the total allocated quantity
            and the actual delivered quantity.
 
         Returns:
             quantity (Decimal): quantity shortage between allocated & delivered
         """
-        quantity = self.get_allocated_quantity() - self.get_delivered_quantity()
+        quantity = Decimal('0')
+        for distribution in self.distributions.all():
+            quantity += distribution.get_total_shortage()
         return round(quantity, 4)
 
     def get_allocated_amount(self):
@@ -220,9 +353,25 @@ class DeliveryOrder(models.Model):
         amount = Decimal('0')
         for allocation in self.allocations.all():
             amount += allocation.get_amount()
-        return amount
+        return round(amount, 4)
 
-    def get_delivered_amount(self):
+    def get_allocated_advance(self):
+        """Returns the total allocated advance amount in USD.
+
+        Returns:
+            amount (Decimal): the total allocated advance amount in USD
+        """
+        return round(self.get_allocated_amount() * ADVANCE)
+
+    def get_allocated_retention(self):
+        """Returns the total allocated retention amount in USD.
+
+        Returns:
+            amount (Decimal): the total allocated retention amount in USD
+        """
+        return round(self.get_allocated_amount() * RETENTION)
+
+    def get_distributed_amount(self):
         """Returns the total delivered amount in USD.
 
         Returns:
@@ -232,51 +381,6 @@ class DeliveryOrder(models.Model):
         for distribution in self.distributions.all():
             amount += distribution.get_amount()
         return round(amount, 4)
-
-    def get_allocated_retention(self):
-        """Returns the total allocated (agreement) retention amount in USD.
-
-        Returns:
-            amount (Decimal): the total allocated retention amount in USD
-        """
-        retention = Decimal(0)
-        for allocation in self.allocations.all():
-            retention += allocation.get_retention()
-        return round(retention, 4)
-
-    def get_delivered_retention(self):
-        """Returns the total delivered retention amount in USD.
-
-        Returns:
-            amount (Decimal): the total delivered retention amount in USD
-        """
-        retention = Decimal('0')
-        for distribution in self.distributions.all():
-            retention += distribution.get_retention()
-        return round(retention, 4)
-
-    def get_final_settlement(self):
-        """Returns the total final 10% settlement amount after
-           subtracting shortages.
-
-        Returns:
-            amount (Decimal): actual retention amount to be paid in USD
-        """
-        amount = self.get_delivered_amount() - self.get_advance_amount()
-        return round(amount, 4)
-
-    def get_total_distributed_amount(self):
-        """Returns the total distributed amount. It should hold the same
-           result to the `get_final_settlement` method.
-
-        Returns:
-            amount (Decimal): final distributed amount in USD
-        """
-        total = Decimal(0)
-        for amount in self.distributions.get_distributed_settlement():
-            total += amount
-
-        return round(total, 4)
 
 
 class Allocation(models.Model):
@@ -336,17 +440,16 @@ class Allocation(models.Model):
         amount = self.get_total_quantity() * self.delivery_order.batch.rate
         return round(amount, 4)
 
-    def get_retention(self):
-        """Returns the 10% retention amount for this allocation.
+    def get_percentage(self):
+        """Returns the region allocation percentage.
 
         Returns:
-            retention (Decimal): 10% retention amount in USD
+            percentage (Decimal): allocation quantity in percent.
         """
-        amount = self.get_total_quantity() \
-                * self.delivery_order.batch.rate \
-                * RETENTION
-        return round(amount, 4)
-
+        quantity = self.get_total_quantity()
+        total_allocation = self.delivery_order.get_allocated_quantity()
+        percent = (quantity / total_allocation) * 100
+        return round(percent, 2)
 
 class UnionAllocation(models.Model):
     """Allocation data to the unions for the delivery order."""
@@ -432,6 +535,20 @@ class Distribution(models.Model):
         )
         return round(quantity, 4)
 
+    def get_total_shortage(self):
+        """Returns the distribution shortage quantity.
+
+        Returns:
+            shortage quantity (Decimal): received shortage + over
+        """
+        union_distributions = self.union_distributions.all()
+        quantity = reduce(
+            lambda total, union: total + union.get_total_shortage(),
+            union_distributions,
+            Decimal(0)
+        )
+        return round(quantity, 4)
+
     def get_amount(self):
         """Returns the total amount for this distribution.
 
@@ -451,27 +568,16 @@ class Distribution(models.Model):
         amount = self.get_total_quantity() * rate * RETENTION
         return round(amount, 4)
 
-    def get_distribution_percentage(self):
-        """Returns the payment distribution percentage.
+    def get_percentage(self):
+        """Returns the region distribution percentage.
 
         Returns:
-            percentage (Decimal): percent to distribute the retention payment
+            percentage (Decimal): distribution quantity in percent.
         """
-        delivered_retention = self.delivery_order.get_delivered_retention()
-        amount = self.get_retention() / delivered_retention
-        return round(amount, 4)
-
-    def get_distributed_settlement(self):
-        """Returns the distributed amount of the actual retention settlement
-           amount to be paid.
-
-        Returns:
-            amount (Decimal): actual retention amount to be paid in USD
-        """
-        final_settlement = self.delivery_order.get_final_settlement()
-        percentage = self.get_distribution_percentage()
-
-        return round(final_settlement * percentage, 4)
+        quantity = self.get_total_quantity()
+        total_distribution = self.delivery_order.get_distributed_quantity()
+        percent = (quantity / total_distribution) * 100
+        return round(percent, 2)
 
 
 class UnionDistribution(models.Model):
@@ -510,3 +616,11 @@ class UnionDistribution(models.Model):
             quantity (Decimal): received quantity + shortage + over
         """
         return round(self.quantity + self.shortage + self.over, 4)
+
+    def get_total_shortage(self):
+        """Returns the distribution total shortage.
+
+        Returns:
+            shortage quantity (Decimal): received shortage + over
+        """
+        return round(self.shortage + self.over, 4)

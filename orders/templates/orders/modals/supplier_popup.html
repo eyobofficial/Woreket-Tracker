@@ -8,8 +8,8 @@
       </a>
       <div class="media align-items-center">
         <div class="media-body">
-          <h4 class="tx-18 tx-sm-20 mg-b-2">Batch Summary</h4>
-          <p class="tx-13 tx-color-03 mg-b-0">Summary of the purchased batch for {{ object.name }}.</p>
+          <h4 class="tx-18 tx-sm-20 mg-b-2">Supplier Summary</h4>
+          <p class="tx-13 tx-color-03 mg-b-0">Summary of the supplier for this purchased batch.</p>
         </div>
       </div><!-- media -->
     </div><!-- modal-header -->
@@ -17,24 +17,28 @@
     <div class="modal-body pd-sm-x-30">
       <ul class="list-group list-group-flush mg-b-20 mg-t-10 tx-13">
         <li class="list-group-item pd-x-0 d-flex justify-content-between">
-          <span class="tx-normal">Batch Name</span>
-          <span class="tx-medium">{{ object.name }}</span>
+          <span class="tx-normal">Company Name</span>
+          <span class="tx-medium">{{ object.name }}{% if object.short_name %} ({{ object.short_name }}){% endif %}</span>
         </li>
         <li class="list-group-item pd-x-0 d-flex justify-content-between">
-          <span class="tx-normal">Purchase Year</span>
-          <span class="tx-medium">{{ object.year }}</span>
+          <span class="tx-normal">E-mail</span>
+          <span class="tx-medium">{{ object.email|default:'-' }}</span>
         </li>
         <li class="list-group-item pd-x-0 d-flex justify-content-between">
-          <span class="tx-normal">Supplier</span>
-          <span class="tx-medium">{{ object.supplier.name }}</span>
+          <span class="tx-normal">Phone Number</span>
+          <span class="tx-medium">{{ object.phone_number|default:'-' }}</span>
         </li>
         <li class="list-group-item pd-x-0 d-flex justify-content-between">
-          <span class="tx-normal">Product</span>
-          <span class="tx-medium">{{ object.product.name }}</span>
+          <span class="tx-normal">Fax Number</span>
+          <span class="tx-medium">{{ object.fax_number|default:'-' }}</span>
         </li>
         <li class="list-group-item pd-x-0 d-flex justify-content-between">
-          <span class="tx-normal">Rate</span>
-          <span class="tx-medium">${{ object.rate|intcomma }}</span>
+          <span class="tx-normal">City</span>
+          <span class="tx-medium">{{ object.city }}</span>
+        </li>
+        <li class="list-group-item pd-x-0 d-flex justify-content-between">
+          <span class="tx-normal">Country</span>
+          <span class="tx-medium">{{ object.country.name }}</span>
         </li>
       </ul>
     </div><!-- /.modal-body -->
