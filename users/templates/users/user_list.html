@@ -50,7 +50,9 @@
                     <th>Phone Number</th>
                     <th>Role</th>
                     <th class="text-center">Status</th>
+                    {% if perms.accounts.change_user %}
                     <th class="action"></th>
+                    {%  endif %}
                   </tr>
                 </thead>
                 <tbody>
@@ -77,15 +79,13 @@
                     <td class="text-center"><span class="badge badge-secondary">disabled</span></td>
                     {% endif %}
 
+                    {% if perms.accounts.change_user %}
                     <td class="text-right action">
                       <div class="mg-l-auto d-flex justify-content-end">
                         <nav class="nav nav-icon-only">
-
                           <a data-url="{% url 'users:user-update' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Edit user">
                             <i class="wd-10 far fa-edit tx-12 mg-r-5"></i> Edit
                           </a>
-
-
                           {% if user.status == user.PENDING %}
                           <a data-url="{% url 'users:user-activate' user.pk %}" class="nav-link d-none d-sm-block btn-modal" title="Approve user">
                             <i class="mg-l-10 wd-10 fas fa-user-check tx-12 mg-r-5"></i> Activate
@@ -103,6 +103,7 @@
                         </nav>
                       </div>
                     </td>
+                    {% endif %}
                   </tr>
                   {% empty %}
                   <tr class="empty-row">
@@ -123,8 +124,10 @@
                         <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Management User Found</td>
                       {% elif selected_role == ROLE_STAFF %}
                         <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Staff User Found</td>
-                      {% else %}
+                      {% elif selected_role == ROLE_SUPPLIER %}
                         <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Supplier User Found</td>
+                      {% else %}
+                        <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No Guest User Found</td>
                       {% endif %}
                     {% else %}
                       <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 tx-24">No User Found</td>

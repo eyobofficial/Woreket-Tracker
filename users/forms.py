@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
 from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, \
-    ROLE_SUPPLIER
+    ROLE_SUPPLIER, ROLE_GUEST
 from purchases.models import Supplier
 
 
@@ -13,7 +13,10 @@ User = get_user_model()
 class UserForm(forms.ModelForm):
     role = forms.ModelChoiceField(
         queryset=Group.objects.filter(
-            name__in=[ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, ROLE_SUPPLIER]
+            name__in=[
+                ROLE_ADMIN, ROLE_MANAGEMENT,
+                ROLE_STAFF, ROLE_SUPPLIER, ROLE_GUEST
+            ]
         ),
         required=True, empty_label=None
     )

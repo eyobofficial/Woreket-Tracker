@@ -163,7 +163,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
 # Login/logout
-LOGIN_REDIRECT_URL = 'orders:open-orders-list'
+LOGIN_REDIRECT_URL = 'orders:open-batch-list'
 LOGOUT_REDIRECT_URL = 'accounts:login'
 
 
@@ -179,7 +179,7 @@ DEFAULT_ADMIN_LAST_NAME = config('ADMIN_LAST_NAME', '')
 
 
 # Project Name
-PROJECT_NAME = 'Payment_Tracker'
+PROJECT_NAME = 'Woreket_Tracker'
 
 
 # Celery

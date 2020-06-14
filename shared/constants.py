@@ -6,6 +6,7 @@ ROLE_ADMIN = 'Admin'
 ROLE_MANAGEMENT = 'Management'
 ROLE_STAFF = 'Staff'
 ROLE_SUPPLIER = 'Supplier'
+ROLE_GUEST = 'Guest'
 
 
 """Rates"""

@@ -6,7 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
     DetailView
 from django.urls import reverse_lazy, reverse
 
-from shared.constants import ROLE_SUPPLIER, ROLE_ADMIN, ROLE_STAFF
+from shared.constants import ROLE_SUPPLIER, ROLE_ADMIN, ROLE_STAFF, ROLE_GUEST
 from customers.models import Customer
 from purchases.models import Product
 

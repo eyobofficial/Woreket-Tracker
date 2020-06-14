@@ -63,19 +63,31 @@
     - - view_allocation
       - orders
       - allocation
+    - - add_batch
+      - orders
+      - batch
+    - - change_batch
+      - orders
+      - batch
+    - - close_batch
+      - orders
+      - batch
+    - - delete_batch
+      - orders
+      - batch
+    - - reopen_batch
+      - orders
+      - batch
+    - - view_batch
+      - orders
+      - batch
     - - add_deliveryorder
       - orders
       - deliveryorder
     - - change_deliveryorder
       - orders
       - deliveryorder
-    - - close_deliveryorder
-      - orders
-      - deliveryorder
     - - delete_deliveryorder
-      - orders
-      - deliveryorder
-    - - reopen_deliveryorder
       - orders
       - deliveryorder
     - - view_deliveryorder
@@ -135,7 +147,13 @@
     - - change_batch
       - purchases
       - batch
+    - - close_batch
+      - purchases
+      - batch
     - - delete_batch
+      - purchases
+      - batch
+    - - reopen_batch
       - purchases
       - batch
     - - view_batch
@@ -286,16 +304,19 @@
     - - view_allocation
       - orders
       - allocation
+    - - add_batch
+      - orders
+      - batch
+    - - change_batch
+      - orders
+      - batch
+    - - view_batch
+      - orders
+      - batch
     - - add_deliveryorder
       - orders
       - deliveryorder
     - - change_deliveryorder
-      - orders
-      - deliveryorder
-    - - close_deliveryorder
-      - orders
-      - deliveryorder
-    - - reopen_deliveryorder
       - orders
       - deliveryorder
     - - view_deliveryorder
@@ -408,6 +429,9 @@
     - - view_allocation
       - orders
       - allocation
+    - - view_batch
+      - orders
+      - batch
     - - view_deliveryorder
       - orders
       - deliveryorder
@@ -420,3 +444,47 @@
     - - view_uniondistribution
       - orders
       - uniondistribution
+- model: auth.group
+  pk: 5
+  fields:
+    name: Guest
+    permissions:
+    - - view_customuser
+      - accounts
+      - customuser
+    - - view_union
+      - customers
+      - union
+    - - view_allocation
+      - orders
+      - allocation
+    - - view_batch
+      - orders
+      - batch
+    - - view_deliveryorder
+      - orders
+      - deliveryorder
+    - - view_distribution
+      - orders
+      - distribution
+    - - view_port
+      - orders
+      - port
+    - - view_unionallocation
+      - orders
+      - unionallocation
+    - - view_uniondistribution
+      - orders
+      - uniondistribution
+    - - view_batch
+      - purchases
+      - batch
+    - - view_product
+      - purchases
+      - product
+    - - view_productcategory
+      - purchases
+      - productcategory
+    - - view_supplier
+      - purchases
+      - supplier

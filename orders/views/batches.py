@@ -9,7 +9,8 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
     DetailView
 
-from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF
+from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, \
+    ROLE_SUPPLIER, ROLE_GUEST
 from purchases.models import Supplier, Product
 
 from orders.forms import BatchForm
@@ -30,28 +31,33 @@ class BaseBatchListView(BaseBatchesView, ListView):
         supplier_pk = self.request.GET.get('supplier')
         search_query = self.request.GET.get('search')
         user = self.request.user
-
         if user.role and user.role.name == ROLE_SUPPLIER:
             qs = qs.filter(supplier=user.supplier)
-
         if product_pk is not None:
             qs = qs.filter(product__pk=product_pk)
-
         if supplier_pk is not None:
             qs = qs.filter(supplier__pk=supplier_pk)
-
         if search_query is not None:
             qs = self.get_search_result(search_query)
-
         return qs
 
     def get_context_data(self, **kwargs):
+        user = self.request.user
+        supplier_list = Supplier.objects.filter(
+            batches__status=self.status
+        ).distinct()
+        product_list = Product.objects.filter(
+            batches__status=self.status
+        ).distinct()
+        if user.role is not None and user.role.name == ROLE_SUPPLIER:
+            supplier_list = supplier_list.filter(pk=user.supplier.pk)
+            product_list = product_list.filter(
+                batches__supplier__pk=user.supplier.pk
+            )
         kwargs.update({
-            'product_list': Product.objects.filter(
-                batches__status=self.status).distinct(),
+            'product_list': product_list,
             'selected_product': self.request.GET.get('product'),
-            'supplier_list': Supplier.objects.filter(
-                batches__status=self.status).distinct(),
+            'supplier_list': supplier_list,
             'selected_supplier': self.request.GET.get('supplier'),
             'batch_count': self.queryset.count(),
             'search_query': self.request.GET.get('search', '').strip()
@@ -87,7 +93,7 @@ class BatchDetailView(BaseBatchesView, DetailView):
     model = Batch
     queryset = Batch.objects.all()
     page_name = 'batches'
-    access_roles = [ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF]
+    access_roles = [ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, ROLE_GUEST]
 
     def get_context_data(self, **kwargs):
         kwargs['active_pk'] = self.get_active_tab()

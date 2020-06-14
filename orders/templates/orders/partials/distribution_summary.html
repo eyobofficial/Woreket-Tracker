@@ -127,7 +127,7 @@
                 <td class="tz-color-03 tx-normal text-right">{{ distribution.get_total_shortage|floatformat:2|intcomma }}</td>
                 <td class="tz-color-03 tx-normal text-right">{{ object.batch.rate|floatformat:2|intcomma }}</td>
                 <td class="text-right tx-normal distribution-amount-col">{{ distribution.get_amount|floatformat:2|intcomma }}</td>
-                {% if object.batch.status == object.batch.OPEN %}
+                {% if object.batch.status == object.batch.OPEN and perms.orders.change_distribution %}
                 <td class="text-right action">
                   <div class="mg-l-auto d-flex justify-content-end">
                     <nav class="nav nav-icon-only">

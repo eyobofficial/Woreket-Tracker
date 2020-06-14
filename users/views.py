@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 
 from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, \
-    ROLE_SUPPLIER
+    ROLE_SUPPLIER, ROLE_GUEST
 from purchases.models import Supplier
 
 from .forms import UserForm
@@ -20,6 +20,7 @@ User = get_user_model()
 class UserListView(BaseUserEditView, ListView):
     template_name = 'users/user_list.html'
     paginate_by = 10
+    access_roles = [ROLE_ADMIN, ROLE_GUEST]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -53,6 +54,7 @@ class UserListView(BaseUserEditView, ListView):
         management_list = self.queryset.filter(groups__name=ROLE_MANAGEMENT)
         staff_list = self.queryset.filter(groups__name=ROLE_STAFF)
         supplier_list = self.queryset.filter(groups__name=ROLE_SUPPLIER)
+        guest_list = self.queryset.filter(groups__name=ROLE_GUEST)
 
         kwargs.update({
             # Status
@@ -73,12 +75,14 @@ class UserListView(BaseUserEditView, ListView):
             'management_count': management_list.count(),
             'staff_count': staff_list.count(),
             'supplier_count': supplier_list.count(),
+            'guest_count': guest_list.count(),
 
             # Role Constants
             'ROLE_ADMIN': ROLE_ADMIN,
             'ROLE_MANAGEMENT': ROLE_MANAGEMENT,
             'ROLE_STAFF': ROLE_STAFF,
-            'ROLE_SUPPLIER': ROLE_SUPPLIER
+            'ROLE_SUPPLIER': ROLE_SUPPLIER,
+            'ROLE_GUEST': ROLE_GUEST
         })
         return super().get_context_data(**kwargs)
 
@@ -92,6 +96,7 @@ class UserListView(BaseUserEditView, ListView):
 
 class UserDetailView(BaseUserEditView, DetailView):
     template_name = 'users/modals/user_detail.html'
+    access_roles = [ROLE_ADMIN, ROLE_GUEST]
 
     def get_context_data(self, **kwargs):
         kwargs.update(ROLE_SUPPLIER=ROLE_SUPPLIER)

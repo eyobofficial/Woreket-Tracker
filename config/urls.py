@@ -33,4 +33,4 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 # Update Admin Site Title
-admin.site.site_header = admin.site.site_title = 'Payment Tracker'
+admin.site.site_header = admin.site.site_title = 'Woreket Tracker'

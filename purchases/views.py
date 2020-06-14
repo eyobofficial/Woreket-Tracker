@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, \
     DetailView
 
-from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF
+from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, ROLE_GUEST
 from shared.models import Unit
 
 from .forms import SupplierForm
@@ -23,7 +23,7 @@ class ProductListView(BasePurchasesView, ListView):
     paginate_by = 10
     page_name = 'products'
     queryset = Product.objects.all()
-    access_roles = [ROLE_STAFF, ROLE_MANAGEMENT, ROLE_ADMIN]
+    access_roles = [ROLE_STAFF, ROLE_MANAGEMENT, ROLE_ADMIN, ROLE_GUEST]
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -121,7 +121,7 @@ class SupplierListView(BasePurchasesView, ListView):
     paginate_by = 10
     page_name = 'suppliers'
     queryset = Supplier.objects.all()
-    access_roles = [ROLE_STAFF, ROLE_MANAGEMENT, ROLE_ADMIN]
+    access_roles = [ROLE_STAFF, ROLE_MANAGEMENT, ROLE_ADMIN, ROLE_GUEST]
 
     def get_queryset(self):
         qs = super().get_queryset()

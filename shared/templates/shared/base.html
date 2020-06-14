@@ -85,7 +85,7 @@
 
             {% if user.is_superuser or user.status == user.ACTIVE %}
               <!-- Batch -->
-              {% if perms.purchases.view_batch %}
+              {% if perms.orders.view_batch %}
                 <li class="nav-item with-sub {% if page_name == 'batches' %}active{% endif %}">
                   <a href="" class="nav-link"><i data-feather="box"></i>Purchased Batches</a>
 
