@@ -18,7 +18,7 @@
    ```
 3. Make sure the MySQL Server is up and running.
 
-4. Create a new database. (Example: `payment_tracker_db`)
+4. Create a new database. (Example: `woreket_tracker_db`)
 
 5. At the project root directory, there is a file named `.env_example`. Copy the file and rename the copy as `.env`.
 
@@ -26,7 +26,7 @@
 
    ```bash
     SECRET_KEY='<django secret key>'
-    DB_NAME='payment_tracker_db'
+    DB_NAME='woreket_tracker_db'
     DB_USER='<database user name>'
     DB_PASSWORD='<database user password>'
     DB_HOST='<host>'
@@ -55,9 +55,6 @@
     ```bash
     $ python manage.py defaultsuperuser
     ```
-
-    **Note**: When you run the above command, you will be prompted to enter your admin credentials. Please provide your choosen credentials.
-
 
 ### Usage
 1. Run the following command to run the development web server:
