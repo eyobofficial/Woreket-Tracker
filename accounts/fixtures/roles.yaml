@@ -63,31 +63,19 @@
     - - view_allocation
       - orders
       - allocation
-    - - add_batch
-      - orders
-      - batch
-    - - change_batch
-      - orders
-      - batch
-    - - close_batch
-      - orders
-      - batch
-    - - delete_batch
-      - orders
-      - batch
-    - - reopen_batch
-      - orders
-      - batch
-    - - view_batch
-      - orders
-      - batch
     - - add_deliveryorder
       - orders
       - deliveryorder
     - - change_deliveryorder
       - orders
       - deliveryorder
+    - - close_deliveryorder
+      - orders
+      - deliveryorder
     - - delete_deliveryorder
+      - orders
+      - deliveryorder
+    - - reopen_deliveryorder
       - orders
       - deliveryorder
     - - view_deliveryorder
@@ -141,24 +129,6 @@
     - - view_uniondistribution
       - orders
       - uniondistribution
-    - - add_batch
-      - purchases
-      - batch
-    - - change_batch
-      - purchases
-      - batch
-    - - close_batch
-      - purchases
-      - batch
-    - - delete_batch
-      - purchases
-      - batch
-    - - reopen_batch
-      - purchases
-      - batch
-    - - view_batch
-      - purchases
-      - batch
     - - add_product
       - purchases
       - product
@@ -236,9 +206,6 @@
     - - view_unionallocation
       - orders
       - unionallocation
-    - - view_batch
-      - purchases
-      - batch
     - - view_product
       - purchases
       - product
@@ -304,19 +271,16 @@
     - - view_allocation
       - orders
       - allocation
-    - - add_batch
-      - orders
-      - batch
-    - - change_batch
-      - orders
-      - batch
-    - - view_batch
-      - orders
-      - batch
     - - add_deliveryorder
       - orders
       - deliveryorder
     - - change_deliveryorder
+      - orders
+      - deliveryorder
+    - - close_deliveryorder
+      - orders
+      - deliveryorder
+    - - reopen_deliveryorder
       - orders
       - deliveryorder
     - - view_deliveryorder
@@ -373,15 +337,6 @@
     - - add_batch
       - purchases
       - batch
-    - - change_batch
-      - purchases
-      - batch
-    - - delete_batch
-      - purchases
-      - batch
-    - - view_batch
-      - purchases
-      - batch
     - - add_product
       - purchases
       - product
@@ -429,9 +384,6 @@
     - - view_allocation
       - orders
       - allocation
-    - - view_batch
-      - orders
-      - batch
     - - view_deliveryorder
       - orders
       - deliveryorder
@@ -445,13 +397,19 @@
       - orders
       - uniondistribution
 - model: auth.group
-  pk: 5
+  pk: 6
   fields:
     name: Guest
     permissions:
     - - view_customuser
       - accounts
       - customuser
+    - - view_customer
+      - customers
+      - customer
+    - - view_location
+      - customers
+      - location
     - - view_union
       - customers
       - union
@@ -476,9 +434,6 @@
     - - view_uniondistribution
       - orders
       - uniondistribution
-    - - view_batch
-      - purchases
-      - batch
     - - view_product
       - purchases
       - product
@@ -488,3 +443,6 @@
     - - view_supplier
       - purchases
       - supplier
+    - - view_unit
+      - shared
+      - unit
