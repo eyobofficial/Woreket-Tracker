@@ -15,98 +15,6 @@ from orders.mixins import BaseOrderView
 from orders.models import Batch, DeliveryOrder, Allocation, Port, Distribution
 
 
-class BaseOrderListView(BaseOrderView, ListView):
-    """Abstract base class for open & closed order list views."""
-    model = DeliveryOrder
-    queryset = DeliveryOrder.objects.all()
-    paginate_by = 10
-    status = None
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        qs = qs.filter(batch__status=self.status)
-
-        user = self.request.user
-        batch_pk = self.request.GET.get('batch', '')
-        product_pk = self.request.GET.get('product', '')
-        search_query = self.request.GET.get('search')
-
-        if user.role and user.role.name == ROLE_SUPPLIER:
-            qs = qs.filter(batch__supplier=user.supplier)
-
-        if product_pk:
-            qs = qs.filter(batch__product__pk=product_pk).distinct()
-
-        if batch_pk:
-            qs = qs.filter(batch__pk=batch_pk)
-
-        if search_query is not None:
-            search_query = search_query.strip()
-            qs = self.get_search_result(search_query)
-        return qs
-
-    def get_context_data(self, **kwargs):
-        user = self.request.user
-        # Build product menu
-        ProductMenu = namedtuple('ProductMenu', ['product', 'count'])
-        products = Product.objects.filter(
-            batches__status=self.status
-        )
-        if user.role and user.role.name == ROLE_SUPPLIER:
-            products = products.filter(batches__supplier=user.supplier)
-
-        products = Counter(products)
-        products = [ProductMenu(p, c) for p, c in products.items()]
-
-        # Selected Product
-        product_pk = self.request.GET.get('product', '')
-        if product_pk:
-            selected_product = Product.objects.filter(pk=product_pk).first()
-        else:
-            selected_product = None
-
-        # Build Batch Menu
-        BatchMenu = namedtuple('BatchMenu', ['batch', 'count'])
-        batches = Batch.objects.filter(
-            status=self.status, delivery_orders__isnull=False
-        )
-        if user.role and user.role.name == ROLE_SUPPLIER:
-            batches = batches.filter(supplier=user.supplier)
-
-        batches = Counter(batches)
-        batches = [BatchMenu(b, c) for b, c in batches.items()]
-
-        # Selected Batch
-        batch_pk = self.request.GET.get('batch', '')
-        if batch_pk:
-            selected_batch = Batch.objects.filter(pk=batch_pk).first()
-        else:
-            selected_batch = None
-
-        kwargs.update({
-            'order_count': self.queryset.count(),
-            'search_query': self.request.GET.get('search', '').strip(),
-
-            'product_menu': products,
-            'selected_product': selected_product,
-
-            'batch_menu': batches,
-            'selected_batch': selected_batch
-        })
-        return super().get_context_data(**kwargs)
-
-    def get_search_result(self, query):
-        """Returns a delivery order queryset using search query."""
-        return self.queryset.filter(vessel__istartswith=query)
-
-
-class OpenOrderListView(BaseOrderListView):
-    """Lists all delivery orders with open status."""
-    template_name = 'orders/open_orders_list.html'
-    status = Batch.OPEN
-    access_roles = '__all__'
-
-
 class BaseOrderDetailView(BaseOrderView):
     """Base class for all delivery order detail views."""
     model = DeliveryOrder
@@ -207,7 +115,6 @@ class OrderUpdateView(BaseOrderDetailView, UpdateView):
 class OrderDeleteView(BaseOrderDetailView, DeleteView):
     """Deletes a deliver order instance."""
     template_name = 'orders/modals/order_delete_form.html'
-    success_url = reverse_lazy('orders:closed-orders-list')
     access_roles = [ROLE_ADMIN]
 
     def get_success_url(self):

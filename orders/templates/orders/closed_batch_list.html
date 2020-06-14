@@ -1,7 +1,7 @@
 {% extends 'orders/base.html' %}
 {% load humanize %}
 
-{% block title %}Open Purchased Batches | Payment Tracker{% endblock %}
+{% block title %}Closed Purchased Batches | Payment Tracker{% endblock %}
 
 {% block content %}
 <div class="content content-fixed bd-b">
@@ -14,7 +14,7 @@
             <li class="breadcrumb-item active" aria-current="page">Purchased Batches</li>
           </ol>
         </nav>
-        <h4 class="mg-b-0">All Open Purchased Batches</h4>
+        <h4 class="mg-b-0">All Closed Purchased Batches</h4>
       </div>
       <div class="d-none d-md-block mg-t-20 mg-sm-t-0">
         {% if perms.orders.add_batch %}
@@ -42,8 +42,8 @@
         <div class="card mg-b-20 mg-t-10" id="lots-table-card">
           <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-0">
             <div>
-              <h6 class="mg-b-3 pb-0">Open Purchased Batches</h6>
-              <p class="tx-13 tx-color-03 mg-b-20">Currently open or unsettled purchased lots.</p>
+              <h6 class="mg-b-3 pb-0">Closed Purchased Batches</h6>
+              <p class="tx-13 tx-color-03 mg-b-20">All closed or settled purchased lots.</p>
             </div>
             <div class="d-flex mg-t-20 mg-sm-t-0">
               <form>
@@ -78,7 +78,7 @@
                   <td class="tz-color-03 tx-normal">{{ batch.lc_number }}</td>
                   <td class="tz-color-03 tx-normal">{{ batch.product.name }}</td>
                   <td class="tz-color-03 tx-normal">{{ batch.supplier.name }}</td>
-                  <td class="text-right"><span class="badge badge-success">open</span></td>
+                  <td class="text-right"><span class="badge badge-secondary">closed</span></td>
                 </tr>
                 {% empty %}
                 <tr class="empty-row">
@@ -151,17 +151,17 @@
             {% if selected_product %}
             <a href="?product={{ product.pk }}"
               class="nav-link {% if product.pk|safe == selected_product|safe %}active{% endif %}">
-              <span>{{ product.name }}</span> <span class="badge">{{ product.get_open_batches.count }}</span>
+              <span>{{ product.name }}</span> <span class="badge">{{ product.get_closed_batches.count }}</span>
             </a>
             {% else %}
               {% if forloop.counter <= 5 %}
               <a href="?product={{ product.pk }}"
                 class="nav-link {% if product.pk|safe == selected_product|safe %}active{% endif %}">
-                <span>{{ product.name }}</span> <span class="badge">{{ product.get_open_batches.count }}</span>
+                <span>{{ product.name }}</span> <span class="badge">{{ product.get_closed_batches.count }}</span>
               </a>
               {% else %}
               <a href="?product={{ product.pk }}" class="nav-link nav-link-extra d-none">
-                <span>{{ product.name }}</span> <span class="badge">{{ product.get_open_batches.count }}</span>
+                <span>{{ product.name }}</span> <span class="badge">{{ product.get_closed_batches.count }}</span>
               </a>
               {% endif %}
             {% endif %}
@@ -181,17 +181,17 @@
             {% if selected_supplier %}
             <a href="?supplier={{ supplier.pk }}"
               class="nav-link {% if supplier.pk|safe == selected_supplier|safe %}active{% endif %}">
-              <span>{{ supplier.name }}</span> <span class="badge">{{ supplier.get_open_batches.count }}</span>
+              <span>{{ supplier.name }}</span> <span class="badge">{{ supplier.get_closed_batches.count }}</span>
             </a>
             {% else %}
               {% if forloop.counter <= 5 %}
               <a href="?supplier={{ supplier.pk }}"
                 class="nav-link {% if supplier.pk|safe == selected_supplier|safe %}active{% endif %}">
-                <span>{{ supplier.name }}</span> <span class="badge">{{ supplier.get_open_batches.count }}</span>
+                <span>{{ supplier.name }}</span> <span class="badge">{{ supplier.get_closed_batches.count }}</span>
               </a>
               {% else %}
               <a href="?supplier={{ supplier.pk }}" class="nav-link nav-link-extra d-none">
-                <span>{{ supplier.name }}</span> <span class="badge">{{ supplier.get_open_batches.count }}</span>
+                <span>{{ supplier.name }}</span> <span class="badge">{{ supplier.get_closed_batches.count }}</span>
               </a>
               {% endif %}
             {% endif %}

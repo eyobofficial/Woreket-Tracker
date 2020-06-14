@@ -1,8 +1,9 @@
 from django.urls import path
 
-from .views.batches import OpenBatchListView, BatchCreateView, BatchUpdateView, \
-    BatchDeleteView, BatchDetailView, SupplierPopupView
-from .views.deliveryorders import OpenOrderListView, OrderCreateView, \
+from .views.batches import OpenBatchListView, ClosedBatchListView, \
+    BatchCreateView, BatchUpdateView, BatchDeleteView, BatchDetailView, \
+    SupplierPopupView
+from .views.deliveryorders import OrderCreateView, \
     OrderUpdateView, OrderDetailView, OrderDeleteView
 from .views.allocations import AllocationCreateView, AllocationUpdateView, \
     AllocationDeleteView, LetterFormView, AllocationLetterView, \
@@ -14,7 +15,6 @@ from .views.distributions import DistributionCreateView, \
 app_name = 'orders'
 
 urlpatterns = [
-    path('', OpenOrderListView.as_view(), name='open-orders-list'),
     path('<uuid:pk>/', OrderDetailView.as_view(), name='order-detail'),
     path(
         '<uuid:batch_pk>/create/',
@@ -86,12 +86,12 @@ urlpatterns = [
 
 # Batch URLs
 urlpatterns += [
-    path('batches/', OpenBatchListView.as_view(), name='open-batch-list'),
-    # path(
-    #     'batches/closed/',
-    #     ClosedBatchListView.as_view(),
-    #     name='closed-batch-list'
-    # ),
+    path('', OpenBatchListView.as_view(), name='open-batch-list'),
+    path(
+        'batches/closed/',
+        ClosedBatchListView.as_view(),
+        name='closed-batch-list'
+    ),
     path('batches/create/', BatchCreateView.as_view(), name='batch-create'),
     path('batches/<uuid:pk>/', BatchDetailView.as_view(), name='batch-detail'),
     path(

@@ -109,7 +109,7 @@
                 <th class="text-right">Shortage ({{ object.unit.code }})</th>
                 <th class="text-right">Rate (USD)</th>
                 <th class="text-right distribution-amount-col">Amount (USD)</th>
-                {% if object.batch.status == object.batch.OPEN and perms.orders.change_distribution or perms.orders.delete_distribution %}
+                {% if object.batch.status == object.batch.OPEN and perms.orders.change_distribution %}
                   <th class="action wd-80"></th>
                 {% endif %}
               </tr>

@@ -33,6 +33,22 @@ class Supplier(models.Model):
     def __str__(self):
         return self.short_name or self.name
 
+    def get_open_batches(self):
+        """Returns associated batches with `OPEN` status.
+
+        Returns:
+            batches (queryset): A queryset of open batches.
+        """
+        return self.batches.filter(status=Batch.OPEN)
+
+    def get_closed_batches(self):
+        """Returns associated batches with `CLOSED` status.
+
+        Returns:
+            batches (queryset): A queryset of closed batches.
+        """
+        return self.batches.filter(status=Batch.CLOSED)
+
 
 class ProductCategory(models.Model):
     """

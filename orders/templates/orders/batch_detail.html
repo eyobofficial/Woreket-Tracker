@@ -64,7 +64,7 @@
 
         {% if perms.purchases.delete_batch %}
         <button class="btn btn-sm pd-x-15 btn-danger btn-uppercase mg-l-5 btn-modal"
-          data-url="">
+          data-url="{% url 'orders:batch-delete' object.pk %}">
           <i data-feather="trash" class="wd-10 mg-r-5"></i> Delete
         </button>
         {% endif %}

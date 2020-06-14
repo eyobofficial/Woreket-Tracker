@@ -72,7 +72,7 @@
       <div id="navbarMenu" class="navbar-menu-wrapper">
         <div class="navbar-menu-header">
           {% if perms.orders %}
-            <a href="{% url 'orders:open-orders-list' %}" class="df-logo">Woreket&nbsp;<span>Tracker</span></a>
+            <a href="{% url 'orders:open-batch-list' %}" class="df-logo">Woreket&nbsp;<span>Tracker</span></a>
           {% else %}
             <a href="#" class="df-logo">Woreket&nbsp;<span>Tracker</span></a>
           {% endif %}
@@ -84,26 +84,6 @@
             <li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">Main Navigation</li>
 
             {% if user.is_superuser or user.status == user.ACTIVE %}
-              <!-- Delivery Order -->
-              {% if perms.orders %}
-                <li class="nav-item with-sub {% if page_name == 'delivery-orders' %}active{% endif %}">
-                  <a href="" class="nav-link"><i data-feather="box"></i>Delivery Orders</a>
-
-                  <ul class="navbar-menu-sub">
-                    <li class="nav-sub-item">
-                      <a href="{% url 'orders:open-orders-list' %}" class="nav-sub-link">
-                        <i data-feather="activity"></i>Open Delivery Orders
-                      </a>
-                    </li>
-                    <li class="nav-sub-item">
-                      <a href="#" class="nav-sub-link">
-                        <i data-feather="archive"></i>Closed Delivery Orders
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-              {% endif %}
-
               <!-- Batch -->
               {% if perms.purchases.view_batch %}
                 <li class="nav-item with-sub {% if page_name == 'batches' %}active{% endif %}">
@@ -116,7 +96,7 @@
                       </a>
                     </li>
                     <li class="nav-sub-item">
-                      <a href="#" class="nav-sub-link">
+                      <a href="{% url 'orders:closed-batch-list' %}" class="nav-sub-link">
                         <i data-feather="archive"></i>Closed LOTS
                       </a>
                     </li>

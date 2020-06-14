@@ -27,6 +27,7 @@ class BaseBatchListView(BaseBatchesView, ListView):
     def get_queryset(self):
         qs = super().get_queryset()
         product_pk = self.request.GET.get('product')
+        supplier_pk = self.request.GET.get('supplier')
         search_query = self.request.GET.get('search')
         user = self.request.user
 
@@ -35,6 +36,9 @@ class BaseBatchListView(BaseBatchesView, ListView):
 
         if product_pk is not None:
             qs = qs.filter(product__pk=product_pk)
+
+        if supplier_pk is not None:
+            qs = qs.filter(supplier__pk=supplier_pk)
 
         if search_query is not None:
             qs = self.get_search_result(search_query)
@@ -46,6 +50,9 @@ class BaseBatchListView(BaseBatchesView, ListView):
             'product_list': Product.objects.filter(
                 batches__status=self.status).distinct(),
             'selected_product': self.request.GET.get('product'),
+            'supplier_list': Supplier.objects.filter(
+                batches__status=self.status).distinct(),
+            'selected_supplier': self.request.GET.get('supplier'),
             'batch_count': self.queryset.count(),
             'search_query': self.request.GET.get('search', '').strip()
         })
@@ -68,7 +75,7 @@ class OpenBatchListView(BaseBatchListView):
 
 class ClosedBatchListView(BaseBatchListView):
     """List view of CLOSED purchasing batches (lots)."""
-    template_name = 'orders/open_batch_list.html'
+    template_name = 'orders/closed_batch_list.html'
     queryset = Batch.objects.filter(status=Batch.CLOSED)
     status = Batch.CLOSED
     access_roles = '__all__'

@@ -125,7 +125,7 @@
                 <th class="text-right allocation-quantity-col">Quantity ({{ object.unit.code }})</th>
                 <th class="text-right">Rate (USD)</th>
                 <th class="text-right allocation-amount-col">Amount (USD)</th>
-                {% if object.batch.status == object.batch.OPEN and perms.orders.change_allocation or perms.orders.delete_allocation %}
+                {% if perms.orders.change_allocation and object.batch.status == object.batch.OPEN %}
                   <th class="action wd-80"></th>
                 {% endif %}
               </tr>

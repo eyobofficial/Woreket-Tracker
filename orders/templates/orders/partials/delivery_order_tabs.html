@@ -11,11 +11,14 @@
         href="#tab-pane-{{ delivery_order.pk }}">{{ delivery_order.vessel }}</a>
     </li>
     {% endfor %}
+
+    {% if object.status == object.OPEN and perms.orders.add_deliveryorder %}
     <li class="nav-item">
       <a
         class="nav-link {% if not active_pk %}active{% endif %}"
         id="tab-new" data-toggle="tab" role="tab" href="#tab-pane-new"><i class="fas fa-plus tx-12"></i></a>
     </li>
+    {% endif %}
   </ul><!-- ./ End Tab Menu -->
 
   <!-- Tab Content -->
@@ -23,16 +26,23 @@
     {% for delivery_order in object.delivery_orders.all %}
     <div class="tab-pane fade {% if active_pk|safe == delivery_order.pk|safe %}active show{% endif %}" role="tabpanel" id="tab-pane-{{ delivery_order.pk }}">
       <div class="d-flex justify-content-between">
-        <button data-url="{% url 'orders:order-update' delivery_order.pk %}" class="btn btn-sm pd-x-20 btn-primary btn-uppercase mg-l-5 btn-modal">
-          <i data-feather="edit" class="wd-10 mg-r-5"></i> Edit
-        </button>
+        <div>
+          {% if object.status == object.OPEN and perms.orders.change_deliveryorder %}
+          <button data-url="{% url 'orders:order-update' delivery_order.pk %}" class="btn btn-sm pd-x-20 btn-primary btn-uppercase mg-l-5 btn-modal">
+            <i data-feather="edit" class="wd-10 mg-r-5"></i> Edit
+          </button>
+          {% endif %}
+        </div>
+
         <div>
           <a href="{% url 'orders:order-allocation-letter' delivery_order.pk %}" class="btn btn-sm pd-x-20 btn-white btn-uppercase mg-l-5">
             <i data-feather="file-text" class="wd-10 mg-r-5"></i> Letter
           </a>
+          {% if object.status == object.OPEN and perms.orders.delete_deliveryorder %}
           <button data-url="{% url 'orders:order-delete' delivery_order.pk %}" class="btn btn-sm pd-x-20 btn-danger btn-uppercase mg-l-5 btn-modal">
             <i data-feather="trash" class="wd-10 mg-r-5"></i> Delete
           </button>
+          {% endif %}
         </div>
       </div>
       <div class="card mg-t-20 mg-b-30">
@@ -113,8 +123,11 @@
       {% include 'orders/partials/distribution_summary.html' with object=delivery_order %}
     </div>
     {% endfor %}
+
+    {% if object.status == object.OPEN and perms.orders.add_deliveryorder %}
     <div class="tab-pane fade {% if not active_pk %}active show{% endif %}" id="tab-pane-new">
       {% include 'orders/order_create_form.html' %}
     </div>
+    {% endif %}
   </div><!-- ./ Tab Content -->
 </div>
