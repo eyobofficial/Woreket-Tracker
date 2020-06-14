@@ -5,6 +5,7 @@ env:
   global
     - SECRET_KEY="(&^+4@&qt4b-^1=mad05%ju8q+4vg(vy6r2mq+gxab2eg#0f$b"
     - DJANGO_SETTINGS_MODULE=config.settings.testing
+    - ENVIRONMENT=TESTING
     - ADMIN_EMAIL="admin@test.email"
     - ADMIN_PHONE_NUMBER=0911427805
     - ADMIN_PASSWORD=""
