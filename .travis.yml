@@ -3,7 +3,7 @@ language: python
 python: 3.6
 env:
   global
-    - SECRET_KEY=(&^+4@&qt4b-^1=mad05%ju8q+4vg(vy6r2mq+gxab2eg#0f$b
+    - SECRET_KEY="(&^+4@&qt4b-^1=mad05%ju8q+4vg(vy6r2mq+gxab2eg#0f$b"
     - DJANGO_SETTINGS_MODULE=config.settings.testing
     - DB_NAME=travis_ci_test
     - DB_ROOT_PASSWORD=""
@@ -15,6 +15,8 @@ env:
     - CELERY_RESULT_BACKEND=redis://127.0.0.1:6379
 services:
   - mysql
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS travis_ci_test;'
 install:
   - pip3 install --upgrade pip
   - pip3 install pipenv
