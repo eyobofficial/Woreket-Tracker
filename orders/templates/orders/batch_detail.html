@@ -5,7 +5,7 @@
 {% block title %} {{ object.lc_number }} | Payment Tracker{% endblock %}
 
 {% block content %}
-<div class="content content-fixed">
+<div class="content content-fixed mg-b-20">
   <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0 batch-detail-container">
 
     <!-- BREADCRUMB -->
@@ -29,7 +29,7 @@
       <div class="d-none d-md-block">
         {% if perms.purchases.close_batch %}
         <button class="btn btn-sm pd-x-15 btn-white btn-uppercase btn-modal"
-          data-url="">
+          data-url="{% url 'orders:batch-close' object.pk %}">
           <i data-feather="flag" class="wd-10 mg-r-5"></i> Close
         </button>
         {% endif %}
@@ -57,7 +57,7 @@
       <div class="d-none d-md-block">
         {% if perms.purchases.reopen_batch %}
         <button class="btn btn-sm pd-x-15 btn-white btn-uppercase mg-l-5 btn-modal"
-          data-url="">
+          data-url="{% url 'orders:batch-reopen' object.pk %}">
           <i data-feather="share" class="wd-10 mg-r-5"></i> Re-Open
         </button>
         {% endif %}
@@ -150,9 +150,10 @@
       </div>
     </div>
 
-    <!-- DELIVERY ORDER TABS  -->
-    {% include 'orders/partials/delivery_order_tabs.html' with object=object %}
-
+    {% if object.status == object.OPEN or object.delivery_orders.count > 0 %}
+       <!-- DELIVERY ORDER TABS  -->
+      {% include 'orders/partials/delivery_order_tabs.html' with object=object %}
+    {% endif %}
   </div><!-- container -->
 </div><!-- content -->
 

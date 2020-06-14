@@ -161,6 +161,34 @@ class BatchUpdateView(BaseBatchesView, SuccessMessageMixin, UpdateView):
         return response
 
 
+class BatchCloseView(BaseBatchesView, UpdateView):
+    """Closes a batch instance."""
+    template_name = 'orders/modals/batches/batch_close.html'
+    model = Batch
+    fields = ('status', )
+    access_roles = [ROLE_ADMIN]
+
+    def form_valid(self, form):
+        redirect_url = super().form_valid(form)
+        self.object.updated_by=self.request.user
+        self.object.save()
+        return redirect_url
+
+
+class BatchReopenView(BaseBatchesView, UpdateView):
+    """Re-open a closed batch instance."""
+    template_name = 'orders/modals/batches/batch_reopen.html'
+    model = Batch
+    fields = ('status', )
+    access_roles = [ROLE_ADMIN]
+
+    def form_valid(self, form):
+        redirect_url = super().form_valid(form)
+        self.object.updated_by=self.request.user
+        self.object.save()
+        return redirect_url
+
+
 class BatchDeleteView(BaseBatchesView, SuccessMessageMixin, DeleteView):
     """Delete view to delete purchasing batch."""
     template_name = 'orders/modals/batches/batch_delete_form.html'

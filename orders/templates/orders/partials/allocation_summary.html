@@ -142,7 +142,7 @@
                 </td>
                 <td class="tz-color-03 tx-normal text-right">{{ object.batch.rate|floatformat:2|intcomma }}</td>
                 <td class="text-right tx-normal text-right allocation-amount-col">{{ allocation.get_amount|floatformat:2|intcomma }}</td>
-                {% if object.batch.status == object.batch.OPEN and perms.orders.change_allocation or perms.orders.delete_allocation %}
+                {% if object.batch.status == object.batch.OPEN and perms.orders.change_allocation %}
                 <td class="text-right action">
                   <div class="mg-l-auto d-flex justify-content-end">
                     <nav class="nav nav-icon-only">

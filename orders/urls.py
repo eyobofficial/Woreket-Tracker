@@ -1,8 +1,8 @@
 from django.urls import path
 
 from .views.batches import OpenBatchListView, ClosedBatchListView, \
-    BatchCreateView, BatchUpdateView, BatchDeleteView, BatchDetailView, \
-    SupplierPopupView
+    BatchCreateView, BatchUpdateView, BatchCloseView, BatchReopenView, \
+    BatchDeleteView, BatchDetailView, SupplierPopupView
 from .views.deliveryorders import OrderCreateView, \
     OrderUpdateView, OrderDetailView, OrderDeleteView
 from .views.allocations import AllocationCreateView, AllocationUpdateView, \
@@ -15,29 +15,66 @@ from .views.distributions import DistributionCreateView, \
 app_name = 'orders'
 
 urlpatterns = [
-    path('<uuid:pk>/', OrderDetailView.as_view(), name='order-detail'),
+    path('', OpenBatchListView.as_view(), name='open-batch-list'),
     path(
-        '<uuid:batch_pk>/create/',
+        'batches/closed/',
+        ClosedBatchListView.as_view(),
+        name='closed-batch-list'
+    ),
+    path('batches/create/', BatchCreateView.as_view(), name='batch-create'),
+    path('batches/<uuid:pk>/', BatchDetailView.as_view(), name='batch-detail'),
+    path(
+        'batches/<uuid:pk>/update/',
+        BatchUpdateView.as_view(),
+        name='batch-update'
+    ),
+    path(
+        'batches/<uuid:pk>/close/',
+        BatchCloseView.as_view(),
+        name='batch-close'
+    ),
+    path(
+        'batches/<uuid:pk>/reopen/',
+        BatchReopenView.as_view(),
+        name='batch-reopen'
+    ),
+    path(
+        'batches/<uuid:pk>/delete/',
+        BatchDeleteView.as_view(),
+        name='batch-delete'
+    ),
+   path(
+        'supplier/<uuid:pk>/popup/',
+        SupplierPopupView.as_view(),
+        name='supplier-popup'
+    ),
+    path(
+        'delivery-orders/<uuid:pk>/',
+        OrderDetailView.as_view(),
+        name='order-detail'
+    ),
+    path(
+        '<uuid:batch_pk>/delivery-orders/create/',
         OrderCreateView.as_view(),
         name='order-create'
     ),
     path(
-        '<uuid:pk>/update/',
+        'delivery-orders/<uuid:pk>/update/',
         OrderUpdateView.as_view(),
         name='order-update'
     ),
     path(
-        '<uuid:pk>/delete/',
+        'delivery-orders/<uuid:pk>/delete/',
         OrderDeleteView.as_view(),
         name='order-delete'
     ),
     path(
-        '<uuid:pk>/letter-form/',
+        'delivery-orders/<uuid:pk>/letter-form/',
         LetterFormView.as_view(),
         name='order-letter-form'
     ),
     path(
-        '<uuid:pk>/allocation-letter/',
+        'delivery-orders/<uuid:pk>/allocation-letter/',
         AllocationLetterView.as_view(),
         name='order-allocation-letter'
     ),
@@ -47,7 +84,7 @@ urlpatterns = [
         name='order-allocation-detail'
     ),
     path(
-        '<uuid:pk>/allocations/create/',
+        'delivery-orders/<uuid:pk>/allocations/create/',
         AllocationCreateView.as_view(),
         name='order-allocation-create'
     ),
@@ -67,7 +104,7 @@ urlpatterns = [
         name='order-distribution-detail'
     ),
     path(
-        '<uuid:pk>/distributions/create/',
+        'delivery-orders/<uuid:pk>/distributions/create/',
         DistributionCreateView.as_view(),
         name='order-distribution-create'
     ),
@@ -80,33 +117,5 @@ urlpatterns = [
         'distribution/<uuid:pk>/delete/',
         DistributionDeleteView.as_view(),
         name='distribution-delete'
-    ),
-]
-
-
-# Batch URLs
-urlpatterns += [
-    path('', OpenBatchListView.as_view(), name='open-batch-list'),
-    path(
-        'batches/closed/',
-        ClosedBatchListView.as_view(),
-        name='closed-batch-list'
-    ),
-    path('batches/create/', BatchCreateView.as_view(), name='batch-create'),
-    path('batches/<uuid:pk>/', BatchDetailView.as_view(), name='batch-detail'),
-    path(
-        'batches/<uuid:pk>/update/',
-        BatchUpdateView.as_view(),
-        name='batch-update'
-    ),
-    path(
-        'batches/<uuid:pk>/delete/',
-        BatchDeleteView.as_view(),
-        name='batch-delete'
-    ),
-   path(
-        'supplier/<uuid:pk>/popup/',
-        SupplierPopupView.as_view(),
-        name='supplier-popup'
     ),
 ]
