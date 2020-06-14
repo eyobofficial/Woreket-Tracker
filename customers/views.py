@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF
+from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, ROLE_GUEST
 
 from .mixins import BaseCustomersView
 from .models import Customer, Union
@@ -18,7 +18,7 @@ class UnionListView(BaseCustomersView, ListView):
     paginate_by = 10
     page_name = 'unions'
     queryset = Union.objects.all()
-    access_roles = [ROLE_STAFF, ROLE_MANAGEMENT, ROLE_ADMIN]
+    access_roles = [ROLE_STAFF, ROLE_MANAGEMENT, ROLE_ADMIN, ROLE_GUEST]
 
     def get_queryset(self):
         qs = super().get_queryset()

@@ -1,65 +1,43 @@
 {% load humanize %}
 {% load static %}
 
-<div class="row row-xs row-flex mg-b-30">
-  <div class="col-sm-3 col-lg-3">
+<div class="row row-xs row-flex mg-b-10">
+  <div class="col-sm-12 col-md-4 col-lg-3 mg-xs-b-10 mg-sm-b-10 mg-md-b-0">
     <div class="card ht-100p">
       <div class="card-header d-flex justify-content-between">
         <h6 class="lh-5 mg-b-0">Distribution Summary</h6>
       </div><!-- card-header -->
-      <div class="card-body pd-x-20">
-        <ul class="list-group list-group-flush mg-b-0 tx-13 summary-list-group">
-          <li class="list-group-item pd-x-0 d-flex justify-content-between">
-            <span class="tx-normal">Rate</span>
-            <span class="tx-medium">${{ object.batch.rate|floatformat:2|intcomma }}</span>
-          </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Total delivered quantity" data-target="distribution-quantity-col">
-            <span class="tx-normal">Quantity</span>
-            {% if object.get_delivered_quantity %}
-            <span class="tx-medium">{{ object.get_delivered_quantity|floatformat:2|intcomma }} {{ object.unit.code|upper }}</span>
-            {% else %}
-            <span class="tx-medium">-</span>
-            {% endif %}
-          </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Delivered shortage">
-            <span class="tx-normal">Shortage</span>
-            {% if object.get_total_shortage %}
-            <span class="tx-medium">{{ object.get_total_shortage|floatformat:2|intcomma }} {{ object.unit.code|upper }}</span>
-            {% else %}
-            <span class="tx-medium">-</span>
-            {% endif %}
-          </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="Total delivered amount" data-target="distribution-amount-col">
-            <span class="tx-normal">Amount</span>
-            {% if object.get_delivered_amount %}
-            <span class="tx-medium">${{ object.get_delivered_amount|floatformat:2|intcomma }}</span>
-            {% else %}
-            <span class="tx-medium">-</span>
-            {% endif %}
-          </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" title="10% amount for delivered amount" data-target="distribution-retention-col">
-            <span class="tx-normal">10% Amount</span>
-            {% if object.get_delivered_retention %}
-            <span class="tx-medium">${{ object.get_delivered_retention|floatformat:2|intcomma }}</span>
-            {% else %}
-            <span class="tx-medium ">-</span>
-            {% endif %}
-          </li>
-          <li class="list-group-item pd-x-0 d-flex justify-content-between" data-target="distribution-distributed-col">
-            <span class="tx-normal">Distributed Amt.</span>
-            {% if object.get_final_settlement %}
-            <span class="tx-medium">${{ object.get_final_settlement|floatformat:2|intcomma }}</span>
-            {% else %}
-            <span class="tx-medium">-</span>
-            {% endif %}
-          </li>
-        </ul>
+
+      {% if object.distributions.count > 0 %}
+      <div class="card-body pd-y-20">
+        <div class="row">
+          <div class="col-12 pd-b-10">
+            <div class="region-summary-chart"><canvas id="chart-distribution-{{ object.pk }}"></canvas></div>
+          </div>
+          {% for distribution in object.distributions.all %}
+            <div class="col-12 tx-12 mg-t-15 distribution-bullets" id="bullet-distribution-{{ distribution.pk }}">
+              <div class="d-flex align-items-center">
+                <div class="wd-10 ht-10 rounded-circle pos-relative t--1 bullet-color"></div>
+                <span class="tx-medium mg-l-10">{{ distribution.buyer.code }}</span>
+                <span class="tx-rubik mg-l-auto">{{ distribution.get_total_quantity|floatformat:2|intcomma }} {{ object.unit.code }}</span>
+                <span class="wd-60 tx-right tx-rubik mg-l-5 tx-success">{{ distribution.get_percentage }}%</span>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
       </div><!-- card-body -->
+      {% else %}
+      <div class="card-body pd-y-60">
+        <h5 class="text-uppercase tx-sans tx-semibold text-center tx-16 text-secondary op-4">
+          No Distribution
+        </h5>
+      </div>
+      {% endif %}
     </div><!-- card -->
   </div><!-- col -->
 
-  <div class="col-sm-9">
-    <div class="card mg-b-10 ht-100p">
+  <div class="col-sm-12 col-md-8 col-lg-9 mg-xs-b-10 mg-sm-b-10 mg-md-b-0">
+    <div class="card ht-100p">
       <div class="card-header pd-t-16 d-sm-flex align-items-start justify-content-between bd-b-0 pd-b-10">
         <div>
           <h6 class="mg-b-3">Region Distributions</h6>
@@ -67,13 +45,59 @@
         </div>
         <div class="d-flex mg-t-20 mg-sm-t-0">
           <div class="btn-group flex-fill">
-            {% if not object.is_fully_distributed and object.status == object.OPEN and perms.orders.delete_distribution %}
+            {% if not object.is_fully_distributed and object.batch.status == object.batch.OPEN and perms.orders.add_distribution %}
             <a class="tx-12 link-03 btn-modal" data-url="{% url 'orders:order-distribution-create' object.pk %}" data-script="{% static 'orders/js/modals/distribution.js' %}"><i
                 data-feather="plus" class="wd-15 ht-15"></i> Add Distribution</a>
             {% endif %}
           </div>
         </div>
       </div><!-- card-header -->
+
+      {% if object.distributions.count > 0 %}
+        <!-- Media cards -->
+        <div class="card-body">
+          <div class="d-sm-flex justify-content-between summary-card allocation-summary-card">
+            <!-- Total Quantity -->
+            <div class="media mg-xs-y-10 mg-md-y-5 mg-lg-y-0">
+              <div class="wd-40 wd-md-40 ht-40 ht-md-40 bg-secondary tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-6">
+                <i class="fas fa-balance-scale tx-20"></i>
+              </div>
+              <div class="media-body">
+                <h6 class="tx-sans tx-uppercase tx-10 tx-spacing-1 tx-color-03 tx-semibold tx-nowrap mg-b-5 mg-md-b-6">Total Quantity</h6>
+                <h4 class="tx-16 tx-sm-16 tx-md-18 tx-normal tx-rubik mg-b-0">
+                  {{ object.get_distributed_quantity|floatformat:2|intcomma }} <span class="tx-12 tx-color-03 tx-rubik">{{ object.unit.code }}</span>
+                </h4>
+              </div>
+            </div>
+
+            <!-- Total Shortage -->
+            <div class="media mg-xs-y-10 mg-md-y-5 mg-lg-y-0">
+              <div class="wd-40 wd-md-40 ht-40 ht-md-40 bg-teal tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-6">
+                <i class="fas fa-battery-quarter tx-20"></i>
+              </div>
+              <div class="media-body">
+                <h6 class="tx-sans tx-uppercase tx-10 tx-spacing-1 tx-color-03 tx-semibold tx-nowrap mg-b-5 mg-md-b-6">Shortage</h6>
+                <h4 class="tx-16 tx-sm-16 tx-md-18 tx-normal tx-rubik mg-b-0">
+                  {{ object.get_distributed_shortage|floatformat:2|intcomma }} <span class="tx-12 tx-color-03 tx-rubik">{{ object.unit.code }}</span>
+                </h4>
+              </div>
+            </div>
+
+            <!-- Total Amount -->
+            <div class="media mg-xs-y-10 mg-md-y-5 mg-lg-y-0">
+              <div class="wd-40 wd-md-40 ht-40 ht-md-40 bg-pink tx-white mg-r-10 mg-md-r-10 d-flex align-items-center justify-content-center rounded op-6">
+                <i class="fas fa-funnel-dollar tx-20"></i>
+              </div>
+              <div class="media-body">
+                <h6 class="tx-sans tx-uppercase tx-10 tx-spacing-1 tx-color-03 tx-semibold tx-nowrap mg-b-5 mg-md-b-6">Total Amount</h6>
+                <h4 class="tx-16 tx-sm-16 tx-md-18 tx-normal tx-rubik mg-b-0">
+                  ${{ object.get_distributed_amount|floatformat:2|intcomma }}
+                </h4>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.end .media-cards -->
+      {% endif %}
 
       <div class="card-body pd-x-0 pd-t-0">
         <div class="table-responsive">
@@ -82,11 +106,12 @@
               <tr>
                 <th>Region</th>
                 <th class="text-right">Quantity ({{ object.unit.code }})</th>
+                <th class="text-right">Shortage ({{ object.unit.code }})</th>
                 <th class="text-right">Rate (USD)</th>
                 <th class="text-right distribution-amount-col">Amount (USD)</th>
-                <th class="text-right distribution-retention-col">10% Amount (USD)</th>
-                <th class="text-right distribution-distributed-col">Distributed Amount (USD)</th>
-                {% if object.status == object.OPEN %}<th class="action"></th>{% endif %}
+                {% if object.batch.status == object.batch.OPEN and perms.orders.change_distribution %}
+                  <th class="action wd-80"></th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
@@ -99,14 +124,10 @@
                     &nbsp; <i data-feather="external-link" class="wd-12 ht-12 stroke-wd-3"></i>
                   </a>
                 </td>
+                <td class="tz-color-03 tx-normal text-right">{{ distribution.get_total_shortage|floatformat:2|intcomma }}</td>
                 <td class="tz-color-03 tx-normal text-right">{{ object.batch.rate|floatformat:2|intcomma }}</td>
                 <td class="text-right tx-normal distribution-amount-col">{{ distribution.get_amount|floatformat:2|intcomma }}</td>
-                <td class="text-right tx-normal distribution-retention-col">{{ distribution.get_retention|floatformat:2|intcomma }}</td>
-                <td class="tx-medium tx-medium text-right distribution-distributed-col">
-                  {{ distribution.get_distributed_settlement|floatformat:2|intcomma }}
-                  <span class="mg-l-5 tx-11 tx-normal tx-success" title="Payment distribution percentage.">{{ distribution.get_distribution_percentage }}%</span>
-                </td>
-                {% if object.status == object.OPEN %}
+                {% if object.batch.status == object.batch.OPEN and perms.orders.change_distribution %}
                 <td class="text-right action">
                   <div class="mg-l-auto d-flex justify-content-end">
                     <nav class="nav nav-icon-only">
@@ -130,10 +151,10 @@
               </tr>
               {% empty %}
               <tr class="empty-row">
-                {% if object.status == object.OPEN %}
-                <td colspan="7" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">NO DISTRIBUTION DATA</td>
-                {% else %}
+                {% if object.batch.status == object.batch.OPEN %}
                 <td colspan="6" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">NO DISTRIBUTION DATA</td>
+                {% else %}
+                <td colspan="5" class="tx-medium tx-color-03 text-center pt-5 pb-5 h5">NO DISTRIBUTION DATA</td>
                 {% endif %}
               </tr>
               {% endfor %}
@@ -144,3 +165,71 @@
     </div><!-- card -->
   </div><!-- col -->
 </div><!-- row -->
+
+<script>
+  $(function(){
+    /** DISTRIBUTION PIE CHART **/
+    {% if object.distributions.count > 0 %}
+      let distributionChart = initDistributionChart();
+      $('#tab-{{ object.pk }}').on('shown.bs.tab', function() {
+        distributionChart.destroy();
+        initDistributionChart();
+      });
+    {% endif %}
+
+    function initDistributionChart() {
+      const regionColors = [
+        {region: 'AMH', color: '#00cccc', className: 'bg-teal'},
+        {region: 'BEN', color: '#7987a1', className: 'bg-secondary'},
+        {region: 'EABC', color: '#10b759', className: 'bg-success'},
+        {region: 'ORO', color: '#ffc107', className: 'bg-warning'},
+        {region: 'SNNP', color: '#0168fa', className: 'bg-primary'},
+        {region: 'TIG', color: '#f10075', className: 'bg-pink'},
+      ]
+      const labels = [];
+      const data = [];
+      const backgroundColors = [];
+      let code, quantity, colorData;
+
+      {% for distribution in object.distributions.all %}
+        code = '{{ distribution.buyer.code }}';
+        quantity = +'{{ distribution.get_total_quantity|floatformat:2 }}';
+        colorData = regionColors.find(item => item['region'] == code);
+
+        labels.push(code);
+        data.push(quantity);
+        backgroundColors.push(colorData['color']);
+        $('#bullet-distribution-{{ distribution.pk }}').find('.bullet-color')
+                                      .addClass(colorData['className']);
+      {% endfor %}
+
+      const datapie = {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: backgroundColors
+        }]
+      };
+
+      const optionpie = {
+        maintainAspectRatio: false,
+        responsive: true,
+        legend: {
+          display: false,
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true
+        }
+      };
+
+      // Pie chart
+      const ctx = document.getElementById('chart-distribution-{{ object.pk }}');
+      return new Chart (ctx, {
+        type: 'doughnut',
+        data: datapie,
+        options: optionpie
+      });
+    }
+  })
+</script>

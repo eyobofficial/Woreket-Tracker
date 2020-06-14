@@ -1,8 +1,10 @@
 from django.urls import path
 
-from .views.deliveryorders import OpenOrderListView, OrderCreateView, \
-    OrderUpdateView, OrderCloseView, OrderDetailView, ClosedOrderListView, \
-    OrderReopenView, OrderDeleteView, BatchSummaryView, BillOfLoadingSummary
+from .views.batches import OpenBatchListView, ClosedBatchListView, \
+    BatchCreateView, BatchUpdateView, BatchCloseView, BatchReopenView, \
+    BatchDeleteView, BatchDetailView, SupplierPopupView
+from .views.deliveryorders import OrderCreateView, \
+    OrderUpdateView, OrderDetailView, OrderDeleteView
 from .views.allocations import AllocationCreateView, AllocationUpdateView, \
     AllocationDeleteView, LetterFormView, AllocationLetterView, \
     AllocationDetailView
@@ -12,49 +14,67 @@ from .views.distributions import DistributionCreateView, \
 
 app_name = 'orders'
 
-
 urlpatterns = [
-    path('', OpenOrderListView.as_view(), name='open-orders-list'),
-    path('closed/', ClosedOrderListView.as_view(), name='closed-orders-list'),
-    path('<uuid:pk>/', OrderDetailView.as_view(), name='order-detail'),
-    path('create/', OrderCreateView.as_view(), name='order-create'),
+    path('', OpenBatchListView.as_view(), name='open-batch-list'),
     path(
-        '<uuid:pk>/update/',
-        OrderUpdateView.as_view(),
-        name='open-order-update'
+        'batches/closed/',
+        ClosedBatchListView.as_view(),
+        name='closed-batch-list'
+    ),
+    path('batches/create/', BatchCreateView.as_view(), name='batch-create'),
+    path('batches/<uuid:pk>/', BatchDetailView.as_view(), name='batch-detail'),
+    path(
+        'batches/<uuid:pk>/update/',
+        BatchUpdateView.as_view(),
+        name='batch-update'
     ),
     path(
-        '<uuid:pk>/delete/',
+        'batches/<uuid:pk>/close/',
+        BatchCloseView.as_view(),
+        name='batch-close'
+    ),
+    path(
+        'batches/<uuid:pk>/reopen/',
+        BatchReopenView.as_view(),
+        name='batch-reopen'
+    ),
+    path(
+        'batches/<uuid:pk>/delete/',
+        BatchDeleteView.as_view(),
+        name='batch-delete'
+    ),
+   path(
+        'supplier/<uuid:pk>/popup/',
+        SupplierPopupView.as_view(),
+        name='supplier-popup'
+    ),
+    path(
+        'delivery-orders/<uuid:pk>/',
+        OrderDetailView.as_view(),
+        name='order-detail'
+    ),
+    path(
+        '<uuid:batch_pk>/delivery-orders/create/',
+        OrderCreateView.as_view(),
+        name='order-create'
+    ),
+    path(
+        'delivery-orders/<uuid:pk>/update/',
+        OrderUpdateView.as_view(),
+        name='order-update'
+    ),
+    path(
+        'delivery-orders/<uuid:pk>/delete/',
         OrderDeleteView.as_view(),
         name='order-delete'
     ),
     path(
-        '<uuid:pk>/open/',
-        OrderReopenView.as_view(),
-        name='order-open'
-    ),
-    path(
-        '<uuid:pk>/close/',
-        OrderCloseView.as_view(),
-        name='order-close'
-    ),
-    path(
-        'batch/<uuid:pk>/summary/',
-        BatchSummaryView.as_view(),
-        name='batch-summary'
-    ),
-    path(
-        'bill-of-loading/<uuid:pk>/summary/',
-        BillOfLoadingSummary.as_view(),
-        name='bill-of-loading'
-    ),
-    path(
-        '<uuid:pk>/letter-form/',
+        'delivery-orders/<uuid:pk>/letter-form/',
         LetterFormView.as_view(),
         name='order-letter-form'
     ),
     path(
-        '<uuid:pk>/allocation-letter/',
+        'delivery-orders/<uuid:pk>/allocation-letter/',
         AllocationLetterView.as_view(),
         name='order-allocation-letter'
     ),
@@ -64,7 +84,7 @@ urlpatterns = [
         name='order-allocation-detail'
     ),
     path(
-        '<uuid:pk>/allocations/create/',
+        'delivery-orders/<uuid:pk>/allocations/create/',
         AllocationCreateView.as_view(),
         name='order-allocation-create'
     ),
@@ -84,7 +104,7 @@ urlpatterns = [
         name='order-distribution-detail'
     ),
     path(
-        '<uuid:pk>/distributions/create/',
+        'delivery-orders/<uuid:pk>/distributions/create/',
         DistributionCreateView.as_view(),
         name='order-distribution-create'
     ),

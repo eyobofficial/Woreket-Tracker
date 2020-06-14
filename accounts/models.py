@@ -7,13 +7,16 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
 from shared.constants import ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, \
-    ROLE_SUPPLIER
+    ROLE_SUPPLIER, ROLE_GUEST
 from purchases.models import Supplier
 
 from .managers import CustomUserManager
 
 
-ROLE_GROUPS = [ROLE_ADMIN, ROLE_MANAGEMENT, ROLE_STAFF, ROLE_SUPPLIER]
+ROLE_GROUPS = [
+    ROLE_ADMIN, ROLE_MANAGEMENT,
+    ROLE_STAFF, ROLE_SUPPLIER, ROLE_GUEST
+]
 
 
 class CustomUser(AbstractUser):
@@ -66,11 +69,14 @@ class CustomUser(AbstractUser):
             staff_group = Group.objects.get(name=ROLE_STAFF)
             management_group = Group.objects.get(name=ROLE_MANAGEMENT)
             supplier_group = Group.objects.get(name=ROLE_SUPPLIER)
+            guest_group = Group.objects.get(name=ROLE_GUEST)
 
             # New role
             group = Group.objects.get(name=role_name)
             self.groups.remove(
-                admin_group, staff_group, management_group, supplier_group)
+                admin_group, staff_group, management_group,
+                supplier_group, guest_group
+            )
             self.groups.add(group)
         except Group.DoesNotExist:
             raise ValueError(f'{role_name} role does not exists.')

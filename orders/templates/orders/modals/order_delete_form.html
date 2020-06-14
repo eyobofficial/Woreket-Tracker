@@ -33,12 +33,13 @@
 
       <div class="modal-footer pd-x-20 pd-y-15">
         <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-primary" disabled>Yes, delete</button>
+        <button type="submit" class="btn btn-primary wd-110" disabled>Yes, delete</button>
       </div>
     </form>
   </div><!-- modal-content -->
 </div><!-- modal-dialog -->
 
+{% comment %}
 <script>
   $(function () {
     const $form = $('#order-delete-form');
@@ -53,6 +54,53 @@
       } else {
         $submitBtn.attr('disabled', true);
       }
+    });
+  });
+</script>
+{% endcomment %}
+
+<script>
+  $(function () {
+    const $form = $('#order-delete-form');
+    const $modal = $form.closest('.modal');
+    const $nameInput = $form.find('#vessel-name');
+    const $submitBtn = $form.find('button[type=submit]');
+
+    // Force user to type vessel name
+    $nameInput.on('keyup', function () {
+      const value = $(this).val();
+
+      if (value === '{{ object.vessel }}') {
+        $submitBtn.removeAttr('disabled');
+      } else {
+        $submitBtn.attr('disabled', true);
+      }
+    });
+
+    // Handle Form submission
+    $form.on('submit', function (e) {
+      e.preventDefault();
+
+      const url = $(this).attr('action');
+      const formData = $form.serialize();
+      const $spinner = $('<i>', { 'class': 'fas fa-spin fa-circle-notch' });
+
+      $submitBtn.html($spinner).attr('disabled', true);
+
+      const request = $.ajax({
+        method: 'POST',
+        url: url,
+        data: formData,
+        dataType: 'html'
+      });
+
+      // AJAX success
+      request.done(function (data) {
+        const $updatedPage = $(data).find('.batch-detail-container');
+        $('.batch-detail-container').replaceWith($updatedPage);
+        feather.replace();
+        $modal.modal('hide');
+      });
     });
   });
 </script>

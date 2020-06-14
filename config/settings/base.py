@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'livereload',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
 ]
@@ -56,7 +57,7 @@ INSTALLED_APPS += [
     'orders.apps.OrdersConfig',
     'users.apps.UsersConfig',
     'purchases.apps.PurchasesConfig',
-    'customers.apps.CustomersConfig',
+    'customers.apps.CustomersConfig'
 ]
 
 MIDDLEWARE = [
@@ -68,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'livereload.middleware.LiveReloadScript',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -161,7 +163,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
 # Login/logout
-LOGIN_REDIRECT_URL = 'orders:open-orders-list'
+LOGIN_REDIRECT_URL = 'orders:open-batch-list'
 LOGOUT_REDIRECT_URL = 'accounts:login'
 
 
@@ -177,7 +179,7 @@ DEFAULT_ADMIN_LAST_NAME = config('ADMIN_LAST_NAME', '')
 
 
 # Project Name
-PROJECT_NAME = 'Payment_Tracker'
+PROJECT_NAME = 'Woreket_Tracker'
 
 
 # Celery

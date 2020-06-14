@@ -1,4 +1,4 @@
-# Payment Tracker
+# Woreket Tracker
 ## A web application for tracking fertilizer payments
 
 
@@ -18,7 +18,7 @@
    ```
 3. Make sure the MySQL Server is up and running.
 
-4. Create a database called `payment_tracker_db`.
+4. Create a new database. (Example: `woreket_tracker_db`)
 
 5. At the project root directory, there is a file named `.env_example`. Copy the file and rename the copy as `.env`.
 
@@ -26,7 +26,7 @@
 
    ```bash
     SECRET_KEY='<django secret key>'
-    DB_NAME='payment_tracker_db'
+    DB_NAME='woreket_tracker_db'
     DB_USER='<database user name>'
     DB_PASSWORD='<database user password>'
     DB_HOST='<host>'
@@ -56,9 +56,6 @@
     $ python manage.py defaultsuperuser
     ```
 
-    **Note**: When you run the above command, you will be prompted to enter your admin credentials. Please provide your choosen credentials.
-
-
 ### Usage
 1. Run the following command to run the development web server:
 
@@ -72,12 +69,14 @@
 ### List of Main Tools and Packages Used
 * [Python 3.6+](https://www.python.org/downloads/)
 * [Pipenv](https://pipenv.readthedocs.io/en/latest/)
-* [Django 2.21](https://www.djangoproject.com/download/)
+* [Django 3.0.7](https://www.djangoproject.com/download/)
 * [DRF 3.9](https://www.django-rest-framework.org/)
 * [django-cors-headers](https://pypi.org/project/django-cors-headers/)
 * [celery](https://docs.celeryproject.org/)
 * [redis](https://redis.io)
 * [Python Decouple](https://github.com/henriquebastos/python-decouple)
-* [Travis CI](https://travis-ci.org/)
+* [Travis-CI](https://travis-ci.org/)
 * [Gunicorn](https://gunicorn.org/)
 * [django-phonenumber-field](https://github.com/stefanfoulis/django-phonenumber-field)
+* [python-docx](https://python-docx.readthedocs.io/en/latest/)
+* [django-countries](https://github.com/SmileyChris/django-countries/)

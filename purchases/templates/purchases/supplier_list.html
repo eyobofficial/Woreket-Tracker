@@ -59,10 +59,10 @@
             <table class="table table-dashboard mg-b-0" id="supplier-table">
               <thead>
                 <tr>
-                  <th class="wd-80">#</th>
                   <th>Name</th>
-                  <th>Abbreviation</th>
                   <th>E-mail</th>
+                  <th>Phone Number</th>
+                  <th>Fax Number</th>
                   <th>City</th>
                   <th>Country</th>
                   <th class="action"></th>
@@ -71,10 +71,12 @@
               <tbody>
                 {% for supplier in object_list %}
                 <tr>
-                  <td class="tx-color-03 tx-normal">{{ forloop.counter }}</td>
-                  <td class="tz-color-03 tx-medium">{{ supplier.name }}</td>
-                  <td class="tx-color-03 tx-normal">{{ supplier.short_name|default:'-' }}</td>
+                  <td class="tz-color-03 tx-medium">
+                    {{ supplier.name }} {% if supplier.short_name %}({{ supplier.short_name }}){% endif %}
+                  </td>
                   <td class="link-03 tx-normal">{{ supplier.email|default:'-' }}</td>
+                  <td class="link-03 tx-normal">{{ supplier.phone_number|default:'-' }}</td>
+                  <td class="link-03 tx-normal">{{ supplier.fax_number|default:'-' }}</td>
                   <td class="tx-color-03 tx-normal">{{ supplier.city }}</td>
                   <td class="tx-color-03 tx-normal">{{ supplier.country.name }}</td>
                   <td class="text-right action">

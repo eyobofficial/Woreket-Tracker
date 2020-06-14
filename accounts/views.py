@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, TemplateView, UpdateView
 
-from shared.constants import ROLE_STAFF, ROLE_SUPPLIER, DEMO
+from shared.constants import ROLE_STAFF, ROLE_SUPPLIER, DEMO, ROLE_GUEST
 
 from .forms import UserRegistrationForm, ProfileUpdateForm
 from .mixins import AccountMixin
@@ -56,11 +56,15 @@ class UserRegistrationView(SuccessMessageMixin, CreateView):
         user and assign him/her a staff role.
         """
         redirect_url = super().form_valid(form)
+        user = self.object
+        role = ROLE_GUEST
+        status = CustomUser.PENDING
         if settings.ENVIRONMENT == DEMO:
-            user = self.object
-            user.role = ROLE_STAFF
-            user.status = CustomUser.ACTIVE
-            user.save()
+            role = ROLE_ADMIN
+            status = CustomUser.ACTIVE
+        user.role = role
+        user.status = status
+        user.save()
         return redirect_url
 
 

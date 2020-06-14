@@ -8,12 +8,12 @@
     padding-left: 8px !important;
 }
 
-#orders-table-card .search-form .form-control {
+.summary-table-container .search-form .form-control {
     width: 70%;
     height: calc(1.3em + 0.8375rem + 2px);
 }
 
-#orders-table-card .search-form button {
+.summary-table-container .search-form button {
     z-index: 100;
 }
 
@@ -53,4 +53,54 @@
 
 .unions-modal-body {
     min-height: 200px;
+}
+
+#tab-container .tab-content {
+    background-color: rgba(72, 94, 144, 0.16);
+    box-shadow: 0 0 10px rgba(28, 39, 60, 0.05);
+    border-top: none;
+    border-radius: 0 6px 6px 6px;
+}
+
+#tab-container .nav-tabs {
+    border-bottom: none;
+}
+
+#tab-container .nav-link[role=tab] {
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(28, 39, 60, 0.05);
+    border-bottom: 1px solid rgba(72, 94, 144, 0.16);
+    border-radius: 6px 6px 0 0;
+    padding-left: 40px;
+    padding-right: 40px;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+#tab-container .nav-link[role=tab].active {
+    background-color: rgba(72, 94, 144, 0.16);
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.summary-card {
+    flex-wrap: wrap;
+    align-content: space-between;
+}
+
+#delivery-order-summary-card {
+    border-radius: 6px;
+}
+
+#delivery-order-summary-card .table-responsive {
+    border-radius: 6px;
+}
+
+
+#delivery-order-summary-table td:first-child {
+    border-left: none;
+}
+
+#delivery-order-summary-table td:last-child {
+    border-right: none;
 }

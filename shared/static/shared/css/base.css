@@ -1,3 +1,13 @@
+/***** Light Theme/Skin **********/
+body {
+    background-color: #f5f6fa;
+}
+
+.card {
+    box-shadow: 0 0 10px rgba(28, 39, 60, 0.05);
+}
+/** Theme end **/
+
 .form-control {
     color: #8392a5;
 }
@@ -87,14 +97,10 @@ textarea[disabled] {
     width: 110px;
 }
 
-.table tr.empty-row,
-.table tr.empty-row {
-    background-color: #ffffff;
-}
-
-.table tr.empty-row td,
 .table tr.empty-row td {
     color: lightgray;
+    background-color: #fff;
+    font-weight: 600;
     text-transform: uppercase;
 }
 
