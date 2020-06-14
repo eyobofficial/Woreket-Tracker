@@ -5,6 +5,11 @@ env:
   global
     - SECRET_KEY="(&^+4@&qt4b-^1=mad05%ju8q+4vg(vy6r2mq+gxab2eg#0f$b"
     - DJANGO_SETTINGS_MODULE=config.settings.testing
+    - ADMIN_EMAIL="admin@test.email"
+    - ADMIN_PHONE_NUMBER=0911427805
+    - ADMIN_PASSWORD=""
+    - ADMIN_FIRST_NAME=admin
+    - ADMIN_LAST_NAME=user
     - DB_NAME=travis_ci_test
     - DB_ROOT_PASSWORD=""
     - DB_USER=travis
@@ -13,6 +18,7 @@ env:
     - DB_PORT=3306
     - CELERY_BROKER_URL=redis://127.0.0.1:6379
     - CELERY_RESULT_BACKEND=redis://127.0.0.1:6379
+    - PIPENV_IGNORE_VIRTUALENVS=1
 services:
   - mysql
 before_install:
