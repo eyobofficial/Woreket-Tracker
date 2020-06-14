@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, TemplateView, UpdateView
 
-from shared.constants import ROLE_STAFF, ROLE_SUPPLIER, DEMO, ROLE_GUEST
+from shared.constants import ROLE_SUPPLIER, DEMO, ROLE_GUEST, ROLE_ADMIN
 
 from .forms import UserRegistrationForm, ProfileUpdateForm
 from .mixins import AccountMixin
