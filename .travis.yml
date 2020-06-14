@@ -30,6 +30,5 @@ install:
   - pipenv install --system
 before_script:
   - python manage.py migrate --no-input
-  - python manage.py runfixtures
 script:
   - python manage.py test --verbosity 2
