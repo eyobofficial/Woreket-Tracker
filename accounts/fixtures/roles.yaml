@@ -63,19 +63,31 @@
     - - view_allocation
       - orders
       - allocation
+    - - add_batch
+      - orders
+      - batch
+    - - change_batch
+      - orders
+      - batch
+    - - close_batch
+      - orders
+      - batch
+    - - delete_batch
+      - orders
+      - batch
+    - - reopen_batch
+      - orders
+      - batch
+    - - view_batch
+      - orders
+      - batch
     - - add_deliveryorder
       - orders
       - deliveryorder
     - - change_deliveryorder
       - orders
       - deliveryorder
-    - - close_deliveryorder
-      - orders
-      - deliveryorder
     - - delete_deliveryorder
-      - orders
-      - deliveryorder
-    - - reopen_deliveryorder
       - orders
       - deliveryorder
     - - view_deliveryorder
@@ -194,6 +206,9 @@
     - - view_allocation
       - orders
       - allocation
+    - - view_batch
+      - orders
+      - batch
     - - view_deliveryorder
       - orders
       - deliveryorder
@@ -206,6 +221,9 @@
     - - view_unionallocation
       - orders
       - unionallocation
+    - - view_uniondistribution
+      - orders
+      - uniondistribution
     - - view_product
       - purchases
       - product
@@ -271,16 +289,22 @@
     - - view_allocation
       - orders
       - allocation
+    - - add_batch
+      - orders
+      - batch
+    - - change_batch
+      - orders
+      - batch
+    - - view_batch
+      - orders
+      - batch
     - - add_deliveryorder
       - orders
       - deliveryorder
     - - change_deliveryorder
       - orders
       - deliveryorder
-    - - close_deliveryorder
-      - orders
-      - deliveryorder
-    - - reopen_deliveryorder
+    - - delete_deliveryorder
       - orders
       - deliveryorder
     - - view_deliveryorder
@@ -334,9 +358,6 @@
     - - view_uniondistribution
       - orders
       - uniondistribution
-    - - add_batch
-      - purchases
-      - batch
     - - add_product
       - purchases
       - product
@@ -384,6 +405,9 @@
     - - view_allocation
       - orders
       - allocation
+    - - view_batch
+      - orders
+      - batch
     - - view_deliveryorder
       - orders
       - deliveryorder
