@@ -76,8 +76,8 @@ class StaffUserFactory(UserFactory):
 
 
 class GuestUserFactory(UserFactory):
-    Create a random user with `Guest` role.
     """
+    Create a random user with `Guest` role.
     """
     @factory.post_generation
     def _attach_role(obj, created, extracted, **kwargs):
