@@ -1,6 +1,7 @@
 # Woreket Tracker
 ## A web application for tracking fertilizer payments
 
+![Thumbnail](thumbnail.png)
 
 ### Prerequisites
 * [Python 3.8+](https://www.python.org/downloads/)
@@ -69,7 +70,7 @@
 ### List of Main Tools and Packages Used
 * [Python 3.8+](https://www.python.org/downloads/)
 * [Pipenv](https://pipenv.readthedocs.io/en/latest/)
-* [Django 3.0.7](https://www.djangoproject.com/download/)
+* [Django 2.2](https://www.djangoproject.com/download/)
 * [DRF 3.9](https://www.django-rest-framework.org/)
 * [django-cors-headers](https://pypi.org/project/django-cors-headers/)
 * [celery](https://docs.celeryproject.org/)
