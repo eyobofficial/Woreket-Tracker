@@ -7,7 +7,6 @@ verify_ssl = true
 autopep8 = "*"
 
 [packages]
-psycopg2-binary = "==2.7.6.1"
 python-decouple = "==3.1"
 pytz = "==2018.5"
 django-extensions = "==2.0.7"
@@ -36,4 +35,4 @@ django-phonenumber-field = {extras = ["phonenumbers"],version = "*"}
 django-livereload-server = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"

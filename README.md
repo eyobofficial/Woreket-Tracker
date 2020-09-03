@@ -3,7 +3,7 @@
 
 
 ### Prerequisites
-* [Python 3.6+](https://www.python.org/downloads/)
+* [Python 3.8+](https://www.python.org/downloads/)
 * [Pipenv](https://pipenv.readthedocs.io/en/latest/)
 * [MYSQL 5.7+](https://dev.mysql.com/downloads/mysql/)
 
@@ -67,7 +67,7 @@
 
 
 ### List of Main Tools and Packages Used
-* [Python 3.6+](https://www.python.org/downloads/)
+* [Python 3.8+](https://www.python.org/downloads/)
 * [Pipenv](https://pipenv.readthedocs.io/en/latest/)
 * [Django 3.0.7](https://www.djangoproject.com/download/)
 * [DRF 3.9](https://www.django-rest-framework.org/)
