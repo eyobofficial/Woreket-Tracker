@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from django.test import TestCase
 
+from customers.tests.factories import CustomerFactory
 from purchases.tests.factories import ProductFactory
 from .factories import BatchFactory, DeliveryOrderFactory, AllocationFactory, \
     UnionAllocationFactory, DistributionFactory, UnionDistributionFactory
@@ -143,3 +144,217 @@ class BatchModelTests(TestCase):
         """
         expected_amount = Decimal('7200.0000')
         self.assertEqual(self.batch.get_distributed_amount(), expected_amount)
+
+
+class DeliveryOrderTests(TestCase):
+    """
+    Tests for the `DeliveryOrder` model methods.
+    """
+    fixtures = ['units']
+
+    def setUp(self):
+        batch = BatchFactory(rate=5)
+        self.delivery_order = DeliveryOrderFactory(batch=batch)
+
+        # Create customers
+        self.customer_1 = CustomerFactory()
+        self.customer_2 = CustomerFactory()
+        self.customer_3 = CustomerFactory()
+
+    def test_is_fully_allocated_method_no_allocation(self):
+        """
+        Ensure `is_fully_allocated` method returns `False` when a
+        delivery_order instance has no allocation.
+        """
+        self.assertFalse(self.delivery_order.is_fully_allocated())
+
+
+    def test_is_fully_allocated_method_with_partial_allocations(self):
+        """
+        Ensure `is_fully_allocated` method returns `False` when a
+        delivery order instance is only partially allocated.
+        """
+        AllocationFactory(
+            delivery_order=self.delivery_order,
+            buyer=self.customer_1
+        )
+        self.assertFalse(self.delivery_order.is_fully_allocated())
+
+    def test_is_fully_allocated_method_with_fully_allocated_order(self):
+        """
+        Ensure `is_fully_allocated` method returns `True` when a
+        delivery order instance is fully allocated.
+        """
+        AllocationFactory(
+            delivery_order=self.delivery_order,
+            buyer=self.customer_1
+        )
+        AllocationFactory(
+            delivery_order=self.delivery_order,
+            buyer=self.customer_2
+        )
+        AllocationFactory(
+            delivery_order=self.delivery_order,
+            buyer=self.customer_3
+        )
+        self.assertTrue(self.delivery_order.is_fully_allocated())
+
+    def test_is_fully_distributed_method_no_distribution(self):
+        """
+        Ensure `is_fully_distributed` method returns `False` when a
+        delivery_order instance has no distribution.
+        """
+        self.assertFalse(self.delivery_order.is_fully_distributed())
+
+    def test_is_fully_distributed_method_with_partial_distribution(self):
+        """
+        Ensure `is_fully_distributed` method returns `False` when a
+        delivery order instance is only partially distributed.
+        """
+        DistributionFactory(
+            delivery_order=self.delivery_order,
+            buyer=self.customer_1
+        )
+        self.assertFalse(self.delivery_order.is_fully_distributed())
+
+    def test_is_fully_distributed_method_with_fully_distributed_order(self):
+        """
+        Ensure `is_fully_distributed` method returns `True` when a
+        delivery order instance is fully distributed.
+        """
+        DistributionFactory(
+            delivery_order=self.delivery_order,
+            buyer=self.customer_1
+        )
+        DistributionFactory(
+            delivery_order=self.delivery_order,
+            buyer=self.customer_2
+        )
+        DistributionFactory(
+            delivery_order=self.delivery_order,
+            buyer=self.customer_3
+        )
+        self.assertTrue(self.delivery_order.is_fully_distributed())
+
+    def test_get_allocated_quantity_method(self):
+        """
+        Ensure `get_allocated_quantity` method returns the total allocated
+        quantity of related unions.
+        """
+        allocation_1 = AllocationFactory(delivery_order=self.delivery_order)
+        UnionAllocationFactory(allocation=allocation_1, quantity=10)
+        UnionAllocationFactory(allocation=allocation_1, quantity=20)
+
+        expected_quantity = Decimal('30.0000')
+        self.assertEqual(
+            self.delivery_order.get_allocated_quantity(),
+            expected_quantity
+        )
+
+    def test_get_distributed_quantity_method(self):
+        """
+        Ensure `get_distributed_quantity` method returns the total distributed
+        quantity of related unions.
+        """
+        distribution_1 = DistributionFactory(delivery_order=self.delivery_order)
+        UnionDistributionFactory(
+            distribution=distribution_1,
+            quantity=10, shortage=1, over=2
+        )
+        UnionDistributionFactory(
+            distribution=distribution_1,
+            quantity=20, shortage=3, over=4
+        )
+
+        expected_quantity = Decimal('40.0000')
+        self.assertEqual(
+            self.delivery_order.get_distributed_quantity(),
+            expected_quantity
+        )
+
+    def test_get_distributed_shortage_method(self):
+        """
+        Ensure `get_distributed_shortage` method returns the total distributed
+        shortage quantity of related unions.
+        """
+        distribution_1 = DistributionFactory(delivery_order=self.delivery_order)
+        UnionDistributionFactory(
+            distribution=distribution_1,
+            quantity=10, shortage=1, over=2
+        )
+        UnionDistributionFactory(
+            distribution=distribution_1,
+            quantity=20, shortage=3, over=4
+        )
+
+        expected_quantity = Decimal('10.0000')
+        self.assertEqual(
+            self.delivery_order.get_distributed_shortage(),
+            expected_quantity
+        )
+
+    def test_get_allocated_amount_method(self):
+        """
+        Ensure `get_allocated_amount` method returns the total allocated
+        amount of related unions.
+        """
+        allocation_1 = AllocationFactory(delivery_order=self.delivery_order)
+        UnionAllocationFactory(allocation=allocation_1, quantity=10)
+        UnionAllocationFactory(allocation=allocation_1, quantity=20)
+
+        expected_amount = Decimal('150.0000')
+        self.assertEqual(
+            self.delivery_order.get_allocated_amount(),
+            expected_amount
+        )
+
+    def test_get_allocated_advance_method(self):
+        """
+        Ensure `get_allocated_advance` method returns 90% of the total
+        allocated amount of related unions.
+        """
+        allocation_1 = AllocationFactory(delivery_order=self.delivery_order)
+        UnionAllocationFactory(allocation=allocation_1, quantity=10)
+        UnionAllocationFactory(allocation=allocation_1, quantity=20)
+
+        expected_advance = Decimal('135.0000')
+        self.assertEqual(
+            self.delivery_order.get_allocated_advance(),
+            expected_advance
+        )
+
+    def test_get_allocated_retention_method(self):
+        """
+        Ensure `get_allocated_retention` method returns 10% of the total
+        allocated amount of related unions.
+        """
+        allocation_1 = AllocationFactory(delivery_order=self.delivery_order)
+        UnionAllocationFactory(allocation=allocation_1, quantity=10)
+        UnionAllocationFactory(allocation=allocation_1, quantity=20)
+
+        expected_retention = Decimal('15.0000')
+        self.assertEqual(
+            self.delivery_order.get_allocated_retention(),
+            expected_retention
+        )
+
+    def test_get_distributed_amount_method(self):
+        """
+        Ensure `get_distributed_amount` method returns the total distributed
+        amount of related unions.
+        """
+        distribution_1 = DistributionFactory(delivery_order=self.delivery_order)
+        UnionDistributionFactory(
+            distribution=distribution_1,
+            quantity=10, shortage=1, over=2
+        )
+        UnionDistributionFactory(
+            distribution=distribution_1,
+            quantity=20, shortage=3, over=4
+        )
+
+        expected_amount = Decimal('200.0000')
+        self.assertEqual(
+            self.delivery_order.get_distributed_amount(),
+            expected_amount
+        )
