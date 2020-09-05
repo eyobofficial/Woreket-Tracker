@@ -358,3 +358,41 @@ class DeliveryOrderTests(TestCase):
             self.delivery_order.get_distributed_amount(),
             expected_amount
         )
+
+
+class AllocationTests(TestCase):
+    """
+    Tests for `Allocation` model methods.
+    """
+    fixtures = ['units']
+
+    def setUp(self):
+        batch = BatchFactory(rate=5)
+        self.delivery_order = DeliveryOrderFactory(batch=batch)
+
+    def test_get_total_quantity_method(self):
+        """
+        Ensure `get_total_quantity` method returns the total union allocations
+        quantity for an `Allocation` model instance.
+        """
+        allocation = AllocationFactory(delivery_order=self.delivery_order)
+        UnionAllocationFactory(allocation=allocation, quantity=10)
+        UnionAllocationFactory(allocation=allocation, quantity=20)
+        self.assertEqual(allocation.get_total_quantity(), Decimal('30'))
+
+    def test_get_percentage_method(self):
+        """
+        Ensure `get_percentage` method returns the percentage of the allocation
+        quantity with respect to the related delivery order.
+        """
+        allocation_1 = AllocationFactory(delivery_order=self.delivery_order)
+        UnionAllocationFactory(allocation=allocation_1, quantity=10)
+        UnionAllocationFactory(allocation=allocation_1, quantity=20)
+
+        allocation_2 = AllocationFactory(delivery_order=self.delivery_order)
+        UnionAllocationFactory(allocation=allocation_2, quantity=30)
+        UnionAllocationFactory(allocation=allocation_2, quantity=40)
+
+        self.assertEqual(allocation_1.get_percentage(), Decimal('30'))
+        self.assertEqual(allocation_2.get_percentage(), Decimal('70'))
+
