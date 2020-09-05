@@ -428,3 +428,63 @@ class DistributionTests(TestCase):
         UnionDistributionFactory(**kwargs_1)
         UnionDistributionFactory(**kwargs_2)
         self.assertEqual(distribution.get_total_quantity(), Decimal('40'))
+
+    def test_get_percentage_method(self):
+        """
+        Ensure `get_percentage` method returns the percentage of the
+        distribution quantity with respect to the related delivery order.
+        """
+        distribution_1 = DistributionFactory(delivery_order=self.delivery_order)
+        UnionDistributionFactory(
+            distribution=distribution_1,
+            quantity=50, shortage=0, over=0
+        )
+        UnionDistributionFactory(
+            distribution=distribution_1,
+            quantity=100, shortage=0, over=0
+        )
+
+        distribution_2 = DistributionFactory(delivery_order=self.delivery_order)
+        UnionDistributionFactory(
+            distribution=distribution_2,
+            quantity=150, shortage=0, over=0
+        )
+        UnionDistributionFactory(
+            distribution=distribution_2,
+            quantity=200, shortage=0, over=0
+        )
+
+        self.assertEqual(distribution_1.get_percentage(), Decimal('30'))
+        self.assertEqual(distribution_2.get_percentage(), Decimal('70'))
+
+
+class UnionDistributionTests(TestCase):
+    """
+    Tests for `UnionDistribution` model methods.
+    """
+    fixtures = ['units']
+
+    def setUp(self):
+        self.union_distribution = UnionDistributionFactory(
+            quantity=100, shortage=10, over=5
+        )
+
+    def test_get_total_quantity_method(self):
+        """
+        Ensure `get_total_quantity` method returns the total quantity of
+        the union distribution quantity.
+        """
+        self.assertEqual(
+            self.union_distribution.get_total_quantity(),
+            Decimal('115')
+        )
+
+    def test_get_total_shortage_method(self):
+        """
+        Ensure `get_total_shortage` method returns the total shortage of
+        the union distribution shortage quantity.
+        """
+        self.assertEqual(
+            self.union_distribution.get_total_shortage(),
+            Decimal('15')
+        )

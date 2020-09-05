@@ -561,8 +561,10 @@ class Distribution(models.Model):
         """
         quantity = self.get_total_quantity()
         total_distribution = self.delivery_order.get_distributed_quantity()
-        percent = (quantity / total_distribution) * 100
-        return round(percent, 2)
+        if total_distribution > 0:
+            percent = (quantity / total_distribution) * 100
+            return round(percent, 2)
+        return 0
 
 
 class UnionDistribution(models.Model):
