@@ -396,3 +396,35 @@ class AllocationTests(TestCase):
         self.assertEqual(allocation_1.get_percentage(), Decimal('30'))
         self.assertEqual(allocation_2.get_percentage(), Decimal('70'))
 
+
+class DistributionTests(TestCase):
+    """
+    Tests for `Distribution` model methods.
+    """
+    fixtures = ['units']
+
+    def setUp(self):
+        batch = BatchFactory(rate=5)
+        self.delivery_order = DeliveryOrderFactory(batch=batch)
+
+    def test_get_total_quantity_method(self):
+        """
+        Ensure `get_total_quantity` method returns the total union distribution
+        quantity for an `Allocation` model instance.
+        """
+        distribution = DistributionFactory(delivery_order=self.delivery_order)
+        kwargs_1 = {
+            'distribution': distribution,
+            'quantity': 10,
+            'shortage': 1,
+            'over': 2
+        }
+        kwargs_2 = {
+            'distribution': distribution,
+            'quantity': 20,
+            'shortage': 3,
+            'over': 4
+        }
+        UnionDistributionFactory(**kwargs_1)
+        UnionDistributionFactory(**kwargs_2)
+        self.assertEqual(distribution.get_total_quantity(), Decimal('40'))
