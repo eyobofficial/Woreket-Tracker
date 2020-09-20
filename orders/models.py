@@ -43,12 +43,20 @@ class Port(models.Model):
 class Batch(models.Model):
     """Product purchasing batches."""
     today = pendulum.today(tz=settings.TIME_ZONE)
-    choice_duration = 5
+
+    # Calculate duration range
+    start_offset = 3
+    end_offset   = 5
     ethiopian_year = today.year - 7
+
+    choice_tuple = (
+        ethiopian_year - start_offset,
+        ethiopian_year + end_offset
+    )
 
     YEAR_CHOICES = [
         (y, f'{y}/{y + 1}')
-        for y in range(ethiopian_year - choice_duration, ethiopian_year)
+        for y in range(*choice_tuple)
     ]
 
     # Status
