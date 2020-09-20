@@ -43,12 +43,20 @@ class Port(models.Model):
 class Batch(models.Model):
     """Product purchasing batches."""
     today = pendulum.today(tz=settings.TIME_ZONE)
-    choice_duration = 5
+
+    # Calculate duration range
+    start_offset = 3
+    end_offset   = 5
     ethiopian_year = today.year - 7
+
+    choice_tuple = (
+        ethiopian_year - start_offset,
+        ethiopian_year + end_offset
+    )
 
     YEAR_CHOICES = [
         (y, f'{y}/{y + 1}')
-        for y in range(ethiopian_year - choice_duration, ethiopian_year)
+        for y in range(*choice_tuple)
     ]
 
     # Status
@@ -448,8 +456,9 @@ class Allocation(models.Model):
         """
         quantity = self.get_total_quantity()
         total_allocation = self.delivery_order.get_allocated_quantity()
-        percent = (quantity / total_allocation) * 100
-        return round(percent, 2)
+        if total_allocation > 0:
+            return round((quantity / total_allocation) * 100, 2)
+        return 0
 
 class UnionAllocation(models.Model):
     """Allocation data to the unions for the delivery order."""
@@ -504,22 +513,6 @@ class Distribution(models.Model):
 
     def __str__(self):
         return f'{self.delivery_order} distribution'
-
-    def get_allocation(self):
-        """Returns the respective allocation for this distribution.
-
-        Returns:
-            quantity (Decimal): allocated quantity if it exists
-            None: if no quantity is allocated for this distribution
-        """
-        try:
-            allocation = Allocation.objects.get(
-                delivery_order=self.delivery_order,
-                buyer=self.buyer
-            )
-            return allocation.quantity
-        except Allocation.DoesNotExist:
-            return
 
     def get_total_quantity(self):
         """Returns the distribution quantity with shortage and over supply.
@@ -576,8 +569,10 @@ class Distribution(models.Model):
         """
         quantity = self.get_total_quantity()
         total_distribution = self.delivery_order.get_distributed_quantity()
-        percent = (quantity / total_distribution) * 100
-        return round(percent, 2)
+        if total_distribution > 0:
+            percent = (quantity / total_distribution) * 100
+            return round(percent, 2)
+        return 0
 
 
 class UnionDistribution(models.Model):

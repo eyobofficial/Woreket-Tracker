@@ -1,6 +1,6 @@
 dist: bionic
 language: python
-python: 3.6
+python: 3.8
 env:
   global
     - SECRET_KEY="(&^+4@&qt4b-^1=mad05%ju8q+4vg(vy6r2mq+gxab2eg#0f$b"
