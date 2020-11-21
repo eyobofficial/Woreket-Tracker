@@ -1,4 +1,4 @@
-import uuid
+import uuid as uuid_lib
 import pendulum
 from decimal import Decimal
 from functools import reduce
@@ -26,6 +26,10 @@ class NeighbourCountry(Countries):
 
 class Port(models.Model):
     """Dispatch ports."""
+    uuid = models.UUIDField(
+        db_index=True, editable=False,
+        default=uuid_lib.uuid4
+    )
     name = models.CharField(max_length=120, unique=True)
     country = CountryField(countries=NeighbourCountry)
     office = models.CharField(max_length=120, blank=True)
@@ -68,7 +72,7 @@ class Batch(models.Model):
         (CLOSED, 'closed')
     )
 
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid_lib.uuid4)
     name = models.CharField(max_length=120)
     lc_number = models.CharField(
         'L/C number', max_length=30,
@@ -228,7 +232,7 @@ class Batch(models.Model):
 
 class DeliveryOrder(models.Model):
     """Product delivery orders."""
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid_lib.uuid4)
     vessel = models.CharField(max_length=120, help_text='Shipment vessel name.')
     batch = models.ForeignKey(Batch, null=True, on_delete=models.SET_NULL)
     bill_of_loading = models.CharField(
@@ -393,7 +397,7 @@ class DeliveryOrder(models.Model):
 
 class Allocation(models.Model):
     """Region allocation for delivery orders."""
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid_lib.uuid4)
     delivery_order = models.ForeignKey(DeliveryOrder,on_delete=models.CASCADE)
     buyer = models.ForeignKey(
         Customer,
@@ -462,7 +466,7 @@ class Allocation(models.Model):
 
 class UnionAllocation(models.Model):
     """Allocation data to the unions for the delivery order."""
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid_lib.uuid4)
     allocation = models.ForeignKey(Allocation, on_delete=models.CASCADE)
     union = models.ForeignKey(Union, on_delete=models.PROTECT)
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
@@ -482,7 +486,7 @@ class UnionAllocation(models.Model):
 
 class Distribution(models.Model):
     """Actual distribution data for the delivery order."""
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid_lib.uuid4)
     delivery_order = models.ForeignKey(DeliveryOrder, on_delete=models.CASCADE)
     buyer = models.ForeignKey(
         Customer,
@@ -577,7 +581,7 @@ class Distribution(models.Model):
 
 class UnionDistribution(models.Model):
     """Actual distribution data to the unions for the delivery order."""
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid_lib.uuid4)
     distribution = models.ForeignKey(Distribution, on_delete=models.CASCADE)
     union = models.ForeignKey(Union, on_delete=models.PROTECT)
     location = models.ForeignKey(Location, on_delete=models.PROTECT)

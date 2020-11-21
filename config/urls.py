@@ -28,6 +28,11 @@ urlpatterns = [
     path('', include('orders.urls', namespace='orders'))
 ]
 
+# API endpoints
+urlpatterns += [
+    path('api/', include('config.api_urls', namespace='api'))
+]
+
 # Media Assets
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
