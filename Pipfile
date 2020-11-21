@@ -33,6 +33,7 @@ django-countries = "*"
 ipython = "*"
 django-phonenumber-field = {extras = ["phonenumbers"],version = "*"}
 django-livereload-server = "*"
+djangorestframework-camel-case = "*"
 
 [requires]
 python_version = "3.8"
